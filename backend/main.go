@@ -23,6 +23,6 @@ func main() {
 		&entity.Package{}, 
 		&entity.Soup{}, 
 		&entity.TableType{}, 
-		&entity.StatusTable{})
+		&entity.TableStatus{})
 
 }

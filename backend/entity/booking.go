@@ -9,7 +9,8 @@ import (
 
 type Booking struct {
 
-    BookingID       	string      `gorm:"primaryKey" json:"booking_id"`
+    gorm.Model
+    BookingID       	string      `json:"booking_id"`
     NumberOfCustomers 	uint      	`json:"number_of_customers"`
     Date            	time.Time 	`json:"date"`
 
@@ -29,9 +30,5 @@ type Booking struct {
 
     EmployeeID			*string			
 	Employee			Employee	`gorm:"foreignKey:employee_id"`
-    
-    CreatedAt           time.Time
-    UpdatedAt           time.Time
-    DeletedAt           gorm.DeletedAt `gorm:"index"`
 
 }
