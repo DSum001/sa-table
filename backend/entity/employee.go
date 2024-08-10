@@ -7,10 +7,10 @@ import(
 
 ) 
 
-type Employee struct{
+type Employee struct {
 
 	gorm.Model
-	EmployeeID   	string 		`json:"employee_id"`
+	EmployeeID   	uint 		`json:"employee_id"`
 	FirstName		string		`json:"first_name"`
 	LastName		string		`json:"last_name"`
 	Username		string		`json:"username"`

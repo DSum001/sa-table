@@ -9,7 +9,7 @@ import (
 type TableStatus struct {
 
 	gorm.Model
-    TableStatusID 	string 			`json:"table_status_id"`
+    TableStatusID 	uint 			`json:"table_status_id"`
     Status 			string 			`json:"status"`
 
 }

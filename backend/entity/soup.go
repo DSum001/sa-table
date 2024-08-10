@@ -9,7 +9,8 @@ import (
 type Soup struct {
 
 	gorm.Model
-    SoupID 		string 			`json:"soup_id"`
+    SoupID 		uint 			`json:"soup_id"`
     Name   		string 			`json:"name"`
+	Price       int             `json:"price"`
 
 }

@@ -6,11 +6,12 @@ import (
 
 )
 
-type TableType struct {
+type Table struct {
 
 	gorm.Model
-    TableID         string            `json:"table_id"`
-    TableType       int               `json:"table_type"`
-    TableStatusID    []TableStatus    `gorm:"foreignKey:table_status_id"`
+    TableID         uint            `json:"table_id"`
+    TableType       int             `json:"table_type"`
+    Price           int             `json:"price"`
+    TableStatusID    []TableStatus  `gorm:"foreignKey:table_status_id"`
 
 }

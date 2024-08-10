@@ -9,7 +9,8 @@ import (
 type Package struct {
 
 	gorm.Model
-    PackageID 	string 			`gorm:"primarykey" json:"package_id"`
+    PackageID 	uint 			`gorm:"primarykey" json:"package_id"`
     Name      	string 			`json:"name"`
+	Price       int             `json:"price"`
 
 }
