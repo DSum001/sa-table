@@ -6,14 +6,11 @@ import (
 
 )
 
-type Package struct {
+type Point struct {
 
 	gorm.Model
-    PackageID 	uint 			`json:"package_id"`
+    PointID 	uint 			`json:"point_id"`
     Name      	string 			`json:"name"`
 	Price       int             `json:"price"`
-
-	PointID		*uint
-    Points      Point			`gorm:"foreignKey:point_id"`
 
 }

@@ -10,8 +10,8 @@ import (
 type Booking struct {
 
     gorm.Model
-    BookingID       	uint      `json:"booking_id"`
-    NumberOfCustomers 	uint      	`json:"number_of_customers"`
+    BookingID       	uint        `json:"booking_id"`
+    NumberOfCustomers 	int      	`json:"number_of_customers"`
     Date            	time.Time 	`json:"date"`
 
 	Soup1ID				*uint
@@ -23,7 +23,7 @@ type Booking struct {
     Package         	Package		`gorm:"foreignKey:package_id"`
 
     TableID         	*uint
-	Table 				Table 	`gorm:"foreignKey:table_id"`
+	Table 				Table 	    `gorm:"foreignKey:table_id"`
 
     MemberID        	*uint 
 	Member 				Member		`gorm:"foreignKey:member_id"`	
