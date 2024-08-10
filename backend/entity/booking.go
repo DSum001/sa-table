@@ -11,7 +11,7 @@ type Booking struct {
 
     gorm.Model
     BookingID       	uint        `json:"booking_id"`
-    NumberOfCustomers 	int      	`json:"number_of_customers"`
+    NumberOfCustomers 	uint      	`json:"number_of_customers"`
     Date            	time.Time 	`json:"date"`
 
 	Soup1ID				[]Soup      `gorm:"foreignKey:soup_id"`
