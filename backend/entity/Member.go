@@ -17,7 +17,4 @@ type Member struct {
 	Point 		int				`json:"point"`
 	RegiterDate	time.Time 		`json:"register_date"`
 
-	EmployeeID	*uint			
-	Employee	Employee		`gorm:"foreignKey:employee_id"`
-
 }
