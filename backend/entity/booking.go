@@ -16,6 +16,8 @@ type Booking struct {
 
 	Soup1ID				[]Soup      `gorm:"foreignKey:soup_id"`
     Soup2ID				[]Soup      `gorm:"foreignKey:soup_id"`
+    Soup3ID				[]Soup      `gorm:"foreignKey:soup_id"`
+    Soup4ID				[]Soup      `gorm:"foreignKey:soup_id"`
     
 	PackageID           []Package   `gorm:"foreignKey:package_id"`
 
