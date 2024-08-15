@@ -32,63 +32,18 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
 
-  {
-
-    title: "ลำดับ",
-
-    dataIndex: "ID",
-
-    key: "id",
-
-  },
-
-  {
-
-    title: "ชื่อ",
-
-    dataIndex: "FirstName",
-
-    key: "firstname",
-
-  },
-
-  {
-
-    title: "นามสกุุล",
-
-    dataIndex: "LastName",
-
-    key: "lastname",
-
-  },
-
-  {
-
-    title: "อีเมล",
-
-    dataIndex: "Email",
-
-    key: "email",
-
-  },
-
-  {
-
-    title: "เบอร์โทร",
-
-    dataIndex: "Phone",
-
-    key: "phone",
-
-  },
 
 ];
 
 
 const data: DataType[] = [];
 
-
 export default function index() {
+
+  const handleCardClick = (url: string) => {
+
+    window.location.href = url;
+  };
 
   return (
 
@@ -98,11 +53,9 @@ export default function index() {
 
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
-          <h2>แดชบอร์ด</h2>
+          <h2>Table</h2>
 
         </Col>
-
-        
 
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
@@ -121,6 +74,7 @@ export default function index() {
                     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
 
                   }}
+                  onClick={() => handleCardClick('/customer')}
 
                 >
 
@@ -128,7 +82,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={1800}
+                    value={"F1"}
 
                     prefix={<StockOutlined />}
 
@@ -150,6 +104,7 @@ export default function index() {
                     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
 
                   }}
+                  onClick={() => handleCardClick('/path-to-page1')}
 
                 >
 
@@ -157,7 +112,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={200}
+                    value={"F2"}
 
                     valueStyle={{ color: "black" }}
 
@@ -188,7 +143,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={3000}
+                    value={"F3"}
 
                     valueStyle={{ color: "black" }}
 
@@ -219,7 +174,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={10}
+                    value={"F4"}
 
                     valueStyle={{ color: "black" }}
 
@@ -248,7 +203,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={1800}
+                    value={"F5"}
 
                     prefix={<StockOutlined />}
 
@@ -277,7 +232,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={200}
+                    value={"F6"}
 
                     valueStyle={{ color: "black" }}
 
@@ -308,7 +263,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={3000}
+                    value={"S1"}
 
                     valueStyle={{ color: "black" }}
 
@@ -339,7 +294,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={10}
+                    value={"S2"}
 
                     valueStyle={{ color: "black" }}
 
@@ -368,7 +323,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={1800}
+                    value={"S3"}
 
                     prefix={<StockOutlined />}
 
@@ -397,7 +352,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={200}
+                    value={"S4"}
 
                     valueStyle={{ color: "black" }}
 
@@ -428,7 +383,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={3000}
+                    value={"E1"}
 
                     valueStyle={{ color: "black" }}
 
@@ -459,7 +414,7 @@ export default function index() {
 
                     title="จำนวน"
 
-                    value={10}
+                    value={"E2"}
 
                     valueStyle={{ color: "black" }}
 

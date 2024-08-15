@@ -37,7 +37,8 @@ func ConnectionDB() {
 func SetupDatabase() {
 
     db.AutoMigrate(
-        
+
+        &entity.TableStatus{},
         &entity.Position{},
         &entity.Soup{},
         &entity.Package{},
@@ -46,6 +47,10 @@ func SetupDatabase() {
         &entity.Gender{},
 
     )
+
+    StatusAvailable := entity.TableStatus{Status: "Available"}
+    StatusBusy := entity.TableStatus{Status: "Busy"}
+    StatusNotReady := entity.TableStatus{Status: "Not Ready"}
 
     Position_boss := entity.Position{Position: "Boss"}
     Position_staff1 := entity.Position{Position: "staff1"}
@@ -64,6 +69,10 @@ func SetupDatabase() {
     Package_pork_chicken := entity.Package{Name: "หมู, ไก่"}
     Package_seafood := entity.Package{Name: "ทะเล"}
     Package_beef := entity.Package{Name: "เนื้อ"}
+
+    db.FirstOrCreate(&StatusAvailable, &entity.TableStatus{Status: "Available"})
+    db.FirstOrCreate(&StatusBusy, &entity.TableStatus{Status: "Busy"})
+    db.FirstOrCreate(&StatusNotReady, &entity.TableStatus{Status: "Not Ready"})
 
     db.FirstOrCreate(&GenderMale, &entity.Gender{Gender: "Male"})
     db.FirstOrCreate(&GenderFemale, &entity.Gender{Gender: "Female"})
@@ -106,5 +115,10 @@ func SetupDatabase() {
         Email: "shabuuu@gmail.com",
 
     })
+
+    // Table_status := entity.TableStatus{
+
+
+    // }
 
 }

@@ -4,7 +4,7 @@ import { Routes, Route, Link } from "react-router-dom";
 
 import "../../App.css";
 
-import { UserOutlined, DashboardOutlined } from "@ant-design/icons";
+import { UserOutlined, DashboardOutlined,LogoutOutlined } from "@ant-design/icons";
 
 import { Breadcrumb, Layout, Menu, theme, Button, message } from "antd";
 
@@ -14,14 +14,16 @@ import Dashboard from "../../pages/dashboard";
 
 import Customer from "../../pages/customer";
 
-import Table from "../../pages/table";
-
 import CustomerCreate from "../../pages/customer/create";
 
 import CustomerEdit from "../../pages/customer/edit";
 
+import Table from "../../pages/table";
 
-const { Header, Content, Footer, Sider } = Layout;
+import TableBooking from "../../pages/table/booking";
+
+
+const {Content, Footer, Sider } = Layout;
 
 
 const FullLayout: React.FC = () => {
@@ -166,7 +168,7 @@ const FullLayout: React.FC = () => {
 
                   <UserOutlined />
 
-                  <span>ข้อมูลสมาชิก</span>
+                  <span>Table</span>
 
                 </Link>
 
@@ -177,11 +179,13 @@ const FullLayout: React.FC = () => {
           </div>
 
 
-          <Button onClick={Logout} style={{ margin: 4 }}>
-
-            ออกจากระบบ
-
-          </Button>
+          <Button 
+            onClick={Logout} 
+            style={{ margin: 4 }} 
+            icon={<LogoutOutlined />} 
+            type="primary" 
+            shape="circle"
+          />
 
         </div>
 
@@ -190,7 +194,7 @@ const FullLayout: React.FC = () => {
 
       <Layout>
 
-        <Header style={{ padding: 0, background: colorBgContainer }} />
+        {/* <Header style={{ padding: 0, background: colorBgContainer }} /> */}
 
         <Content style={{ margin: "0 16px" }}>
 
@@ -201,6 +205,8 @@ const FullLayout: React.FC = () => {
             style={{
 
               padding: 24,
+
+              borderRadius: "8px",
 
               minHeight: "100%",
 
@@ -216,11 +222,13 @@ const FullLayout: React.FC = () => {
 
               <Route path="/customer" element={<Customer />} />
 
-              <Route path="/table" element={<Table />} />
-
               <Route path="/customer/create" element={<CustomerCreate />} />
 
               <Route path="/customer/edit/:id" element={<CustomerEdit />} />
+
+              <Route path="/table" element={<Table />} />
+
+              <Route path="/table/booking" element={<TableBooking />} />
 
             </Routes>
 

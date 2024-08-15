@@ -13,11 +13,13 @@ const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
 
 const Customer = Loadable(lazy(() => import("../pages/customer")));
 
-const Table = Loadable(lazy(() => import("../pages/table")));
-
 const CreateCustomer = Loadable(lazy(() => import("../pages/customer/create")));
 
 const EditCustomer = Loadable(lazy(() => import("../pages/customer/edit")));
+
+const Table = Loadable(lazy(() => import("../pages/table")));
+
+const TableBooking = Loadable(lazy(() => import("../pages/table/booking")));
 
 
 const AdminRoutes = (isLoggedIn : boolean): RouteObject => {
@@ -54,14 +56,6 @@ const AdminRoutes = (isLoggedIn : boolean): RouteObject => {
 
           {
 
-            path: "/table",
-
-            element: <Table />,
-
-          },
-
-          {
-
             path: "/customer/create",
 
             element: <CreateCustomer />,
@@ -75,6 +69,40 @@ const AdminRoutes = (isLoggedIn : boolean): RouteObject => {
             element: <EditCustomer />,
 
           },
+
+        ],
+
+      },
+
+      {
+
+        path: "/table",
+
+        children: [
+
+          {
+
+            path: "/table",
+
+            element: <Table />,
+
+          },
+
+          {
+
+            path: "/table/booking",
+
+            element: <TableBooking />,
+
+          },
+
+          // {
+
+          //   path: "/customer/edit/:id",
+
+          //   element: <EditCustomer />,
+
+          // },
 
         ],
 

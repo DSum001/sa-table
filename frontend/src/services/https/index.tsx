@@ -103,7 +103,7 @@ async function CreateUser(data: UsersInterface) {
 
 }
 
-async function SignInPages(data: TableInterface) {
+async function TablePage(data: TableInterface) {
 
     return await axios
 
@@ -130,6 +130,6 @@ export {
 
     CreateUser,
 
-    SignInPages,
+    TablePage,
 
 };
