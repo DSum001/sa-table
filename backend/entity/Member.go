@@ -2,19 +2,24 @@ package entity
 
 import(
 
-	"time"
 	"gorm.io/gorm"
 
 ) 
 
-type Member struct {
+type Member struct{
 
 	gorm.Model
-	MemberID  	uint 			`json:"member_id"`
-	FirstName	string			`json:"first_name"`
-	Lastname	string			`json:"last_name"`
-	PhoneNumber	string			`json:"phone_number"`
-	Point 		int				`json:"point"`
-	RegiterDate	time.Time 		`json:"register_date"`
+	FirstName		string		`json:"first_name"`
+	LastName		string		`json:"last_name"`
+	PhoneNumber		string		`json:"phone_number"`	
+	Email 			string		`json:"email"`	
+
+	// FK from Rank
+	RankID			*uint
+	Rank			Rank		`gorm:"foreignKey: rank_id"`
+	
+	// FK from Employee
+	EmployeeID		*uint		
+	Employee		Employee	`gorm:"foreignKey: employee_id"`
 
 }

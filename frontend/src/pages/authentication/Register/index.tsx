@@ -1,26 +1,5 @@
-import {
-
-    Button,
-  
-    Card,
-  
-    Form,
-  
-    Input,
-  
-    message,
-  
-    Flex,
-  
-    Row,
-  
-    Col,
-  
-    InputNumber,
-  
-    DatePicker,
-  
-    Select,
+import {Button,Card,Form,Input,message,Flex,Row,Col,InputNumber,
+DatePicker,Select,
   
   } from "antd";
   
