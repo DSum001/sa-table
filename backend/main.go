@@ -17,6 +17,11 @@ import (
 const PORT = "8000"
 
 func main() {
+	
+	db, err := gorm.Open(sqlite.Open("sa-table.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
 
 	config.ConnectionDB()
 
@@ -64,11 +69,6 @@ func main() {
 	// Run the server
 
 	r.Run("localhost:" + PORT)
-
-	db, err := gorm.Open(sqlite.Open("sa-table.db"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
 
 	db.AutoMigrate(
 		&entity.Booking{}, 

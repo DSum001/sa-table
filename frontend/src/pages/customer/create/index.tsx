@@ -48,7 +48,6 @@ import {
   
       let res = await CreateUser(values);
   
-     
   
       if (res.status == 201) {
   

@@ -2,6 +2,8 @@ import { UsersInterface } from "../../interfaces/IUser";
 
 import { SignInInterface } from "../../interfaces/SignIn";
 
+import { TableInterface } from "../../interfaces/table";
+
 import axios from "axios";
 
 const apiUrl = "http://localhost:8000";
@@ -101,6 +103,18 @@ async function CreateUser(data: UsersInterface) {
 
 }
 
+async function SignInPages(data: TableInterface) {
+
+    return await axios
+
+    .post(`${apiUrl}/table`, data, requestOptions)
+
+    .then((res) => res)
+
+    .catch((e) => e.response);
+
+}
+
 
 export {
 
@@ -115,5 +129,7 @@ export {
     DeleteUsersById,
 
     CreateUser,
+
+    SignInPages,
 
 };

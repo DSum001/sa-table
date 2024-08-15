@@ -14,6 +14,8 @@ import Dashboard from "../../pages/dashboard";
 
 import Customer from "../../pages/customer";
 
+import Table from "../../pages/table";
+
 import CustomerCreate from "../../pages/customer/create";
 
 import CustomerEdit from "../../pages/customer/edit";
@@ -145,7 +147,7 @@ const FullLayout: React.FC = () => {
 
                   <DashboardOutlined />
 
-                  <span>แดชบอร์ด</span>
+                  <span>Table</span>
 
                 </Link>
 
@@ -160,7 +162,7 @@ const FullLayout: React.FC = () => {
 
               >
 
-                <Link to="/customer">
+                <Link to="/table">
 
                   <UserOutlined />
 
@@ -214,6 +216,8 @@ const FullLayout: React.FC = () => {
 
               <Route path="/customer" element={<Customer />} />
 
+              <Route path="/table" element={<Table />} />
+
               <Route path="/customer/create" element={<CustomerCreate />} />
 
               <Route path="/customer/edit/:id" element={<CustomerEdit />} />
@@ -226,8 +230,7 @@ const FullLayout: React.FC = () => {
 
         <Footer style={{ textAlign: "center" }}>
 
-          System Analysis and Design 1/67
-
+          Shabubu 2099
         </Footer>
 
       </Layout>

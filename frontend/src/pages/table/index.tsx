@@ -2,7 +2,7 @@ import { Button, Card, Form, Input, message, Flex, Row, Col } from "antd";
 import { useNavigate } from "react-router-dom";
 import { SignIn } from "../../services/https";
 import { SignInInterface } from "../../interfaces/SignIn";
-import logo from "../../../assets/logo.png";
+// import logo from "../../../assets/logo.png";
 
 function SignInPages() {
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ function SignInPages() {
         {contextHolder}
         <div className="container">
         <div className="sidebar">
-            <img src={logo} alt="logo" className="sidebar-logo" />
+            {/* <img src={logo} alt="logo" className="sidebar-logo" /> */}
             <ul className="sidebar-menu">
             <li onClick={() => navigate("/customer")}>👤 customer</li>
             <li onClick={() => navigate("/table")}>🍽️ table</li>

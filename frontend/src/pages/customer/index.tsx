@@ -19,7 +19,7 @@ function Customers() {
 
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState<UsersInterface[]>([]);
+  const [employee, setUsers] = useState<UsersInterface[]>([]);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -199,7 +199,6 @@ function Customers() {
 
     let res = await GetUsers();
 
-   
 
     if (res.status == 200) {
 
@@ -276,7 +275,7 @@ function Customers() {
 
           columns={columns}
 
-          dataSource={users}
+          dataSource={employee}
 
           style={{ width: "100%", overflow: "scroll" }}
 

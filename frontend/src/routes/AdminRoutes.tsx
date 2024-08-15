@@ -13,6 +13,8 @@ const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
 
 const Customer = Loadable(lazy(() => import("../pages/customer")));
 
+const Table = Loadable(lazy(() => import("../pages/table")));
+
 const CreateCustomer = Loadable(lazy(() => import("../pages/customer/create")));
 
 const EditCustomer = Loadable(lazy(() => import("../pages/customer/edit")));
@@ -47,6 +49,14 @@ const AdminRoutes = (isLoggedIn : boolean): RouteObject => {
             path: "/customer",
 
             element: <Customer />,
+
+          },
+
+          {
+
+            path: "/table",
+
+            element: <Table />,
 
           },
 
