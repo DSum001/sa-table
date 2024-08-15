@@ -2,7 +2,6 @@ package config
 
 import "golang.org/x/crypto/bcrypt"
 
-
 // hashPassword เป็น function สำหรับการแปลง password
 
 func HashPassword(password string) (string, error) {
@@ -12,7 +11,6 @@ func HashPassword(password string) (string, error) {
    return string(bytes), err
 
 }
-
 
 // checkPasswordHash เป็น function สำหรับ check password ที่ hash แล้ว ว่าตรงกันหรือไม่
 

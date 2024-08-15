@@ -8,15 +8,15 @@ type Supplier struct {
 
 	gorm.Model
 
-	SupplierName string `json:"supplier_name"`
+	SupplierName 	string 	`json:"supplier_name"`
 
-	Phone string `json:"phone"`
+	PhoneNumber 	string 	`json:"phone_number"`
 
-	Email string `json:"email"`
+	Email 			string 	`json:"email"`
 
-	Address string `json:"address"`
+	Address 		string 	`json:"address"`
 
 	//Supplier 1 to 0..* Stock
 
-	Stock []Stock `gorm:"foreignKey:SupplierID"`
+	Stock 			[]Stock `gorm:"foreignKey:supplier_id"`
 }

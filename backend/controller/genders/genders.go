@@ -1,11 +1,9 @@
-
 package genders
 
 
 import (
 
    "net/http"
-
 
    "github.com/DSum001/sa-table/config"
 
@@ -18,16 +16,12 @@ import (
 
 func GetAll(c *gin.Context) {
 
-
    db := config.DB()
-
 
    var genders []entity.Gender
 
    db.Find(&genders)
 
-
    c.JSON(http.StatusOK, &genders)
-
 
 }

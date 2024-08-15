@@ -6,7 +6,7 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/DSum001/sa-table/config"
     "github.com/DSum001/sa-table/controller/genders"
-    "github.com/DSum001/sa-table/controller/users"
+    "github.com/DSum001/sa-table/controller/employee"
     "github.com/DSum001/sa-table/middlewares"
 	"github.com/DSum001/sa-table/entity"
 	"gorm.io/driver/sqlite"
@@ -22,48 +22,48 @@ func main() {
 
    // Generate databases
 
-   config.SetupDatabase()
+	config.SetupDatabase()
 
-   r := gin.Default()
+	r := gin.Default()
 
-   r.Use(CORSMiddleware())
+	r.Use(CORSMiddleware())
 
    // Auth Route
 
-   r.POST("/signup", users.SignUp)
+	r.POST("/signup", employee.SignUp)
 
-   r.POST("/signin", users.SignIn)
+	r.POST("/signin", employee.SignIn)
 
-   router := r.Group("/")
+	router := r.Group("/")
 
-   {
+	{
 
-       router.Use(middlewares.Authorizes())
+		router.Use(middlewares.Authorizes())
 
-       // User Route
+        // User Route
 
-       router.PUT("/user/:id", users.Update)
+		router.PUT("/employee/:id", employee.Update)
 
-       router.GET("/users", users.GetAll)
+		router.GET("/employee", employee.GetAll)
 
-       router.GET("/user/:id", users.Get)
+		router.GET("/employee/:id", employee.Get)
 
-       router.DELETE("/user/:id", users.Delete)
+		router.DELETE("/employee/:id", employee.Delete)
 
-   }
+	}
 
-   r.GET("/genders", genders.GetAll)
+	r.GET("/genders", genders.GetAll)
 
 
-   r.GET("/", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) {
 
-       c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
+		c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
 
-   })
+	})
 
-   // Run the server
+	// Run the server
 
-   r.Run("localhost:" + PORT)
+	r.Run("localhost:" + PORT)
 
 	db, err := gorm.Open(sqlite.Open("sa-table.db"), &gorm.Config{})
 	if err != nil {
@@ -78,34 +78,43 @@ func main() {
 		&entity.Soup{}, 
 		&entity.Table{}, 
 		&entity.TableStatus{},
-		&entity.Point{})
+		&entity.Point{},
+		&entity.Category{}, 
+		&entity.Coupon{}, 
+		&entity.Gender{}, 
+		&entity.Order{}, 
+		&entity.Order_Product{}, 
+		&entity.Position{}, 
+		&entity.Product{},
+		&entity.Rank{},
+		&entity.Receipt{}, 
+		&entity.Stock{}, 
+		&entity.Supplier{})
 
 }
 
 func CORSMiddleware() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
- 
+
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
- 
+
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
- 
+
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
- 
+
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
- 
- 
+
 		if c.Request.Method == "OPTIONS" {
- 
+
 			c.AbortWithStatus(204)
- 
+
 			return
- 
+
 		}
- 
- 
+
 		c.Next()
- 
+
 	}
- 
- }
+
+}

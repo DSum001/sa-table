@@ -10,10 +10,6 @@ export interface UsersInterface {
   
     Phone?: string;
   
-    Age?: number;
-  
-    BirthDay?: string;
-  
     GenderID?: number;
   
     Password?: string;

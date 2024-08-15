@@ -1,126 +1,110 @@
 package services
 
-
 import (
 
-   "errors"
-
-   "time"
-
-
-   jwt "github.com/dgrijalva/jwt-go"
+    "errors"
+    "time"
+    jwt "github.com/dgrijalva/jwt-go"
 
 )
-
 
 // JwtWrapper wraps the signing key and the issuer
 
 type JwtWrapper struct {
 
-   SecretKey       string
+    SecretKey       string
 
-   Issuer          string
+    Issuer          string
 
-   ExpirationHours int64
+    ExpirationHours int64
 
 }
-
 
 // JwtClaim adds email as a claim to the token
 
 type JwtClaim struct {
 
-   Email string
+    Email string
 
-   jwt.StandardClaims
+    jwt.StandardClaims
 
 }
-
 
 // Generate Token generates a jwt token
 
 func (j *JwtWrapper) GenerateToken(email string) (signedToken string, err error) {
 
-   claims := &JwtClaim{
+    claims := &JwtClaim{
 
-       Email: email,
+        Email: email,
 
-       StandardClaims: jwt.StandardClaims{
+        StandardClaims: jwt.StandardClaims{
 
-           ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(j.ExpirationHours)).Unix(),
+            ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(j.ExpirationHours)).Unix(),
 
-           Issuer:    j.Issuer,
+            Issuer:    j.Issuer,
 
-       },
+        },
 
-   }
+    }
 
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-   token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    signedToken, err = token.SignedString([]byte(j.SecretKey))
 
+    if err != nil {
 
-   signedToken, err = token.SignedString([]byte(j.SecretKey))
+        return
 
-   if err != nil {
+    }
 
-       return
-
-   }
-
-
-   return
+    return
 
 }
-
 
 // Validate Token validates the jwt token
 
 func (j *JwtWrapper) ValidateToken(signedToken string) (claims *JwtClaim, err error) {
 
-   token, err := jwt.ParseWithClaims(
+    token, err := jwt.ParseWithClaims(
 
-       signedToken,
+        signedToken,
 
-       &JwtClaim{},
+        &JwtClaim{},
 
        func(token *jwt.Token) (interface{}, error) {
 
-           return []byte(j.SecretKey), nil
+            return []byte(j.SecretKey), nil
 
-       },
+        },
 
-   )
+    )
 
+    if err != nil {
 
-   if err != nil {
+        return
 
-       return
+    }
 
-   }
+    claims, ok := token.Claims.(*JwtClaim)
 
+    if !ok {
 
-   claims, ok := token.Claims.(*JwtClaim)
+        err = errors.New("couldn't parse claims")
 
-   if !ok {
+        return
 
-       err = errors.New("Couldn't parse claims")
+    }
 
-       return
+    if claims.ExpiresAt < time.Now().Local().Unix() {
 
-   }
+        err = errors.New("JWT is expired")
 
+        return
 
-   if claims.ExpiresAt < time.Now().Local().Unix() {
+    }
 
-       err = errors.New("JWT is expired")
-
-       return
-
-   }
-
-
-   return
-
+    return
 
 }
 

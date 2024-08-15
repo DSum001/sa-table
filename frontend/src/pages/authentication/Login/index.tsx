@@ -6,7 +6,7 @@ import { SignIn } from "../../../services/https";
 
 import { SignInInterface } from "../../../interfaces/SignIn";
 
-import logo from "../../../assets/logo.png";
+// import logo from "../../../assets/logo.png";
 
 
 function SignInPages() {
@@ -62,7 +62,7 @@ function SignInPages() {
 
           <Row align={"middle"} justify={"center"} style={{ height: "400px" }}>
 
-            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+            {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
               <img
 
@@ -76,7 +76,7 @@ function SignInPages() {
 
               />
 
-            </Col>
+            </Col> */}
 
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 

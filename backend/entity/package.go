@@ -14,6 +14,6 @@ type Package struct {
 	Price       int             `json:"price"`
 
 	PointID		*uint
-    Points      Point			`gorm:"foreignKey:point_id"`
+    Points      Point			`gorm:"foreignKey:PointID"`
 
 }

@@ -1,5 +1,4 @@
-package users
-
+package employee
 
 import (
 
@@ -9,13 +8,11 @@ import (
 
     //"time"
 
-
     "github.com/gin-gonic/gin"
 
     "golang.org/x/crypto/bcrypt"
 
     "gorm.io/gorm"
-
 
     "github.com/DSum001/sa-table/config"
 
@@ -24,7 +21,6 @@ import (
     "github.com/DSum001/sa-table/services"
 
 )
-
 
 type (
 
@@ -36,7 +32,6 @@ type (
 
     }
 
-
     signUp struct {
 
         FirstName string    `json:"first_name"`
@@ -45,21 +40,21 @@ type (
 
         Email     string    `json:"email"`
 
-        PhoneNumber	string	`json:"phone_number"`
+        Password    string  `json:"password"`
 
-        // BirthDay  time.Time `json:"birthday"`
+        //PhoneNumber	string	`json:"phone_number"`
 
         GenderID  uint      `json:"gender_id"`
+
+        PositionID    string  `json:"position_id"`
 
     }
 
 )
 
-
 func SignUp(c *gin.Context) {
 
     var payload signUp
-
 
    // Bind JSON payload to the struct
 
@@ -71,11 +66,9 @@ func SignUp(c *gin.Context) {
 
     }
 
-
     db := config.DB()
 
-    var userCheck entity.Member
-
+    var userCheck entity.Employee
 
    // Check if the user with the provided email already exists
 
@@ -91,7 +84,6 @@ func SignUp(c *gin.Context) {
 
     }
 
-
     if userCheck.ID != 0 {
 
        // If the user with the provided email already exists
@@ -102,10 +94,9 @@ func SignUp(c *gin.Context) {
 
     }
 
-
    // Create a new member
 
-    member := entity.Member{ 
+    Employee := entity.Employee{ 
 
         FirstName: payload.FirstName,
 
@@ -113,18 +104,12 @@ func SignUp(c *gin.Context) {
 
         Email: payload.Email,
 
-        PhoneNumber:  payload.PhoneNumber,
-
-        //Point:  payload.Point,
-
-        //RegiterDate:  payload.RegiterDate,
 
     }
 
-
 //    Save the member to the database
 
-    if err := db.Create(&member).Error; err != nil {
+    if err := db.Create(&Employee).Error; err != nil {
 
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -136,7 +121,6 @@ func SignUp(c *gin.Context) {
     c.JSON(http.StatusCreated, gin.H{"message": "Sign-up successful"})
 
 }
-
 
 func SignIn(c *gin.Context) {
 
@@ -155,14 +139,13 @@ func SignIn(c *gin.Context) {
 
     // ค้นหา user ด้วย Username ที่ผู้ใช้กรอกเข้ามา
 
-    if err := config.DB().Raw("SELECT * FROM users WHERE email = ?", payload.Email).Scan(&employee).Error; err != nil {
+    if err := config.DB().Raw("SELECT * FROM employee WHERE email = ?", payload.Email).Scan(&employee).Error; err != nil {
 
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
         return
 
     }
-
 
     // ตรวจสอบรหัสผ่าน
 
@@ -176,7 +159,6 @@ func SignIn(c *gin.Context) {
 
     }
 
-
     jwtWrapper := services.JwtWrapper{
 
         SecretKey:       "SvNQpBN8y3qlVrsGAYYWoJJk56LtzFHx",
@@ -186,7 +168,6 @@ func SignIn(c *gin.Context) {
         ExpirationHours: 24,
 
     }
-
 
     signedToken, err := jwtWrapper.GenerateToken(employee.Email)
 
@@ -198,8 +179,6 @@ func SignIn(c *gin.Context) {
 
     }
 
-
     c.JSON(http.StatusOK, gin.H{"token_type": "Bearer", "token": signedToken, "id": employee.ID})
-
 
 }

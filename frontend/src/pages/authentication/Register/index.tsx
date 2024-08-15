@@ -9,7 +9,7 @@ DatePicker,Select,
   
   import { UsersInterface } from "../../../interfaces/IUser";
   
-  import logo from "../../../assets/logo.png";
+  // import logo from "../../../assets/logo.png";
   
   
   function SignUpPages() {
@@ -67,11 +67,11 @@ DatePicker,Select,
   
             <Row align={"middle"} justify={"center"}>
   
-              <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+              {/* <Col xs={24} sm={24} md={24} lg={10} xl={10}>
   
                 <img alt="logo" src={logo} className="images-logo" />
   
-              </Col>
+              </Col> */}
   
               <Col xs={24} sm={24} md={24} lg={24} xl={24}>
   

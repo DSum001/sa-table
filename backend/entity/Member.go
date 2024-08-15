@@ -16,10 +16,10 @@ type Member struct{
 
 	// FK from Rank
 	RankID			*uint
-	Rank			Rank		`gorm:"foreignKey: rank_id"`
+	Rank			Rank		`gorm:"foreignKey: RankID"`
 	
 	// FK from Employee
-	EmployeeID		*uint		
-	Employee		Employee	`gorm:"foreignKey: employee_id"`
+	EmployceeID		*uint		
+	Employee		Employee	`gorm:"foreignKey: EmployceeID"`
 
 }

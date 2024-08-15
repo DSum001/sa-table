@@ -10,26 +10,23 @@ type Stock struct {
 
 	gorm.Model
 
-	Quantity uint `json:"quantity"`
+	Quantity 		uint 		`json:"quantity"`
 
-	Price float64 `json:"price"`
+	Price 			float64 	`json:"price"`
 
-	DateIn time.Time `json:"date_in"`
+	DateIn 			time.Time 	`json:"date_in"`
 
-	ExpirationDate time.Time `json:"expiration_date"`
+	ExpirationDate 	time.Time 	`json:"expiration_date"`
 
-	Status	string	`json:"status"`
+	Status			string		`json:"status"`
 
-	ProductID *string
+	ProductID 		*string
+	Product 		Product 	`gorm:"foriegnKey:ProductID"`
 
-	Product Product `gorm:"foriegnKey:ProductID"`
+	SupplierID 		*uint
+	Supplier 		Supplier 	`gorm:"foriegnKey:SupplierID"`
 
-	SupplierID *uint
-
-	Supplier Supplier `gorm:"foriegnKey:SupplierID"`
-
-	EmployeeID *string
-
-	Employee Employee `gorm:"foriegnKey:EmployeeID"`
+	EmployeeID 		*string
+	Employee 		Employee 	`gorm:"foriegnKey:EmployeeID"`
 
 }

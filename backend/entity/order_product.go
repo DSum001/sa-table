@@ -3,6 +3,7 @@ package entity
 import "gorm.io/gorm"
 
 type Order_Product struct {
+	
 	gorm.Model
 	Quantity    uint
 
@@ -12,6 +13,4 @@ type Order_Product struct {
 	ProductID  *uint
 	Products     Product `gorm:"foreignKey:ProductID"`
 
-	
-	
 }

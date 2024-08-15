@@ -13,20 +13,20 @@ const Bearer = localStorage.getItem("token_type");
 
 const requestOptions = {
 
-  headers: {
+    headers: {
 
     "Content-Type": "application/json",
 
     Authorization: `${Bearer} ${Authorization}`,
 
-  },
+    },
 
 };
 
 
 async function SignIn(data: SignInInterface) {
 
-  return await axios
+    return await axios
 
     .post(`${apiUrl}/signin`, data, requestOptions)
 
@@ -39,9 +39,9 @@ async function SignIn(data: SignInInterface) {
 
 async function GetUsers() {
 
-  return await axios
+    return await axios
 
-    .get(`${apiUrl}/users`, requestOptions)
+    .get(`${apiUrl}/employee`, requestOptions)
 
     .then((res) => res)
 
@@ -52,9 +52,9 @@ async function GetUsers() {
 
 async function GetUsersById(id: string) {
 
-  return await axios
+    return await axios
 
-    .get(`${apiUrl}/user/${id}`, requestOptions)
+    .get(`${apiUrl}/employee/${id}`, requestOptions)
 
     .then((res) => res)
 
@@ -65,9 +65,9 @@ async function GetUsersById(id: string) {
 
 async function UpdateUsersById(id: string, data: UsersInterface) {
 
-  return await axios
+    return await axios
 
-    .put(`${apiUrl}/user/${id}`, data, requestOptions)
+    .put(`${apiUrl}/employee/${id}`, data, requestOptions)
 
     .then((res) => res)
 
@@ -78,9 +78,9 @@ async function UpdateUsersById(id: string, data: UsersInterface) {
 
 async function DeleteUsersById(id: string) {
 
-  return await axios
+    return await axios
 
-    .delete(`${apiUrl}/user/${id}`, requestOptions)
+    .delete(`${apiUrl}/employee/${id}`, requestOptions)
 
     .then((res) => res)
 
@@ -91,7 +91,7 @@ async function DeleteUsersById(id: string) {
 
 async function CreateUser(data: UsersInterface) {
 
-  return await axios
+    return await axios
 
     .post(`${apiUrl}/signup`, data, requestOptions)
 
@@ -104,16 +104,16 @@ async function CreateUser(data: UsersInterface) {
 
 export {
 
-  SignIn,
+    SignIn,
 
-  GetUsers,
+    GetUsers,
 
-  GetUsersById,
+    GetUsersById,
 
-  UpdateUsersById,
+    UpdateUsersById,
 
-  DeleteUsersById,
+    DeleteUsersById,
 
-  CreateUser,
+    CreateUser,
 
 };

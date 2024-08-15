@@ -37,42 +37,74 @@ func ConnectionDB() {
 func SetupDatabase() {
 
     db.AutoMigrate(
-
+        
+        &entity.Position{},
+        &entity.Soup{},
+        &entity.Package{},
         &entity.Employee{}, 
-
         &entity.Member{},
-
         &entity.Gender{},
 
     )
 
-    GenderMale := entity.Gender{Gender: "Male"}
+    Position_boss := entity.Position{Position: "Boss"}
+    Position_staff1 := entity.Position{Position: "staff1"}
+    Position_staff2 := entity.Position{Position: "staff2"}
+    Position_staff3 := entity.Position{Position: "staff3"}
+    Position_staff4 := entity.Position{Position: "staff4"}
 
+    GenderMale := entity.Gender{Gender: "Male"}
     GenderFemale := entity.Gender{Gender: "Female"}
 
+    Soup1 := entity.Soup{Name: "น้ำใส"}
+    Soup2 := entity.Soup{Name: "น้ำดำ"}
+    Soup3 := entity.Soup{Name: "ซุปหม่าล่า"}
+    Soup4 := entity.Soup{Name: "ซุปทงคัตสึ"}
+    
+    Package_pork_chicken := entity.Package{Name: "หมู, ไก่"}
+    Package_seafood := entity.Package{Name: "ทะเล"}
+    Package_beef := entity.Package{Name: "เนื้อ"}
 
     db.FirstOrCreate(&GenderMale, &entity.Gender{Gender: "Male"})
-
     db.FirstOrCreate(&GenderFemale, &entity.Gender{Gender: "Female"})
 
+    db.FirstOrCreate(&Position_boss, &entity.Position{Position: "Boss"})
+    db.FirstOrCreate(&Position_staff1, &entity.Position{Position: "staff1"})
+    db.FirstOrCreate(&Position_staff2, &entity.Position{Position: "staff2"})
+    db.FirstOrCreate(&Position_staff3, &entity.Position{Position: "staff3"})
+    db.FirstOrCreate(&Position_staff4, &entity.Position{Position: "staff4"})
+
+    db.FirstOrCreate(&Soup1, &entity.Soup{Name: "น้ำใส"})
+    db.FirstOrCreate(&Soup2, &entity.Soup{Name: "น้ำดำ"})
+    db.FirstOrCreate(&Soup3, &entity.Soup{Name: "ซุปหม่าล่า"})
+    db.FirstOrCreate(&Soup4, &entity.Soup{Name: "ซุปทงคัตสึ"})
+
+    db.FirstOrCreate(&Package_pork_chicken, &entity.Package{Name: "หมู, ไก่"})
+    db.FirstOrCreate(&Package_seafood, &entity.Package{Name: "ทะเล"})
+    db.FirstOrCreate(&Package_beef, &entity.Package{Name: "เนื้อ"})
 
     hashedPassword, _ := HashPassword("123456")
 
     employee := &entity.Employee{
 
-    FirstName: "shubaba",
+        FirstName: "shubaba",
 
-    LastName:  "booboo",
+        LastName:  "booboo",
+        
+        Email: "shabuuu@gmail.com",
 
-    Password: hashedPassword,
+        Gender_id: 1,
 
-}
+        Position_id: 1,
+
+        Password: hashedPassword,
+
+    }
 
     db.FirstOrCreate(employee, &entity.Employee{
 
         Email: "shabuuu@gmail.com",
 
     })
-
 
 }

@@ -8,7 +8,7 @@ import { UserOutlined, DashboardOutlined } from "@ant-design/icons";
 
 import { Breadcrumb, Layout, Menu, theme, Button, message } from "antd";
 
-import logo from "../../assets/logo.png";
+// import logo from "../../assets/logo.png";
 
 import Dashboard from "../../pages/dashboard";
 
@@ -111,7 +111,7 @@ const FullLayout: React.FC = () => {
 
             >
 
-              <img
+              {/* <img
 
                 src={logo}
 
@@ -119,7 +119,7 @@ const FullLayout: React.FC = () => {
 
                 style={{ width: "80%" }}
 
-              />
+              /> */}
 
             </div>
 
