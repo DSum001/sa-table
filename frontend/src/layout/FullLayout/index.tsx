@@ -4,11 +4,19 @@ import { Routes, Route, Link } from "react-router-dom";
 
 import "../../App.css";
 
-import { UserOutlined, DashboardOutlined,LogoutOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LogoutOutlined,
+  SolutionOutlined,
+  AppstoreOutlined,
+  TeamOutlined,
+  TruckOutlined,
+  QrcodeOutlined,
+} from "@ant-design/icons";
 
 import { Breadcrumb, Layout, Menu, theme, Button, message } from "antd";
 
-// import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.png";
 
 import Dashboard from "../../pages/dashboard";
 
@@ -22,69 +30,46 @@ import Table from "../../pages/table";
 
 import TableBooking from "../../pages/table/booking";
 
+import TableList from "../../pages/table/table_list";
 
-const {Content, Footer, Sider } = Layout;
-
+const { Content, Footer, Sider } = Layout;
 
 const FullLayout: React.FC = () => {
-
   const page = localStorage.getItem("page");
 
   const [messageApi, contextHolder] = message.useMessage();
 
-
   const [collapsed, setCollapsed] = useState(false);
 
-
   const {
-
     token: { colorBgContainer },
-
   } = theme.useToken();
 
-
   const setCurrentPage = (val: string) => {
-
     localStorage.setItem("page", val);
-
   };
 
-
   const Logout = () => {
-
     localStorage.clear();
 
     messageApi.success("Logout successful");
 
     setTimeout(() => {
-
       location.href = "/";
-
     }, 2000);
-
   };
 
-
   return (
-
     <Layout style={{ minHeight: "100vh" }}>
-
       {contextHolder}
 
       <Sider
-
         collapsible
-
         collapsed={collapsed}
-
         onCollapse={(value) => setCollapsed(value)}
-
       >
-
         <div
-
           style={{
-
             display: "flex",
 
             flexDirection: "column",
@@ -92,17 +77,11 @@ const FullLayout: React.FC = () => {
             justifyContent: "space-between",
 
             height: "100%",
-
           }}
-
         >
-
           <div>
-
             <div
-
               style={{
-
                 display: "flex",
 
                 justifyContent: "center",
@@ -110,100 +89,86 @@ const FullLayout: React.FC = () => {
                 marginTop: 20,
 
                 marginBottom: 20,
-
               }}
-
             >
-
-              {/* <img
-
-                src={logo}
-
-                alt="Logo"
-
-                style={{ width: "80%" }}
-
-              /> */}
-
+              <img src={logo} alt="Logo" style={{ width: "80%" }} />
             </div>
 
             <Menu
-
               theme="dark"
-
               defaultSelectedKeys={[page ? page : "dashboard"]}
-
               mode="inline"
-
             >
-
               <Menu.Item
-
                 key="dashboard"
-
                 onClick={() => setCurrentPage("dashboard")}
-
               >
-
                 <Link to="/">
-
-                  <DashboardOutlined />
-
-                  <span>Table</span>
-
-                </Link>
-
-              </Menu.Item>
-
-
-              <Menu.Item
-
-                key="customer"
-
-                onClick={() => setCurrentPage("customer")}
-
-              >
-
-                <Link to="/table">
-
                   <UserOutlined />
 
-                  <span>Table</span>
-
+                  <span>Customer</span>
                 </Link>
-
               </Menu.Item>
 
-            </Menu>
+              <Menu.Item key="table" onClick={() => setCurrentPage("table")}>
+                <Link to="/table">
+                  <AppstoreOutlined />
 
+                  <span>Table</span>
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="" onClick={() => setCurrentPage("")}>
+                <Link to="/">
+                  <SolutionOutlined />
+
+                  <span>Orders</span>
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="" onClick={() => setCurrentPage("")}>
+                <Link to="/">
+                  <QrcodeOutlined />
+
+                  <span>Receipt</span>
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="" onClick={() => setCurrentPage("")}>
+                <Link to="/">
+                  <TruckOutlined />
+
+                  <span>Products</span>
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="" onClick={() => setCurrentPage("")}>
+                <Link to="/">
+                  <TeamOutlined />
+
+                  <span>Employee</span>
+                </Link>
+              </Menu.Item>
+            </Menu>
           </div>
 
-
-          <Button 
-            onClick={Logout} 
-            style={{ margin: 4 }} 
-            icon={<LogoutOutlined />} 
-            type="primary" 
-            shape="circle"
+          <Button
+            onClick={Logout}
+            style={{ margin: 4 }}
+            icon={<LogoutOutlined />}
+            type="primary"
           />
-
         </div>
-
       </Sider>
 
-
       <Layout>
-
         {/* <Header style={{ padding: 0, background: colorBgContainer }} /> */}
 
         <Content style={{ margin: "0 16px" }}>
-
           <Breadcrumb style={{ margin: "16px 0" }} />
 
           <div
-
             style={{
-
               padding: 24,
 
               borderRadius: "8px",
@@ -211,13 +176,9 @@ const FullLayout: React.FC = () => {
               minHeight: "100%",
 
               background: colorBgContainer,
-
             }}
-
           >
-
             <Routes>
-
               <Route path="/" element={<Dashboard />} />
 
               <Route path="/customer" element={<Customer />} />
@@ -230,24 +191,15 @@ const FullLayout: React.FC = () => {
 
               <Route path="/table/booking" element={<TableBooking />} />
 
+              <Route path="/table/table_list" element={<TableList />} />
             </Routes>
-
           </div>
-
         </Content>
 
-        <Footer style={{ textAlign: "center" }}>
-
-          Shabubu 2099
-        </Footer>
-
+        <Footer style={{ textAlign: "center" }}>Shabubu 2099</Footer>
       </Layout>
-
     </Layout>
-
   );
-
 };
-
 
 export default FullLayout;

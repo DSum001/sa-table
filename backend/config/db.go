@@ -110,15 +110,6 @@ func SetupDatabase() {
 
     }
 
-    db.FirstOrCreate(employee, &entity.Employee{
-
-        Email: "shabuuu@gmail.com",
-
-    })
-
-    // Table_status := entity.TableStatus{
-
-
-    // }
+    db.FirstOrCreate(employee, &entity.Employee{Email: "shabuuu@gmail.com"})
 
 }

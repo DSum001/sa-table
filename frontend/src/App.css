@@ -1,12 +1,8 @@
 body {
-
   margin: 0;
-
 }
 
-
 .login {
-
   margin: 0;
 
   height: 100vh;
@@ -16,30 +12,21 @@ body {
   /* overflow: scroll; */
 
   background-color: #843434;
-
 }
-
 
 .header {
-
   text-align: center;
-
 }
 
-
 .card-login {
-
   width: 70%;
 
   height: auto;
 
   max-height: 550px;
-
 }
 
-
 .images-logo {
-
   width: 100%;
 
   height: auto;
@@ -47,18 +34,12 @@ body {
   max-height: 400px;
 
   object-fit: contain;
-
 }
 
-
 .login-form-button {
-
   width: 100%;
-
 }
 
 .h2 {
-
   text-align: center;
-  
 }

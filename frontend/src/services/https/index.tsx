@@ -115,6 +115,30 @@ async function TablePage(data: TableInterface) {
 
 }
 
+async function TableBooking(data: TableInterface) {
+
+    return await axios
+
+    .post(`${apiUrl}/table/booking`, data, requestOptions)
+
+    .then((res) => res)
+
+    .catch((e) => e.response);
+
+}
+
+async function TableList(data: TableInterface) {
+
+    return await axios
+
+    .post(`${apiUrl}/table/table_list`, data, requestOptions)
+
+    .then((res) => res)
+
+    .catch((e) => e.response);
+
+}
+
 
 export {
 
@@ -131,5 +155,9 @@ export {
     CreateUser,
 
     TablePage,
+
+    TableBooking,
+
+    TableList,
 
 };

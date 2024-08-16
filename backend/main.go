@@ -1,20 +1,32 @@
 package main
 
 import (
-
 	"net/http"
-    "github.com/gin-gonic/gin"
-    "github.com/DSum001/sa-table/config"
-    "github.com/DSum001/sa-table/controller/genders"
-    "github.com/DSum001/sa-table/controller/employee"
-    "github.com/DSum001/sa-table/middlewares"
+
+	"github.com/DSum001/sa-table/config"
+	"github.com/DSum001/sa-table/controller/booking"
+	"github.com/DSum001/sa-table/controller/employee"
+	"github.com/DSum001/sa-table/controller/genders"
+	"github.com/DSum001/sa-table/controller/soups"
 	"github.com/DSum001/sa-table/entity"
+	"github.com/DSum001/sa-table/middlewares"
+	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	
 )
 
 const PORT = "8000"
+
+var db *gorm.DB 
+
+func getSoups(c *gin.Context) {
+	var soups []entity.Soup
+	if err := db.Find(&soups).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch soups"})
+		return
+	}
+	c.JSON(http.StatusOK, soups)
+}
 
 func main() {
 	
@@ -28,15 +40,12 @@ func main() {
    // Generate databases
 
 	config.SetupDatabase()
-
 	r := gin.Default()
-
 	r.Use(CORSMiddleware())
 
    // Auth Route
 
 	r.POST("/signup", employee.SignUp)
-
 	r.POST("/signin", employee.SignIn)
 
 	router := r.Group("/")
@@ -48,18 +57,16 @@ func main() {
         // User Route
 
 		router.PUT("/employee/:id", employee.Update)
-
 		router.GET("/employee", employee.GetAll)
-
 		router.GET("/employee/:id", employee.Get)
-
 		router.DELETE("/employee/:id", employee.Delete)
 
 	}
-
+	
+	r.GET("/api/soups", getSoups)
 	r.GET("/genders", genders.GetAll)
-
-
+	r.GET("/booking", booking.GetAll)
+	r.GET("/soups", soups.GetAll)
 	r.GET("/", func(c *gin.Context) {
 
 		c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)

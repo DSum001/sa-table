@@ -1,9 +1,8 @@
-import { Col, Row, Card, Statistic } from "antd";
-
+import { Col, Row, Card, Statistic, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
-export default function index() {
-  const handleCardClick = (url: string) => {
+function Table() {
+  const handleButtonClick = (url: string) => {
     window.location.href = url;
   };
 
@@ -17,205 +16,43 @@ export default function index() {
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <Card style={{ backgroundColor: "#F5F5F5" }}>
             <Row gutter={[16, 16]} justify="center" align="middle">
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/customer")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"F1"}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"F2"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"F3"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"F4"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"F5"}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"F6"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"S1"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"S2"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"S3"}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"S4"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"E1"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-                <Card
-                  bordered={false}
-                  style={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                  onClick={() => handleCardClick("/path-to-page1")}
-                >
-                  <Statistic
-                    title="จำนวน"
-                    value={"E2"}
-                    valueStyle={{ color: "black" }}
-                    prefix={<UserOutlined />}
-                  />
-                </Card>
-              </Col>
+              {["F1", "F2", "F3", "F4", "F5", "F6", "S1", "S2", "S3", "S4", "E1", "E2"].map((value, index) => (
+                <Col key={index} xs={24} sm={24} md={12} lg={12} xl={6}>
+                  <Button
+                    type="default"
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      border: "1px solid #d9d9d9",
+                      boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                      borderRadius: "8px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "10px",
+                      textAlign: "center",
+                      backgroundColor: "#ffffff",
+                      transition: "background-color 0.3s, box-shadow 0.3s",
+                    }}
+                    onClick={() => handleButtonClick("/table/booking")}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#e6f7ff";
+                      e.currentTarget.style.boxShadow = "rgba(100, 100, 111, 0.4) 0px 14px 28px 0px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#ffffff";
+                      e.currentTarget.style.boxShadow = "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px";
+                    }}
+                  >
+                    <Statistic
+                      title="table number"
+                      value={value}
+                      prefix={<UserOutlined />}
+                    />
+                  </Button>
+                </Col>
+              ))}
             </Row>
           </Card>
         </Col>
@@ -223,3 +60,5 @@ export default function index() {
     </>
   );
 }
+
+export default Table;
