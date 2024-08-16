@@ -81,13 +81,6 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
             element: <TableList />,
           },
 
-          // {
-
-          //   path: "/customer/edit/:id",
-
-          //   element: <EditCustomer />,
-
-          // },
         ],
       },
     ],

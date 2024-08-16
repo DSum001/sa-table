@@ -1,3 +1,4 @@
+
 package entity
 
 import (
@@ -9,7 +10,7 @@ import (
 type Point struct {
 
 	gorm.Model
-    PointID 	uint 			`json:"point_id"`
-    Point      	string 			`json:"point"`
+	PointID uint   `json:"point_id"`
+	Point   string `json:"point"`
 
 }

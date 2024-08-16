@@ -37,7 +37,7 @@ func ConnectionDB() {
 func SetupDatabase() {
 
     db.AutoMigrate(
-
+        &entity.Point{},
         &entity.TableStatus{},
         &entity.Position{},
         &entity.Soup{},
@@ -45,6 +45,7 @@ func SetupDatabase() {
         &entity.Employee{}, 
         &entity.Member{},
         &entity.Gender{},
+        &entity.Table{},
 
     )
 
