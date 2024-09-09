@@ -1,17 +1,12 @@
 export interface UsersInterface {
 
-    ID?: number;
-  
+    UserID?: number;
     FirstName?: string;
-  
     LastName?: string;
-  
     Email?: string;
-  
     Phone?: string;
-  
-    GenderID?: number;
-  
     Password?: string;
-  
+    GenderID?: number;
+    PositionID?: number;
+    
   }

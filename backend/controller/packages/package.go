@@ -3,24 +3,18 @@ package packages
 import (
 
 	"net/http"
-
-	"github.com/DSum001/sa-table/config"
-
-	"github.com/DSum001/sa-table/entity"
-
 	"github.com/gin-gonic/gin"
+	"github.com/DSum001/sa-table/config"
+	"github.com/DSum001/sa-table/entity"
 
 )
 
-
- func GetAll(c *gin.Context) {
-
-	db := config.DB()
-
+// GET /packages
+func GetPackages(c *gin.Context) {
+	
 	var packages []entity.Package
-
+	db := config.DB()
 	db.Find(&packages)
-
 	c.JSON(http.StatusOK, &packages)
 
 }

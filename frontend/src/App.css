@@ -1,43 +1,158 @@
-body {
-  margin: 0;
-}
-
-.login {
-  margin: 0;
-
-  height: 100vh;
-
-  width: 100%;
-
-  background-color: #843434;
-}
-
-.header {
+/* Heading styling */
+.heading {
   text-align: center;
+  color: #FF7F50; /* Coral */
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
 }
 
-.card-login {
-  width: 70%;
-
-  height: auto;
-
-  max-height: 550px;
+/* Card styling */
+.card {
+  background-color: #FFF8E7; /* Light peach */
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0px 10px 30px rgba(255, 160, 122, 0.2); /* Soft shadow */
 }
 
-.images-logo {
-  width: 100%;
-
-  height: auto;
-
-  max-height: 400px;
-
-  object-fit: contain;
+/* Spin container styling */
+.spinContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
 }
 
-.login-form-button {
-  width: 100%;
-}
-
-.h2 {
+/* Empty state styling */
+.emptyState {
   text-align: center;
+  color: #FF7F50; /* Coral */
+}
+
+/* Button styling */
+.tableButton {
+  width: 100%;
+  height: 150px;
+  border: 1px solid #FFB347; /* Light orange border */
+  box-shadow: rgba(255, 160, 122, 0.3) 0px 8px 24px 0px; /* Softer peach shadow */
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #FFFAF3; /* Very light cream background */
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  padding: 20px;
+}
+
+.tableButton:hover {
+  background-color: #FFEDDB; /* Slightly warmer tone on hover */
+  box-shadow: rgba(255, 160, 122, 0.4) 0px 14px 28px 0px; /* More subtle hover shadow */
+  transform: scale(1.05);
+}
+
+.tableButton:active {
+  transform: scale(1);
+}
+
+/* Statistic value styling */
+.statisticValue {
+  color: #FF7F50; /* Coral */
+}
+
+/* Icon styling */
+.icon {
+  color: #FF7F50; /* Coral */
+}
+
+/*Booking style*/
+/* Select styling */
+.selectStyle {
+  width: 100%;
+  border-radius: 8px;
+  border-color: #dcdcdc;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles */
+.confirmButton {
+  margin-top: 20px;
+  background-color: #FF7F50; /* Coral color */
+  border-color: #FF7F50;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.backButton {
+  margin-top: 20px;
+  background-color: #6c757d; /* Gray color */
+  border-color: #6c757d;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+/*full layout 
+
+/* Food-themed Sider styling */
+.sider {
+  background-color: #f8f5f1; /* Light cream color */
+}
+
+.siderLogo {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.siderLogo img {
+  width: 80%;
+}
+
+/* Food-themed Menu styling */
+.menu {
+  padding: 16px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  color: #5c4033; /* Chocolate brown color */
+}
+
+.menuItem a {
+  color: #5c4033; /* Chocolate brown color */
+}
+
+.menuItem:hover {
+  background-color: #f7e5d9; /* Light peach background on hover */
+}
+
+/* Food-themed Button styling */
+.logoutButton {
+  margin: 16px;
+  border-radius: 8px;
+  background-color: #e75b4e; /* Tomato color */
+  color: #fff;
+}
+
+/* Content and Footer styling */
+.content {
+  margin: 0 16px;
+}
+
+.contentInner {
+  padding: 24px;
+  border-radius: 8px;
+  min-height: 100%;
+  background: #fffbe6; /* Very light cream background */
+}
+
+.footer {
+  text-align: center;
+  background-color: #f8f5f1; /* Light cream color */
+  color: #5c4033; /* Chocolate brown color */
 }

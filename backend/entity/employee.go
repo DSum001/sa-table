@@ -1,12 +1,6 @@
 package entity
 
-import (
-
-	"time"
-
-	"gorm.io/gorm"
-
-)
+import "gorm.io/gorm"
 
 type Employee struct {
 
@@ -16,8 +10,8 @@ type Employee struct {
 	LastName 		string		`json:"last_name"`
 	Username 		string		`json:"username"`
 	Email			string		`json:"email"`
+	Phone			string   	`json:"phone_number"`
 	Password 		string		`json:"password"`
-	Register_date 	time.Time	`json:"register_date"`
 	Gender_id 		uint		`json:"gender_id"`
 	Position_id 	uint		`json:"position_id"`
 	

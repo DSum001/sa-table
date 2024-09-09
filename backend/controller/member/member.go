@@ -1,4 +1,4 @@
-package employee
+package member
 
 import (
 
@@ -11,59 +11,58 @@ import (
 
 func GetAll(c *gin.Context) {
 
-    var Employee []entity.Employee
+    var member []entity.Member
     db := config.DB()
-    results := db.Preload("Gender").Find(&Employee)
+    results := db.Preload("Gender").Find(&member)
 
     if results.Error != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
         return
     }
 
-    c.JSON(http.StatusOK, Employee)
+    c.JSON(http.StatusOK, member)
 
 }
 
 func Get(c *gin.Context) {
 
     ID := c.Param("id")
-    var employee entity.Employee
+    var member entity.Member
     db := config.DB()
-    results := db.Preload("Gender").First(&employee, ID)
+    results := db.Preload("Gender").First(&member, ID)
 
     if results.Error != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
         return
     }
 
-    if employee.ID == 0 {
+    if member.ID == 0 {
         c.JSON(http.StatusNoContent, gin.H{})
         return
     }
 
-    c.JSON(http.StatusOK, employee)
+    c.JSON(http.StatusOK, member)
 
 }
 
 func Update(c *gin.Context) {
 
-    var employee entity.Employee
-    EmployceeID := c.Param("id")
+    var member entity.Member
+    memberID := c.Param("id")
     db := config.DB()
-    result := db.First(&employee, EmployceeID)
+    result := db.First(&member, memberID)
 
     if result.Error != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
         return
     }
 
-
-    if err := c.ShouldBindJSON(&employee); err != nil {
+    if err := c.ShouldBindJSON(&member); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
         return
     }
 
-    result = db.Save(&employee)
+    result = db.Save(&member)
 
     if result.Error != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
@@ -79,7 +78,7 @@ func Delete(c *gin.Context) {
     id := c.Param("id")
     db := config.DB()
 
-    if tx := db.Exec("DELETE FROM employees WHERE id = ?", id); tx.RowsAffected == 0 {
+    if tx := db.Exec("DELETE FROM member WHERE id = ?", id); tx.RowsAffected == 0 {
         c.JSON(http.StatusBadRequest, gin.H{"error": "id not found"})
         return
 
@@ -88,4 +87,3 @@ func Delete(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Deleted successful"})
 
 }
-

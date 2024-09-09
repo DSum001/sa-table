@@ -1,24 +1,51 @@
-import { Col, Row, Card, Button, Table } from "antd";
+import { Col, Row, Card, Button, Table, Dropdown, Menu, message } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { EditOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
+import { GetBooking } from "../../../services/https"; // Adjust import according to your services file
+import { BookingInterface } from "../../../interfaces/Booking";
 
-// Example data with customer details
-const tableData = [
-  { key: '1', tableNumber: 'F1', customerName: 'John Doe', soup: 'น้ำใส, น้ำดำ', package: 'หมูและไก่', status: 'Available' },
-  { key: '2', tableNumber: 'F2', customerName: 'Jane Smith', soup: 'ซุปหม่าล่า, ซุปทงคัตสึ', package: 'ทะเล', status: 'Reserved' },
-  { key: '3', tableNumber: 'F3', customerName: 'Michael Brown', soup: 'น้ำดำ', package: 'เนื้อ', status: 'Available' },
-
-];
-
-const columns = [
-  { title: 'Table Number', dataIndex: 'tableNumber', key: 'tableNumber' },
-  { title: 'Customer Name', dataIndex: 'customerName', key: 'customerName' },
-  { title: 'Soup Selection', dataIndex: 'soup', key: 'soup' },
-  { title: 'Package', dataIndex: 'package', key: 'package' },
-  { title: 'Status', dataIndex: 'status', key: 'status' },
+const columns: ColumnsType<BookingInterface> = [
+  { title: 'ID', dataIndex: 'ID', key: 'ID' },
+  { title: 'Table Number', dataIndex: 'Table_id', key: 'Table_id', render: (text) => `Table ${text}` },
+  { title: 'Number of Customers', dataIndex: 'number_of_customers', key: 'number_of_customer' },
+  { title: 'Package', dataIndex: 'Package_id', key: 'Package_id', render: (text) => `Package ${text}` },
+  { title: 'Member', dataIndex: 'Member_id', key: 'Member_id', render: (text) => `Member ${text}` },
+  { title: 'Employee', dataIndex: 'Employee_id', key: 'Employee_id', render: (text) => `Employee ${text}` },
+  {
+    title: '',
+    key: 'actions',
+    
+    
+  },
 ];
 
 function TableList() {
   const navigate = useNavigate();
+  const [bookingData, setBookingData] = useState<BookingInterface[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchBookingData = async () => {
+    setLoading(true);
+    try {
+      const res = await GetBooking(); // Fetch data from the API
+
+      if (res.status === 200) {
+        setBookingData(res.data); // Set the data from the API response
+      } else {
+        message.error(res.data.error || "Unable to fetch data");
+      }
+    } catch (error) {
+      message.error("Error fetching data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookingData();
+  }, []);
 
   const handleButtonClick = () => {
     navigate("/table");
@@ -34,12 +61,14 @@ function TableList() {
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <Card style={{ backgroundColor: "#F5F5F5" }}>
             <Table
-              dataSource={tableData}
+              dataSource={bookingData}
               columns={columns}
               pagination={false}
               bordered
-              title={() => 'Table List'}
+              title={() => 'Booking List'}
+              loading={loading}
               style={{ marginTop: "20px" }}
+              rowKey="ID" // Assuming each booking has a unique ID
             />
           </Card>
         </Col>

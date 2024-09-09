@@ -1,4 +1,4 @@
-package tables
+package booking_soup
 
 import (
 
@@ -9,11 +9,11 @@ import (
 
 )
 
-func GetTables(c *gin.Context) {
+func GetAll(c *gin.Context) {
 
-	var tables []entity.Table
 	db := config.DB()
-	db.Find(&tables)
-	c.JSON(http.StatusOK, &tables)
-	
+	var bookingSoup []entity.BookingSoup
+	db.Find(&bookingSoup)
+	c.JSON(http.StatusOK, &bookingSoup)
+
 }

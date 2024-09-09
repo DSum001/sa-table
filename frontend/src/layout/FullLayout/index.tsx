@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-
 import { Routes, Route, Link } from "react-router-dom";
-
-import "../../App.css";
+import "../../App.css"; // Import the CSS file here
 
 import {
   UserOutlined,
@@ -14,22 +12,14 @@ import {
   QrcodeOutlined,
 } from "@ant-design/icons";
 
-import { Breadcrumb, Layout, Menu, theme, Button, message } from "antd";
-
+import { Layout, Menu, theme, Button, message } from "antd";
 import logo from "../../assets/logo.png";
-
 import Dashboard from "../../pages/dashboard";
-
 import Customer from "../../pages/customer";
-
 import CustomerCreate from "../../pages/customer/create";
-
 import CustomerEdit from "../../pages/customer/edit";
-
 import Table from "../../pages/table";
-
 import TableBooking from "../../pages/table/booking";
-
 import TableList from "../../pages/table/table_list";
 
 const { Content, Footer, Sider } = Layout;
@@ -38,7 +28,6 @@ const FullLayout: React.FC = () => {
   const page = localStorage.getItem("page");
 
   const [messageApi, contextHolder] = message.useMessage();
-
   const [collapsed, setCollapsed] = useState(false);
 
   const {
@@ -51,9 +40,7 @@ const FullLayout: React.FC = () => {
 
   const Logout = () => {
     localStorage.clear();
-
     messageApi.success("Logout successful");
-
     setTimeout(() => {
       location.href = "/";
     }, 2000);
@@ -67,85 +54,90 @@ const FullLayout: React.FC = () => {
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
+        theme="dark"
+        className="sider"
       >
         <div
           style={{
             display: "flex",
-
             flexDirection: "column",
-
             justifyContent: "space-between",
-
             height: "100%",
           }}
         >
           <div>
-            <div
-              style={{
-                display: "flex",
-
-                justifyContent: "center",
-
-                marginTop: 20,
-
-                marginBottom: 20,
-              }}
-            >
-              <img src={logo} alt="Logo" style={{ width: "80%" }} />
+            <div className="siderLogo">
+              <img src={logo} alt="Logo" />
             </div>
 
             <Menu
               theme="dark"
               defaultSelectedKeys={[page ? page : "dashboard"]}
               mode="inline"
+              className="menu"
             >
               <Menu.Item
                 key="dashboard"
+                className="menuItem"
                 onClick={() => setCurrentPage("dashboard")}
               >
                 <Link to="/">
                   <UserOutlined />
-
-                  <span>Customer</span>
+                  <span>Dashboard</span>
                 </Link>
               </Menu.Item>
 
-              <Menu.Item key="table" onClick={() => setCurrentPage("table")}>
+              <Menu.Item 
+                key="table" 
+                className="menuItem"
+                onClick={() => setCurrentPage("table")}
+              >
                 <Link to="/table">
                   <AppstoreOutlined />
-
                   <span>Table</span>
                 </Link>
               </Menu.Item>
 
-              <Menu.Item key="" onClick={() => setCurrentPage("")}>
-                <Link to="/">
+              <Menu.Item 
+                key="orders" 
+                className="menuItem"
+                onClick={() => setCurrentPage("orders")}
+              >
+                <Link to="/orders">
                   <SolutionOutlined />
-
                   <span>Orders</span>
                 </Link>
               </Menu.Item>
 
-              <Menu.Item key="" onClick={() => setCurrentPage("")}>
-                <Link to="/">
+              <Menu.Item 
+                key="receipt" 
+                className="menuItem"
+                onClick={() => setCurrentPage("receipt")}
+              >
+                <Link to="/receipt">
                   <QrcodeOutlined />
-
                   <span>Receipt</span>
                 </Link>
               </Menu.Item>
 
-              <Menu.Item key="" onClick={() => setCurrentPage("")}>
-                <Link to="/">
+              <Menu.Item 
+                key="product" 
+                className="menuItem"
+                onClick={() => setCurrentPage("product")}
+              >
+                <Link to="/product">
                   <TruckOutlined />
-
                   <span>Products</span>
                 </Link>
               </Menu.Item>
 
-              <Menu.Item key="" onClick={() => setCurrentPage("")}>
-                <Link to="/">
+              <Menu.Item 
+                key="employee" 
+                className="menuItem"
+                onClick={() => setCurrentPage("employee")}
+              >
+                <Link to="/employee">
                   <TeamOutlined />
-
                   <span>Employee</span>
                 </Link>
               </Menu.Item>
@@ -154,49 +146,34 @@ const FullLayout: React.FC = () => {
 
           <Button
             onClick={Logout}
-            style={{ margin: 4 }}
+            className="logoutButton"
             icon={<LogoutOutlined />}
             type="primary"
-          />
+            danger
+          >
+            <span>Logout</span>
+          </Button>
         </div>
       </Sider>
 
       <Layout>
-        {/* <Header style={{ padding: 0, background: colorBgContainer }} /> */}
-
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }} />
-
-          <div
-            style={{
-              padding: 24,
-
-              borderRadius: "8px",
-
-              minHeight: "100%",
-
-              background: colorBgContainer,
-            }}
-          >
+        <Content className="content">
+          <div className="contentInner" style={{ background: colorBgContainer }}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
-
               <Route path="/customer" element={<Customer />} />
-
               <Route path="/customer/create" element={<CustomerCreate />} />
-
               <Route path="/customer/edit/:id" element={<CustomerEdit />} />
-
               <Route path="/table" element={<Table />} />
-
               <Route path="/table/booking" element={<TableBooking />} />
-
               <Route path="/table/table_list" element={<TableList />} />
             </Routes>
           </div>
         </Content>
 
-        <Footer style={{ textAlign: "center" }}>Shabubu 2099</Footer>
+        <Footer className="footer">
+          Shabu Shop 2099
+        </Footer>
       </Layout>
     </Layout>
   );

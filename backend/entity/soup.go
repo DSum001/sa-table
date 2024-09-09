@@ -9,8 +9,8 @@ import (
 type Soup struct {
 
 	gorm.Model
-    SoupID 		uint 			`json:"soup_id"`
     Name   		string 			`json:"name"`
 	Price       int             `json:"price"`
+	Bookings	[]*Booking 		`gorm:"many2many:booking_soups"`
 
 }
