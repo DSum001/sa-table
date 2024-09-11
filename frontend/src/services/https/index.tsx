@@ -16,72 +16,79 @@ const requestOptions = {
 };
 
 async function SignIn(data: SignInInterface) {
-
     return await axios
     .post(`${apiUrl}/signin`, data, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function GetUsers() {
-
     return await axios
     .get(`${apiUrl}/employee`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function GetUsersById(id: string) {
-
     return await axios
     .get(`${apiUrl}/employee/${id}`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function UpdateUsersById(id: string, data: UsersInterface) {
-
     return await axios
     .put(`${apiUrl}/employee/${id}`, data, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function DeleteUsersById(id: string) {
-
     return await axios
     .delete(`${apiUrl}/employee/${id}`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function CreateUser(data: UsersInterface) {
-
     return await axios
     .post(`${apiUrl}/signup`, data, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
+//Booking 
 async function GetBooking() {
-
     return await axios
     .get(`${apiUrl}/booking`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
-//Create Booking table
 async function CreateBooking(data: BookingInterface) {
     return await axios
     .post(`${apiUrl}/booking`, data, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
+async function GetBookingByID(id: string | undefined) {
+    return await axios
+    .get(`${apiUrl}/booking/${id}`, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
+async function UpdateBooking(id: string | undefined, data: BookingInterface) {
+    return await axios
+    .patch(`${apiUrl}/booking/${id}`, data, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
+async function DeleteBookingByID(id: string | undefined) {
+    return await axios
+    .delete(`${apiUrl}/booking/${id}`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
 }
@@ -99,7 +106,6 @@ async function GetTableCapacity() {
     .get(`${apiUrl}/table_capacity`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function GetTableStatus() {
@@ -107,7 +113,6 @@ async function GetTableStatus() {
     .get(`${apiUrl}/table_status`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function GetSoups() {
@@ -115,7 +120,6 @@ async function GetSoups() {
     .get(`${apiUrl}/soups`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 async function GetPackages() {
@@ -123,7 +127,6 @@ async function GetPackages() {
     .get(`${apiUrl}/packages`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-    
 }
 
 async function TablePage(data: TableInterface) {
@@ -131,11 +134,9 @@ async function TablePage(data: TableInterface) {
     .post(`${apiUrl}/table`, data, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-
 }
 
 export {
-
     SignIn,
     GetUsers,
     GetUsersById,
@@ -150,5 +151,7 @@ export {
     GetSoups,
     GetPackages,
     GetTableCapacity,
-
+    GetBookingByID,
+    UpdateBooking,
+    DeleteBookingByID,
 };

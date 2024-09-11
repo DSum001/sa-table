@@ -1,8 +1,8 @@
 package main
 
 import (
-
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/DSum001/sa-table/config"
 	"github.com/DSum001/sa-table/controller/booking"
@@ -14,17 +14,16 @@ import (
 	"github.com/DSum001/sa-table/controller/table_capacity"
 	"github.com/DSum001/sa-table/controller/table_status"
 	"github.com/DSum001/sa-table/middlewares"
-	
 )
 
 const PORT = "8000"
 
 func main() {
 
-	// open connection database
+	// เปิดการเชื่อมต่อกับฐานข้อมูล
 	config.ConnectionDB()
 
-	// Generate databases
+	// สร้างฐานข้อมูล
 	config.SetupDatabase()
 
 	r := gin.Default()
@@ -33,27 +32,31 @@ func main() {
 	r.POST("/signup", employee.SignUp)
 	r.POST("/signin", employee.SignIn)
 
+	// Group protected routes
 	router := r.Group("/")
 	{
-
 		router.Use(middlewares.Authorizes())
 
-        // User Route
-		router.PUT("/employee/:id", employee.Update)
+		// Employee routes
+		router.PATCH("/employee/:id", employee.Update)
 		router.GET("/employee", employee.GetAll)
 		router.GET("/employee/:id", employee.Get)
 		router.DELETE("/employee/:id", employee.Delete)
 
-		router.GET("/booking", booking.GetAll)
-		router.POST("/booking", booking.CreateBooking)
+		// Booking routes
+		router.GET("/booking", booking.GetBooking)        // ดึงข้อมูล booking ทั้งหมด
+		router.GET("/booking/:id", booking.GetBookingByID) // ดึงข้อมูล booking ตาม ID
+		router.POST("/booking", booking.CreateBooking)    // สร้าง booking ใหม่
+		router.PATCH("/booking/:id", booking.UpdateBooking) // อัพเดท booking
+		router.DELETE("/booking/:id", booking.DeleteBooking) // ลบ booking ตาม ID
 
+		// Genders, Tables, and other routes
 		r.GET("/genders", genders.GetGenders)
 		r.GET("/tables", tables.GetTables)
 		r.GET("/table_capacity", table_capacity.GetTableCapacity)
 		r.GET("/table_status", table_status.GetTableStatus)
 		r.GET("/soups", soups.GetSoups)
 		r.GET("/packages", packages.GetPackages)
-		
 	}
 
 	r.GET("/", func(c *gin.Context) {
@@ -62,11 +65,10 @@ func main() {
 
 	// Run the server
 	r.Run("localhost:" + PORT)
-
 }
 
+// CORSMiddleware เปิดการใช้งาน CORS
 func CORSMiddleware() gin.HandlerFunc {
-
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")

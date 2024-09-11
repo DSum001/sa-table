@@ -15,11 +15,11 @@ type Member struct{
 	Email 			string		`json:"email"`	
 
 	// FK from Rank
-	RankID			*uint
+	RankID			uint
 	Rank			Rank		`gorm:"foreignKey: RankID"`
 	
 	// FK from Employee
-	EmployceeID		*uint		
+	EmployceeID		uint		
 	Employee		Employee	`gorm:"foreignKey: EmployceeID"`
 
 }

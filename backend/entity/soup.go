@@ -11,6 +11,6 @@ type Soup struct {
 	gorm.Model
     Name   		string 			`json:"name"`
 	Price       int             `json:"price"`
-	Bookings	[]*Booking 		`gorm:"many2many:booking_soups"`
+	Bookings	[]Booking 		`gorm:"many2many:booking_soups"`
 
 }

@@ -10,7 +10,6 @@ import (
 )
 
 var db *gorm.DB
-
 func DB() *gorm.DB {
     return db
 }
@@ -36,14 +35,12 @@ func SetupDatabase() {
         &entity.TableCapacity{},
         &entity.TableStatus{},
         &entity.Soup{},
-        &entity.BookingSoup{},
         &entity.Package{},
         &entity.Employee{},
         &entity.Member{},
         
     )
 
-    
     TableFourSeat1 := entity.Table{TableName: "F1", TableStatusID: 1, TableCapacityID: 1}
     TableFourSeat2 := entity.Table{TableName: "F2", TableStatusID: 1, TableCapacityID: 1}
     TableFourSeat3 := entity.Table{TableName: "F3", TableStatusID: 1, TableCapacityID: 1}
@@ -61,7 +58,7 @@ func SetupDatabase() {
     StatusNotAvailable := entity.TableStatus{Status: "Not Available"}
     StatusReserved := entity.TableStatus{Status: "Reserved"}
     
-    CapacityFour := entity.TableCapacity{MinCustomer: 3, MaxCustomer: 4}
+    CapacityFour := entity.TableCapacity{MinCustomer: 1, MaxCustomer: 4}
     CapacitySix := entity.TableCapacity{MinCustomer: 5, MaxCustomer: 6}
     CapacityEight := entity.TableCapacity{MinCustomer: 7, MaxCustomer: 8}
 
@@ -93,7 +90,7 @@ func SetupDatabase() {
     db.FirstOrCreate(&StatusNotAvailable, &entity.TableStatus{Status: "Not Available"})
     db.FirstOrCreate(&StatusReserved, &entity.TableStatus{Status: "Reserved"})
     
-    db.FirstOrCreate(&CapacityFour, &entity.TableCapacity{MinCustomer: 3, MaxCustomer: 4})
+    db.FirstOrCreate(&CapacityFour, &entity.TableCapacity{MinCustomer: 1, MaxCustomer: 4})
     db.FirstOrCreate(&CapacitySix, &entity.TableCapacity{MinCustomer: 5, MaxCustomer: 6})
     db.FirstOrCreate(&CapacityEight, &entity.TableCapacity{MinCustomer: 7, MaxCustomer: 8})
 
@@ -119,5 +116,4 @@ func SetupDatabase() {
     }
 
     db.FirstOrCreate(employee, &entity.Employee{Email: "shabu@gmail.com",})
-
 }

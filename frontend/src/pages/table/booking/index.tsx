@@ -4,49 +4,7 @@ import { GetSoups, GetPackages } from "../../../services/https";
 import { SoupInterface } from "../../../interfaces/Soup";
 import { PackageInterface } from "../../../interfaces/Package";
 import { useNavigate, useLocation } from "react-router-dom";
-import { CSSProperties } from "react";
-
-const { Option } = Select;
-
-const selectStyle: CSSProperties = {
-  width: "100%",
-  borderRadius: "8px",
-  borderColor: "#dcdcdc",
-  color: "#333",
-  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-};
-
-const cardStyle: CSSProperties = {
-  backgroundColor: "#F5F5F5",
-  padding: "24px",
-  borderRadius: "12px",
-  border: "1px solid #f0f0f0",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-};
-
-const buttonStyle: CSSProperties = {
-  marginTop: "20px",
-  backgroundColor: "#FF7F50", // Coral color
-  borderColor: "#FF7F50",
-  color: "#ffffff",
-  borderRadius: "8px",
-  fontWeight: "bold",
-};
-
-const backButtonStyle: CSSProperties = {
-  marginTop: "20px",
-  backgroundColor: "#6c757d",
-  borderColor: "#6c757d",
-  color: "#ffffff",
-  borderRadius: "8px",
-  fontWeight: "bold",
-};
-
-const headingStyle: CSSProperties = {
-  textAlign: "center",
-  color: "#FF7F50", // Coral color
-  fontWeight: "bold",
-};
+import './booking.css'; // Import the CSS file
 
 function CreateBooking() {
   const navigate = useNavigate();
@@ -113,7 +71,7 @@ function CreateBooking() {
   };
 
   const onFinish = async (values: any) => {
-    const { numberOfCustomers, soup1, soup2, soup3, soup4, package: selectedPackage } = values;
+    const { numberOfCustomers, soup1, soup2, soup3, soup4 } = values;
     if (numberOfCustomers === 0) {
       message.error("Number of customers must be at least 1!");
       return;
@@ -159,7 +117,7 @@ function CreateBooking() {
           >
             <Select 
               placeholder="Select a soup" 
-              style={selectStyle}
+              className="select-style"
               options={soups.map(soup => ({
                 value: soup.ID,
                 label: soup.name,
@@ -177,14 +135,14 @@ function CreateBooking() {
     <>
       <Row gutter={[16, 16]} justify="center" style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-          <h1 style={headingStyle}>
+          <h1 className="heading-style">
             Table Booking for {tableName}
           </h1>
         </Col>
       </Row>
       <Row gutter={[16, 16]} justify="center">
         <Col xs={24} sm={24} md={16} lg={14} xl={12}>
-          <Card style={cardStyle}>
+          <Card className="card-style">
             <Form
               form={form}
               layout="vertical"
@@ -233,7 +191,7 @@ function CreateBooking() {
                   >
                     <Select
                       placeholder="Select a package"
-                      style={selectStyle}
+                      className="select-style"
                       options={packages.map(pkg => ({
                         value: pkg.ID,
                         label: pkg.name,
@@ -248,7 +206,7 @@ function CreateBooking() {
                   <Button
                     type="default"
                     onClick={handleBackButtonClick}
-                    style={backButtonStyle}
+                    className="back-button-style"
                   >
                     Back
                   </Button>
@@ -257,7 +215,7 @@ function CreateBooking() {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    style={buttonStyle}
+                    className="button-style"
                   >
                     Confirm
                   </Button>

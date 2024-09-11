@@ -20,13 +20,13 @@ type Stock struct {
 
 	Status			string		`json:"status"`
 
-	ProductID 		*string
+	ProductID 		uint
 	Product 		Product 	`gorm:"foriegnKey:ProductID"`
 
-	SupplierID 		*uint
+	SupplierID 		uint
 	Supplier 		Supplier 	`gorm:"foriegnKey:SupplierID"`
 
-	EmployeeID 		*string
+	EmployeeID 		uint
 	Employee 		Employee 	`gorm:"foriegnKey:EmployeeID"`
 
 }

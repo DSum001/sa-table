@@ -16,12 +16,12 @@ type Receipt struct {
 	Totalprice 		float64		`json:"totalprice"`
 
 	// การเชื่่อม foreignkey จากตารางอื่น 
-	CouponID 		*uint								// สร้างตัวแปรมารับ กำหนด type ให้ตรง
+	CouponID 		uint								// สร้างตัวแปรมารับ กำหนด type ให้ตรง
 	Coupon 			Coupon 		`gorm:"foreignKey:CouponID"`		// ประกาศ file type และ foreignKey : Pk(ที่นำมาใช้)
 	
-	EmployeeID 		*string
+	EmployeeID 		uint
 	Employee 		Employee 	`gorm:"foreingKey:EmployeeID"`
 	
-	MemberID 		*string
+	MemberID 		uint
 	Member 			Member 		`gorm:"foreingKey:MemberID"`
 }
