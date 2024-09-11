@@ -9,7 +9,7 @@ import (
 
 )
 
-func GetTableCapacity(c *gin.Context) {
+func GetAll(c *gin.Context) {
 
 	db := config.DB()
 	var tableCapacity []entity.TableCapacity

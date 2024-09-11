@@ -9,7 +9,7 @@ import (
 
 )
 
-func GetTableStatus(c *gin.Context) {
+func GetAll(c *gin.Context) {
 
 	db := config.DB()
 	var tableStatus []entity.TableStatus

@@ -45,13 +45,13 @@ func SetupDatabase() {
     TableFourSeat2 := entity.Table{TableName: "F2", TableStatusID: 1, TableCapacityID: 1}
     TableFourSeat3 := entity.Table{TableName: "F3", TableStatusID: 1, TableCapacityID: 1}
     TableFourSeat4 := entity.Table{TableName: "F4", TableStatusID: 1, TableCapacityID: 1}
-    TableFourSeat5 := entity.Table{TableName: "F5", TableStatusID: 2, TableCapacityID: 1}
-    TableFourSeat6 := entity.Table{TableName: "F6", TableStatusID: 2, TableCapacityID: 1}
+    TableFourSeat5 := entity.Table{TableName: "F5", TableStatusID: 1, TableCapacityID: 1}
+    TableFourSeat6 := entity.Table{TableName: "F6", TableStatusID: 1, TableCapacityID: 1}
     TableSixSeat1 := entity.Table{TableName: "S1", TableStatusID: 1, TableCapacityID: 2}
     TableSixSeat2 := entity.Table{TableName: "S2", TableStatusID: 1, TableCapacityID: 2}
     TableSixSeat3 := entity.Table{TableName: "S3", TableStatusID: 1, TableCapacityID: 2}
-    TableSixSeat4 := entity.Table{TableName: "S4", TableStatusID: 3, TableCapacityID: 2}
-    TableEightSeat1 := entity.Table{TableName: "E1", TableStatusID: 3, TableCapacityID: 3}
+    TableSixSeat4 := entity.Table{TableName: "S4", TableStatusID: 1, TableCapacityID: 2}
+    TableEightSeat1 := entity.Table{TableName: "E1", TableStatusID: 1, TableCapacityID: 3}
     TableEightSeat2 := entity.Table{TableName: "E2", TableStatusID: 1, TableCapacityID: 3}
     
     StatusAvailable := entity.TableStatus{Status: "Available"}
@@ -76,13 +76,13 @@ func SetupDatabase() {
     db.FirstOrCreate(&TableFourSeat2, &entity.Table{TableName: "F2", TableStatusID: 1, TableCapacityID: 1})
     db.FirstOrCreate(&TableFourSeat3, &entity.Table{TableName: "F3", TableStatusID: 1, TableCapacityID: 1})
     db.FirstOrCreate(&TableFourSeat4, &entity.Table{TableName: "F4", TableStatusID: 1, TableCapacityID: 1})
-    db.FirstOrCreate(&TableFourSeat5, &entity.Table{TableName: "F5", TableStatusID: 2, TableCapacityID: 1})
-    db.FirstOrCreate(&TableFourSeat6, &entity.Table{TableName: "F6", TableStatusID: 2, TableCapacityID: 1})
+    db.FirstOrCreate(&TableFourSeat5, &entity.Table{TableName: "F5", TableStatusID: 1, TableCapacityID: 1})
+    db.FirstOrCreate(&TableFourSeat6, &entity.Table{TableName: "F6", TableStatusID: 1, TableCapacityID: 1})
     db.FirstOrCreate(&TableSixSeat1, &entity.Table{TableName: "S1", TableStatusID: 1, TableCapacityID: 2})
     db.FirstOrCreate(&TableSixSeat2, &entity.Table{TableName: "S2", TableStatusID: 1, TableCapacityID: 2})
     db.FirstOrCreate(&TableSixSeat3, &entity.Table{TableName: "S3", TableStatusID: 1, TableCapacityID: 2})
-    db.FirstOrCreate(&TableSixSeat4, &entity.Table{TableName: "S4", TableStatusID: 3, TableCapacityID: 2})
-    db.FirstOrCreate(&TableEightSeat1, &entity.Table{TableName: "E1", TableStatusID: 3, TableCapacityID: 3})
+    db.FirstOrCreate(&TableSixSeat4, &entity.Table{TableName: "S4", TableStatusID: 1, TableCapacityID: 2})
+    db.FirstOrCreate(&TableEightSeat1, &entity.Table{TableName: "E1", TableStatusID: 1, TableCapacityID: 3})
     db.FirstOrCreate(&TableEightSeat2, &entity.Table{TableName: "E2", TableStatusID: 1, TableCapacityID: 3})
     
     

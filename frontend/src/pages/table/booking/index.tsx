@@ -1,12 +1,13 @@
 import { Card, Row, Col, Input, Select, Button, Form, message, InputNumber } from "antd";
 import { useEffect, useState } from "react";
-import { GetSoups, GetPackages } from "../../../services/https";
+import { GetSoups, GetPackages , CreateBooking} from "../../../services/https";
+import { BookingInterface } from "../../../interfaces/Booking";
 import { SoupInterface } from "../../../interfaces/Soup";
 import { PackageInterface } from "../../../interfaces/Package";
 import { useNavigate, useLocation } from "react-router-dom";
 import './booking.css'; // Import the CSS file
 
-function CreateBooking() {
+function CreateBookingTable() {
   const navigate = useNavigate();
   const location = useLocation();
   const [form] = Form.useForm();
@@ -229,4 +230,4 @@ function CreateBooking() {
   );
 }
 
-export default CreateBooking;
+export default CreateBookingTable;

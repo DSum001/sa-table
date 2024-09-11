@@ -14,7 +14,7 @@ type CreateBookingRequest struct {
 }
 
 // ฟังก์ชันสำหรับสร้าง booking ใหม่
-func CreateBooking(c *gin.Context) {
+func Create(c *gin.Context) {
     var req CreateBookingRequest
     db := config.DB()
 
@@ -36,32 +36,28 @@ func CreateBooking(c *gin.Context) {
 
     // ค้นหา packages ด้วย id
     var packages entity.Package
-    db.First(&packages, booking.PackageID)
-    if packages.ID == 0 {
+    if err := db.First(&packages, booking.PackageID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Package not found"})
         return
     }
 
     // ค้นหา table ด้วย id
     var table entity.Table
-    db.First(&table, booking.TableID)
-    if table.ID == 0 {
+    if err := db.First(&table, booking.TableID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Table not found"})
         return
     }
 
     // ค้นหา member ด้วย id
     var member entity.Member
-    db.First(&member, booking.MemberID)
-    if member.ID == 0 {
+    if err := db.First(&member, booking.MemberID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Member not found"})
         return
     }
 
     // ค้นหา employee ด้วย id
     var employee entity.Employee
-    db.First(&employee, booking.EmployeeID)
-    if employee.ID == 0 {
+    if err := db.First(&employee, booking.EmployeeID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Employee not found"})
         return
     }
@@ -88,15 +84,13 @@ func CreateBooking(c *gin.Context) {
 }
 
 // ฟังก์ชันนี้จะดึงข้อมูล booking ทั้งหมดจากฐานข้อมูล
-func GetBooking(c *gin.Context) {
+func GetAll(c *gin.Context) {
     var bookings []entity.Booking
     db := config.DB()
 
     // Preload ข้อมูล soups ผ่านตารางเชื่อม
-    results := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Member").Preload("Employee").Find(&bookings)
-
-    if results.Error != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": results.Error.Error()})
+    if err := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Member").Preload("Employee").Find(&bookings).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
 
@@ -104,14 +98,13 @@ func GetBooking(c *gin.Context) {
 }
 
 // ฟังก์ชันนี้จะดึงข้อมูล booking ตาม ID
-func GetBookingByID(c *gin.Context) {
+func Get(c *gin.Context) {
     ID := c.Param("id")
     var booking entity.Booking
 
     db := config.DB()
-    results := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Member").Preload("Employee").First(&booking, ID)
-    if results.Error != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+    if err := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Member").Preload("Employee").First(&booking, ID).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
         return
     }
     if booking.ID == 0 {
@@ -122,14 +115,13 @@ func GetBookingByID(c *gin.Context) {
 }
 
 // ฟังก์ชันนี้จะอัพเดทข้อมูล booking ตาม ID
-func UpdateBooking(c *gin.Context) {
+func Update(c *gin.Context) {
     var req CreateBookingRequest
     bookingID := c.Param("id")
 
     db := config.DB()
     var booking entity.Booking
-    result := db.First(&booking, bookingID)
-    if result.Error != nil {
+    if err := db.First(&booking, bookingID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Booking ID not found"})
         return
     }
@@ -140,17 +132,27 @@ func UpdateBooking(c *gin.Context) {
     }
 
     // ลบ soups เก่าที่มีอยู่ใน booking
-    db.Model(&booking).Association("Soups").Clear()
+    if err := db.Model(&booking).Association("Soups").Clear(); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
 
     // ค้นหา soups ใหม่
     var soups []entity.Soup
-    db.Where("id IN ?", req.SoupIDs).Find(&soups)
+    if err := db.Where("id IN ?", req.SoupIDs).Find(&soups).Error; err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid soups"})
+        return
+    }
 
     // อัพเดทข้อมูล booking และเพิ่ม soups ใหม่
     booking = req.Booking
-    db.Model(&booking).Association("Soups").Append(soups)
-    if result := db.Save(&booking); result.Error != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+    if err := db.Model(&booking).Association("Soups").Append(soups); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    if err := db.Save(&booking).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
 
@@ -158,16 +160,19 @@ func UpdateBooking(c *gin.Context) {
 }
 
 // ฟังก์ชันนี้จะลบข้อมูล booking ตาม ID
-func DeleteBooking(c *gin.Context) {
+func Delete(c *gin.Context) {
     id := c.Param("id")
     db := config.DB()
-    if tx := db.Exec("DELETE FROM bookings WHERE id = ?", id); tx.RowsAffected == 0 {
+    if tx := db.Exec("DELETE FROM booking WHERE id = ?", id); tx.RowsAffected == 0 {
         c.JSON(http.StatusBadRequest, gin.H{"error": "ID not found"})
         return
     }
 
     // ลบข้อมูลจากตารางเชื่อม booking_soups ด้วย
-    db.Exec("DELETE FROM booking_soups WHERE booking_id = ?", id)
+    if err := db.Exec("DELETE FROM booking_soups WHERE booking_id = ?", id).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
 
     c.JSON(http.StatusOK, gin.H{"message": "Delete complete"})
 }

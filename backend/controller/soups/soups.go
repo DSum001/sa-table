@@ -10,7 +10,7 @@ import (
 )
 
 // GET /soups
-func GetSoups(c *gin.Context) {
+func GetAll(c *gin.Context) {
 
 	var soups []entity.Soup
 	db := config.DB()

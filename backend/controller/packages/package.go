@@ -10,7 +10,7 @@ import (
 )
 
 // GET /packages
-func GetPackages(c *gin.Context) {
+func GetAll(c *gin.Context) {
 	
 	var packages []entity.Package
 	db := config.DB()

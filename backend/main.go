@@ -7,7 +7,6 @@ import (
 	"github.com/DSum001/sa-table/config"
 	"github.com/DSum001/sa-table/controller/booking"
 	"github.com/DSum001/sa-table/controller/employee"
-	"github.com/DSum001/sa-table/controller/genders"
 	"github.com/DSum001/sa-table/controller/soups"
 	"github.com/DSum001/sa-table/controller/packages"
 	"github.com/DSum001/sa-table/controller/tables"
@@ -44,19 +43,18 @@ func main() {
 		router.DELETE("/employee/:id", employee.Delete)
 
 		// Booking routes
-		router.GET("/booking", booking.GetBooking)        // ดึงข้อมูล booking ทั้งหมด
-		router.GET("/booking/:id", booking.GetBookingByID) // ดึงข้อมูล booking ตาม ID
-		router.POST("/booking", booking.CreateBooking)    // สร้าง booking ใหม่
-		router.PATCH("/booking/:id", booking.UpdateBooking) // อัพเดท booking
-		router.DELETE("/booking/:id", booking.DeleteBooking) // ลบ booking ตาม ID
+		r.GET("/booking", booking.GetAll)        // ดึงข้อมูล booking ทั้งหมด
+		r.GET("/booking/:id", booking.Get) // ดึงข้อมูล booking ตาม ID
+		r.POST("/booking", booking.Create)    // สร้าง booking ใหม่
+		r.PATCH("/booking/:id", booking.Update) // อัพเดท booking
+		r.DELETE("/booking/:id", booking.Delete) // ลบ booking ตาม ID
 
 		// Genders, Tables, and other routes
-		r.GET("/genders", genders.GetGenders)
-		r.GET("/tables", tables.GetTables)
-		r.GET("/table_capacity", table_capacity.GetTableCapacity)
-		r.GET("/table_status", table_status.GetTableStatus)
-		r.GET("/soups", soups.GetSoups)
-		r.GET("/packages", packages.GetPackages)
+		r.GET("/tables", tables.GetAll)
+		r.GET("/table_capacity", table_capacity.GetAll)
+		r.GET("/table_status", table_status.GetAll)
+		r.GET("/soups", soups.GetAll)
+		r.GET("/packages", packages.GetAll)
 	}
 
 	r.GET("/", func(c *gin.Context) {
