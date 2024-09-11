@@ -1,7 +1,8 @@
 export interface TableInterface {
 
     ID?: number;
-    Name?: string;
-    table_type?: string; 
+    table_name?: string;
+    table_status_id?: number;
+    table_capacity_id?: number;
 
 }

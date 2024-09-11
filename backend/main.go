@@ -11,6 +11,7 @@ import (
 	"github.com/DSum001/sa-table/controller/soups"
 	"github.com/DSum001/sa-table/controller/packages"
 	"github.com/DSum001/sa-table/controller/tables"
+	"github.com/DSum001/sa-table/controller/table_capacity"
 	"github.com/DSum001/sa-table/controller/table_status"
 	"github.com/DSum001/sa-table/middlewares"
 	
@@ -38,17 +39,17 @@ func main() {
 		router.Use(middlewares.Authorizes())
 
         // User Route
-
 		router.PUT("/employee/:id", employee.Update)
 		router.GET("/employee", employee.GetAll)
 		router.GET("/employee/:id", employee.Get)
 		router.DELETE("/employee/:id", employee.Delete)
 
-		
-		r.GET("/booking", booking.GetAll)
-    	r.POST("/booking", booking.CreateBooking)
+		router.GET("/booking", booking.GetAll)
+		router.POST("/booking", booking.CreateBooking)
+
 		r.GET("/genders", genders.GetGenders)
 		r.GET("/tables", tables.GetTables)
+		r.GET("/table_capacity", table_capacity.GetTableCapacity)
 		r.GET("/table_status", table_status.GetTableStatus)
 		r.GET("/soups", soups.GetSoups)
 		r.GET("/packages", packages.GetPackages)
@@ -56,13 +57,10 @@ func main() {
 	}
 
 	r.GET("/", func(c *gin.Context) {
-
 		c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
-
 	})
 
 	// Run the server
-
 	r.Run("localhost:" + PORT)
 
 }

@@ -50,14 +50,13 @@ const headingStyle: CSSProperties = {
 
 function CreateBooking() {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the location object from react-router-dom
+  const location = useLocation();
   const [form] = Form.useForm();
 
-  // Parse the query parameters to extract the table name
   const queryParams = new URLSearchParams(location.search);
-  const tableName = queryParams.get("tableName") || "Unknown Table"; // Default to "Unknown Table" if no name provided
+  const tableCapacityId = queryParams.get("tableCapacityId"); // Update to match URL parameter name
+  const tableName = queryParams.get("tableName") || "Unknown Table";
 
-  // State to store the soups and packages fetched from the backend
   const [soups, setSoups] = useState<SoupInterface[]>([]);
   const [packages, setPackages] = useState<PackageInterface[]>([]);
   const [loadingSoups, setLoadingSoups] = useState<boolean>(false);
@@ -66,10 +65,9 @@ function CreateBooking() {
   const getSoups = async () => {
     setLoadingSoups(true);
     try {
-      const res = await GetSoups(); // Fetch data from the API
-
+      const res = await GetSoups();
       if (res.status === 200) {
-        setSoups(res.data); // Set the data from the API response
+        setSoups(res.data);
       } else {
         setSoups([]);
         message.error(res.data.error || "ไม่สามารถดึงข้อมูลได้");
@@ -85,10 +83,9 @@ function CreateBooking() {
   const getPackages = async () => {
     setLoadingPackages(true);
     try {
-      const res = await GetPackages(); // Fetch data from the API
-
+      const res = await GetPackages();
       if (res.status === 200) {
-        setPackages(res.data); // Set the data from the API response
+        setPackages(res.data);
       } else {
         setPackages([]);
         message.error(res.data.error || "ไม่สามารถดึงข้อมูลได้");
@@ -106,13 +103,12 @@ function CreateBooking() {
     getPackages();
   }, []);
 
-  // Define the type for the return value of confirmBooking
   const confirmBooking = async (formValues: any): Promise<string> => {
     return new Promise((resolve) => {
       setTimeout(() => {
         console.log("Backend booking data:", formValues);
         resolve("Booking confirmed!");
-      }, 500); // Mock 2-second delay to simulate API call
+      }, 500);
     });
   };
 
@@ -122,19 +118,19 @@ function CreateBooking() {
       message.error("Number of customers must be at least 1!");
       return;
     }
+
     const selectedSoups = [soup1, soup2, soup3, soup4].filter(soup => soup);
-    if (selectedSoups.length !== 2 && selectedSoups.length !== 4) {
-      message.error("Please select either 2 or 4 soups!");
+    const requiredSoupCount = tableCapacityId === '1' ? 2 : 4;
+
+    if (selectedSoups.length !== requiredSoupCount) {
+      message.error(`Please select ${requiredSoupCount} soups!`);
       return;
     }
 
     message.loading("Confirming booking...");
     try {
-      // Perform the mock backend action
       const bookingMessage = await confirmBooking(values);
       message.success(bookingMessage);
-
-      // Redirect after successful booking
       navigate("/table/table_list");
     } catch (error) {
       message.error("Booking failed! Please try again.");
@@ -147,8 +143,34 @@ function CreateBooking() {
   };
 
   const handleBackButtonClick = () => {
-    // Navigate back to the table selection page
     navigate("/table");
+  };
+
+  const renderSoupFields = () => {
+    const numberOfSoups = tableCapacityId === '1' ? 2 : 4;
+    const soupFields = [];
+    for (let i = 1; i <= numberOfSoups; i++) {
+      soupFields.push(
+        <Col xs={24} sm={24} md={12} key={`soup${i}`}>
+          <Form.Item
+            label={`Soup ${i}`}
+            name={`soup${i}`}
+            rules={[{ required: true, message: "Please select a soup!" }]}
+          >
+            <Select 
+              placeholder="Select a soup" 
+              style={selectStyle}
+              options={soups.map(soup => ({
+                value: soup.ID,
+                label: soup.name,
+              }))}
+              loading={loadingSoups}
+            />
+          </Form.Item>
+        </Col>
+      );
+    }
+    return soupFields;
   };
 
   return (
@@ -157,7 +179,7 @@ function CreateBooking() {
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <h1 style={headingStyle}>
             Table Booking for {tableName}
-          </h1> {/* Display the table name dynamically */}
+          </h1>
         </Col>
       </Row>
       <Row gutter={[16, 16]} justify="center">
@@ -192,7 +214,7 @@ function CreateBooking() {
                   >
                     <InputNumber
                       placeholder="Customers"
-                      min={1} 
+                      min={1}
                       step={1}
                       style={{ width: "100%" }}
                     />
@@ -200,74 +222,7 @@ function CreateBooking() {
                 </Col>
               </Row>
               <Row gutter={[16, 16]}>
-                <Col xs={24} sm={24} md={12}>
-                  <Form.Item
-                    label="Soup 1"
-                    name="soup1"
-                    rules={[{ required: true, message: "Please select a soup!" }]}
-                  >
-                    <Select 
-                      placeholder="Select a soup" 
-                      style={selectStyle}
-                      options={soups.map(soup => ({
-                        value: soup.ID,
-                        label: soup.name,
-                      }))}
-                      loading={loadingSoups}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={12}>
-                  <Form.Item
-                    label="Soup 2"
-                    name="soup2"
-                    rules={[{ required: true, message: "Please select a soup!" }]}
-                  >
-                    <Select 
-                      placeholder="Select a soup" 
-                      style={selectStyle}
-                      options={soups.map(soup => ({
-                        value: soup.ID,
-                        label: soup.name,
-                      }))}
-                      loading={loadingSoups}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={12}>
-                  <Form.Item
-                    label="Soup 3"
-                    name="soup3"
-                    rules={[{ required: true, message: "Please select a soup!" }]}
-                  >
-                    <Select 
-                      placeholder="Select a soup" 
-                      style={selectStyle}
-                      options={soups.map(soup => ({
-                        value: soup.ID,
-                        label: soup.name,
-                      }))}
-                      loading={loadingSoups}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={12}>
-                  <Form.Item
-                    label="Soup 4"
-                    name="soup4"
-                    rules={[{ required: true, message: "Please select a soup!" }]}
-                  >
-                    <Select 
-                      placeholder="Select a soup" 
-                      style={selectStyle}
-                      options={soups.map(soup => ({
-                        value: soup.ID,
-                        label: soup.name,
-                      }))}
-                      loading={loadingSoups}
-                    />
-                  </Form.Item>
-                </Col>
+                {renderSoupFields()}
               </Row>
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>

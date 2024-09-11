@@ -1,17 +1,14 @@
 package entity
 
-import (
-
-	"gorm.io/gorm"
-
-)
+import "gorm.io/gorm"
 
 type Table struct {
-
 	gorm.Model
-    TableType       string          `json:"table_type"`
-    Price           int             `json:"price"`
-    TableStatusID   uint            `json:"table_status_id"`
-    TableStatus     TableStatus     `gorm:"foreignKey:TableStatusID"`
-
+    TableName        string        `json:"table_name"`
+    TableStatusID    uint          `json:"table_status_id"`
+    TableStatus      TableStatus   `gorm:"foreignKey:TableStatusID"`
+    
+    // Relationship to TableCapacity (Many-to-One)
+    TableCapacityID  uint          `json:"table_capacity_id"`
+    TableCapacity    TableCapacity `gorm:"foreignKey:TableCapacityID"`
 }

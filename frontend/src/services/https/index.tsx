@@ -87,24 +87,30 @@ async function CreateBooking(data: BookingInterface) {
 }
 
 async function GetTables() {
-
     return await axios
     .get(`${apiUrl}/tables`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
     
 }
-async function GetTableStatus() {
 
+async function GetTableCapacity() {
     return await axios
-    .post(`${apiUrl}/table_status`, requestOptions)
+    .get(`${apiUrl}/table_capacity`, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+
+}
+
+async function GetTableStatus() {
+    return await axios
+    .get(`${apiUrl}/table_status`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
 
 }
 
 async function GetSoups() {
-
     return await axios
     .get(`${apiUrl}/soups`, requestOptions)
     .then((res) => res)
@@ -113,7 +119,6 @@ async function GetSoups() {
 }
 
 async function GetPackages() {
-
     return await axios
     .get(`${apiUrl}/packages`, requestOptions)
     .then((res) => res)
@@ -122,7 +127,6 @@ async function GetPackages() {
 }
 
 async function TablePage(data: TableInterface) {
-
     return await axios
     .post(`${apiUrl}/table`, data, requestOptions)
     .then((res) => res)
@@ -144,6 +148,7 @@ export {
     CreateBooking,
     GetBooking,
     GetSoups,
-    GetPackages
+    GetPackages,
+    GetTableCapacity,
 
 };
