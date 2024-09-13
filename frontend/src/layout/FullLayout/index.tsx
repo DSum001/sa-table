@@ -18,9 +18,9 @@ import Dashboard from "../../pages/dashboard";
 import Customer from "../../pages/customer";
 import CustomerCreate from "../../pages/customer/create";
 import CustomerEdit from "../../pages/customer/edit";
-import Table from "../../pages/table";
-import TableBooking from "../../pages/table/booking";
-import TableList from "../../pages/table/table_list";
+import Table from "../../pages/booking";
+import TableBooking from "../../pages/booking/create";
+import TableList from "../../pages/booking/table_list";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -87,19 +87,19 @@ const FullLayout: React.FC = () => {
                 </Link>
               </Menu.Item>
 
-              <Menu.Item 
-                key="table" 
+              <Menu.Item
+                key="booking"
                 className="menuItem"
-                onClick={() => setCurrentPage("table")}
+                onClick={() => setCurrentPage("booking")}
               >
-                <Link to="/table">
+                <Link to="/booking">
                   <AppstoreOutlined />
                   <span>Table</span>
                 </Link>
               </Menu.Item>
 
-              <Menu.Item 
-                key="orders" 
+              <Menu.Item
+                key="orders"
                 className="menuItem"
                 onClick={() => setCurrentPage("orders")}
               >
@@ -109,8 +109,8 @@ const FullLayout: React.FC = () => {
                 </Link>
               </Menu.Item>
 
-              <Menu.Item 
-                key="receipt" 
+              <Menu.Item
+                key="receipt"
                 className="menuItem"
                 onClick={() => setCurrentPage("receipt")}
               >
@@ -120,8 +120,8 @@ const FullLayout: React.FC = () => {
                 </Link>
               </Menu.Item>
 
-              <Menu.Item 
-                key="product" 
+              <Menu.Item
+                key="product"
                 className="menuItem"
                 onClick={() => setCurrentPage("product")}
               >
@@ -131,8 +131,8 @@ const FullLayout: React.FC = () => {
                 </Link>
               </Menu.Item>
 
-              <Menu.Item 
-                key="employee" 
+              <Menu.Item
+                key="employee"
                 className="menuItem"
                 onClick={() => setCurrentPage("employee")}
               >
@@ -158,22 +158,23 @@ const FullLayout: React.FC = () => {
 
       <Layout>
         <Content className="content">
-          <div className="contentInner" style={{ background: colorBgContainer }}>
+          <div
+            className="contentInner"
+            style={{ background: colorBgContainer }}
+          >
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/customer" element={<Customer />} />
               <Route path="/customer/create" element={<CustomerCreate />} />
               <Route path="/customer/edit/:id" element={<CustomerEdit />} />
-              <Route path="/table" element={<Table />} />
-              <Route path="/table/booking" element={<TableBooking />} />
-              <Route path="/table/table_list" element={<TableList />} />
+              <Route path="/booking" element={<Table />} />
+              <Route path="/booking/create" element={<TableBooking />} />
+              <Route path="/booking/table_list" element={<TableList />} />
             </Routes>
           </div>
         </Content>
 
-        <Footer className="footer">
-          Shabu Shop 2099
-        </Footer>
+        <Footer className="footer">Shabu Shop 2099</Footer>
       </Layout>
     </Layout>
   );

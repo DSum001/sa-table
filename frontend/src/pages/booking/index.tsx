@@ -7,11 +7,11 @@ import { TableCapacityInterface } from '../../interfaces/TableCapacity';
 import { TableStatusInterface } from '../../interfaces/Status';
 import '../../App.css';
 
-function Table() {
+function Booking() {
   const [tables, setTables] = useState<TableInterface[]>([]);
   const [tableCaps, setTableCaps] = useState<TableCapacityInterface[]>([]);
   const [tableStatus, setTableStatus] = useState<TableStatusInterface[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,15 +23,25 @@ function Table() {
           GetTableCapacity()
         ]);
 
-        if (tablesRes.status === 200) setTables(tablesRes.data);
-        else message.error(tablesRes.data.error || 'Unable to fetch tables');
+        if (tablesRes.status === 200) {
+          setTables(tablesRes.data);
+        } else {
+          message.error(tablesRes.data.error || 'Unable to fetch tables');
+        }
 
-        if (statusRes.status === 200) setTableStatus(statusRes.data);
-        else message.error(statusRes.data.error || 'Unable to fetch table statuses');
+        if (statusRes.status === 200) {
+          setTableStatus(statusRes.data);
+        } else {
+          message.error(statusRes.data.error || 'Unable to fetch table statuses');
+        }
 
-        if (capsRes.status === 200) setTableCaps(capsRes.data);
-        else message.error(capsRes.data.error || 'Unable to fetch table capacities');
+        if (capsRes.status === 200) {
+          setTableCaps(capsRes.data);
+        } else {
+          message.error(capsRes.data.error || 'Unable to fetch table capacities');
+        }
       } catch (error) {
+        console.error("Error fetching data:", error);
         message.error('Error fetching data from the server');
       } finally {
         setLoading(false);
@@ -42,19 +52,32 @@ function Table() {
   }, []);
 
   const handleButtonClick = (table: TableInterface) => {
+    if (table.ID === undefined || table.table_capacity_id === undefined) {
+      message.warning('Table ID or Table capacity ID is not defined!');
+      return;
+    }
+
     const status = tableStatus.find((s) => s.ID === table.table_status_id)?.status;
-  
+
     if (status === 'Not Available' || status === 'Reserved') {
       message.warning('This table is not available for booking!');
       return;
     }
-  
+
     if (table.table_name) {
-      window.location.href = `/table/booking?tableName=${encodeURIComponent(table.table_name)}&tableCapacityId=${table.table_capacity_id}`;
+      // Construct query parameters
+      const params = new URLSearchParams({
+        tableId: table.ID.toString(),
+        tableName: table.table_name,
+        tableCapacityId: table.table_capacity_id.toString()
+      }).toString();
+
+      // Redirect to the create booking page with query parameters
+      window.location.href = `/booking/create?${params}`;
     } else {
       message.warning('This table does not have a defined type!');
     }
-  }; 
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -66,7 +89,9 @@ function Table() {
     }
   };
 
-  const formatCapacity = (min?: number, max?: number) => min !== undefined && max !== undefined ? `${min} - ${max}` : 'N/A';
+  const formatCapacity = (min?: number, max?: number) => {
+    return (min !== undefined && max !== undefined) ? `${min} - ${max}` : 'N/A';
+  };
 
   return (
     <Row gutter={[16, 16]}>
@@ -118,4 +143,4 @@ function Table() {
   );
 }
 
-export default Table;
+export default Booking;

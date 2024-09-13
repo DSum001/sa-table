@@ -8,11 +8,11 @@ import { BookingInterface } from "../../../interfaces/Booking";
 
 const columns: ColumnsType<BookingInterface> = [
   { title: 'ID', dataIndex: 'ID', key: 'ID' },
-  { title: 'Table Number', dataIndex: 'Table_id', key: 'Table_id', render: (text) => `Table ${text}` },
-  { title: 'Number of Customers', dataIndex: 'number_of_customers', key: 'number_of_customer' },
-  { title: 'Package', dataIndex: 'Package_id', key: 'Package_id', render: (text) => `Package ${text}` },
-  { title: 'Member', dataIndex: 'Member_id', key: 'Member_id', render: (text) => `Member ${text}` },
-  { title: 'Employee', dataIndex: 'Employee_id', key: 'Employee_id', render: (text) => `Employee ${text}` },
+  { title: 'Table Number', dataIndex: 'table_id', key: 'table_id', render: (text) => `Table ${text}` },
+  { title: 'Number of Customer', dataIndex: 'number_of_customer', key: 'number_of_customer' },
+  { title: 'Package', dataIndex: 'package_id', key: 'package_id', render: (text) => `Package ${text}` },
+  { title: 'Member', dataIndex: 'member_id', key: 'member_id', render: (text) => `Member ${text}` },
+  { title: 'Employee', dataIndex: 'employee_id', key: 'employee_id', render: (text) => `Employee ${text}` },
   {
     title: '',
     key: 'actions',
@@ -48,7 +48,7 @@ function TableList() {
   }, []);
 
   const handleButtonClick = () => {
-    navigate("/table");
+    navigate("/booking");
   };
 
   return (

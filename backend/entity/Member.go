@@ -1,25 +1,19 @@
 package entity
 
-import(
+import "gorm.io/gorm"
 
-	"gorm.io/gorm"
+type Member struct {
+    gorm.Model
+    FirstName   string     `json:"first_name"`
+    LastName    string     `json:"last_name"`
+    PhoneNumber string     `json:"phone_number"`
+    Email       string     `json:"email"`
 
-) 
+    // FK from Rank
+    RankID      uint       `json:"rank_id"`
+    Rank        Rank       `gorm:"foreignKey:RankID"`
 
-type Member struct{
-
-	gorm.Model
-	FirstName		string		`json:"first_name"`
-	LastName		string		`json:"last_name"`
-	PhoneNumber		string		`json:"phone_number"`	
-	Email 			string		`json:"email"`	
-
-	// FK from Rank
-	RankID			uint
-	Rank			Rank		`gorm:"foreignKey: RankID"`
-	
-	// FK from Employee
-	EmployceeID		uint		
-	Employee		Employee	`gorm:"foreignKey: EmployceeID"`
-
+    // FK from Employee
+    EmployeeID  uint       `json:"employee_id"`  // Fixed typo
+    Employee    Employee   `gorm:"foreignKey:EmployeeID"`
 }

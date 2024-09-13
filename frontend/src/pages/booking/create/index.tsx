@@ -1,11 +1,13 @@
 import { Card, Row, Col, Input, Select, Button, Form, message, InputNumber } from "antd";
 import { useEffect, useState } from "react";
-import { GetSoups, GetPackages , CreateBooking} from "../../../services/https";
+import { GetSoups, GetPackages, CreateBooking, CreateBookingSoup, GetTables } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import { SoupInterface } from "../../../interfaces/Soup";
 import { PackageInterface } from "../../../interfaces/Package";
+import { TableInterface } from "../../../interfaces/Table";
+import { BookingSoupInterface } from "../../../interfaces/BookingSoup";
 import { useNavigate, useLocation } from "react-router-dom";
-import './booking.css'; // Import the CSS file
+import './booking.css';
 
 function CreateBookingTable() {
   const navigate = useNavigate();
@@ -13,123 +15,141 @@ function CreateBookingTable() {
   const [form] = Form.useForm();
 
   const queryParams = new URLSearchParams(location.search);
-  const tableCapacityId = queryParams.get("tableCapacityId"); // Update to match URL parameter name
+  const tableId = queryParams.get("tableId") || ''; 
   const tableName = queryParams.get("tableName") || "Unknown Table";
 
   const [soups, setSoups] = useState<SoupInterface[]>([]);
   const [packages, setPackages] = useState<PackageInterface[]>([]);
+  const [tables, setTables] = useState<TableInterface[]>([]);
   const [loadingSoups, setLoadingSoups] = useState<boolean>(false);
   const [loadingPackages, setLoadingPackages] = useState<boolean>(false);
+  const [loadingTables, setLoadingTables] = useState<boolean>(false);
 
-  const getSoups = async () => {
-    setLoadingSoups(true);
-    try {
-      const res = await GetSoups();
-      if (res.status === 200) {
-        setSoups(res.data);
-      } else {
-        setSoups([]);
-        message.error(res.data.error || "ไม่สามารถดึงข้อมูลได้");
-      }
-    } catch (error) {
-      setSoups([]);
-      message.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
-    } finally {
-      setLoadingSoups(false);
-    }
-  };
-
-  const getPackages = async () => {
-    setLoadingPackages(true);
-    try {
-      const res = await GetPackages();
-      if (res.status === 200) {
-        setPackages(res.data);
-      } else {
-        setPackages([]);
-        message.error(res.data.error || "ไม่สามารถดึงข้อมูลได้");
-      }
-    } catch (error) {
-      setPackages([]);
-      message.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
-    } finally {
-      setLoadingPackages(false);
-    }
-  };
+  const [accountid, setAccountID] = useState<any>(localStorage.getItem("id"));
 
   useEffect(() => {
-    getSoups();
-    getPackages();
-  }, []);
+    if (!tableId) {
+      message.error("Table ID is missing. Please try again.");
+      navigate("/booking");
+      return;
+    }
 
-  const confirmBooking = async (formValues: any): Promise<string> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log("Backend booking data:", formValues);
-        resolve("Booking confirmed!");
-      }, 500);
-    });
-  };
+    const fetchData = async () => {
+      setLoadingSoups(true);
+      setLoadingPackages(true);
+      setLoadingTables(true);
+      try {
+        const [soupsRes, packagesRes, tablesRes] = await Promise.all([
+          GetSoups(),
+          GetPackages(),
+          GetTables()
+        ]);
+
+        if (soupsRes.status === 200) setSoups(soupsRes.data);
+        if (packagesRes.status === 200) setPackages(packagesRes.data);
+        if (tablesRes.status === 200) setTables(tablesRes.data);
+      } catch (error) {
+        message.error("Error fetching data.");
+      } finally {
+        setLoadingSoups(false);
+        setLoadingPackages(false);
+        setLoadingTables(false);
+      }
+    };
+
+    fetchData();
+  }, [tableId, navigate]);
 
   const onFinish = async (values: any) => {
-    const { numberOfCustomers, soup1, soup2, soup3, soup4 } = values;
-    if (numberOfCustomers === 0) {
-      message.error("Number of customers must be at least 1!");
+    const selectedSoupIds: number[] = [
+      values.soup1,
+      values.soup2,
+      values.soup3,
+      values.soup4,
+    ].filter((soup): soup is number => typeof soup === 'number');
+
+    const tableIdNumber = Number(tableId);
+
+    if (isNaN(tableIdNumber) || tableIdNumber <= 0) {
+      message.error("Invalid table ID.");
       return;
     }
 
-    const selectedSoups = [soup1, soup2, soup3, soup4].filter(soup => soup);
-    const requiredSoupCount = tableCapacityId === '1' ? 2 : 4;
-
-    if (selectedSoups.length !== requiredSoupCount) {
-      message.error(`Please select ${requiredSoupCount} soups!`);
+    if (!accountid) {
+      message.error("User ID is missing. Please log in.");
       return;
     }
 
-    message.loading("Confirming booking...");
+    const bookingPayload: BookingInterface = {
+      number_of_customer: values.number_of_customer,
+      package_id: values.package_id,
+      table_id: tableIdNumber,
+      employee_id: Number(accountid),
+    };
+
     try {
-      const bookingMessage = await confirmBooking(values);
-      message.success(bookingMessage);
-      navigate("/table/table_list");
+      const bookingRes = await CreateBooking(bookingPayload);
+      const bookingId = bookingRes.data?.ID; // Ensure `ID` is correctly accessed
+
+      if (!bookingId) {
+        message.error("Booking ID is missing from the response. Please contact support.");
+        return;
+      }
+
+      // Create booking-soups associations
+      const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(soupId => ({
+        booking_id: bookingId,
+        soup_id: soupId,
+      }));
+
+      try {
+        await Promise.all(
+          bookingSoupsPayload.map(bookingSoup => CreateBookingSoup(bookingSoup))
+        );
+        message.success("Booking confirmed!");
+        navigate("/booking/table_list");
+      } catch (innerError) {
+        console.error("Error creating booking soups:", innerError);
+        message.error("Failed to create one or more soups.");
+      }
+
     } catch (error) {
+      console.error("Error creating booking:", error);
       message.error("Booking failed! Please try again.");
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
     message.error("Please correct the errors in the form!");
   };
 
   const handleBackButtonClick = () => {
-    navigate("/table");
+    navigate("/booking");
   };
 
   const renderSoupFields = () => {
-    const numberOfSoups = tableCapacityId === '1' ? 2 : 4;
-    const soupFields = [];
-    for (let i = 1; i <= numberOfSoups; i++) {
-      soupFields.push(
-        <Col xs={24} sm={24} md={12} key={`soup${i}`}>
-          <Form.Item
-            label={`Soup ${i}`}
-            name={`soup${i}`}
-            rules={[{ required: true, message: "Please select a soup!" }]}
-          >
-            <Select 
-              placeholder="Select a soup" 
-              className="select-style"
-              options={soups.map(soup => ({
-                value: soup.ID,
-                label: soup.name,
-              }))}
-              loading={loadingSoups}
-            />
-          </Form.Item>
-        </Col>
-      );
-    }
-    return soupFields;
+    const table = tables.find(t => t.ID === Number(tableId));
+    const numberOfSoups = table?.table_capacity_id === 1 ? 2 : 4;
+
+    return Array.from({ length: numberOfSoups }, (_, i) => (
+      <Col xs={24} sm={24} md={12} key={`soup${i + 1}`}>
+        <Form.Item
+          label={`Soup ${i + 1}`}
+          name={`soup${i + 1}`}
+          rules={[{ required: true, message: "Please select a soup!" }]}
+        >
+          <Select 
+            placeholder="Select a soup" 
+            className="select-style"
+            options={soups.map(soup => ({
+              value: soup.ID,
+              label: soup.name,
+            }))}
+            loading={loadingSoups}
+          />
+        </Form.Item>
+      </Col>
+    ));
   };
 
   return (
@@ -163,13 +183,8 @@ function CreateBookingTable() {
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
                     label="Number of Customers"
-                    name="numberOfCustomers"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter the number of customers!",
-                      },
-                    ]}
+                    name="number_of_customer"
+                    rules={[{ required: true, message: "Please enter the number of customers!" }]}
                   >
                     <InputNumber
                       placeholder="Customers"
@@ -187,7 +202,7 @@ function CreateBookingTable() {
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
                     label="Package"
-                    name="package"
+                    name="package_id"
                     rules={[{ required: true, message: "Please select a package!" }]}
                   >
                     <Select

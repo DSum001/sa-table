@@ -31,13 +31,14 @@ func SetupDatabase() {
     db.AutoMigrate(
         
         &entity.Booking{},
+        &entity.Soup{},
         &entity.Table{},
         &entity.TableCapacity{},
         &entity.TableStatus{},
-        &entity.Soup{},
         &entity.Package{},
         &entity.Employee{},
         &entity.Member{},
+        &entity.BookingSoup{},
         
     )
 
@@ -109,8 +110,8 @@ func SetupDatabase() {
         FirstName: "shubaba",
         LastName:  "booboo",
         Email: "shabu@gmail.com",
-        Gender_id: 1,
-        Position_id: 1,
+        GenderID: 1,
+        PositionID: 1,
         Password: hashedPassword,
 
     }

@@ -1,7 +1,7 @@
 import { UsersInterface } from "../../interfaces/IUser";
 import { SignInInterface } from "../../interfaces/SignIn";
-import { TableInterface } from "../../interfaces/Table";
 import { BookingInterface } from "../../interfaces/Booking";
+import { BookingSoupInterface } from "../../interfaces/BookingSoup";
 import axios from "axios";
 
 const apiUrl = "http://localhost:8000";
@@ -15,6 +15,7 @@ const requestOptions = {
     },
 };
 
+// User functions
 async function SignIn(data: SignInInterface) {
     return await axios
     .post(`${apiUrl}/signin`, data, requestOptions)
@@ -57,7 +58,7 @@ async function CreateUser(data: UsersInterface) {
     .catch((e) => e.response);
 }
 
-//Booking 
+// Booking functions
 async function GetBooking() {
     return await axios
     .get(`${apiUrl}/booking`, requestOptions)
@@ -66,13 +67,22 @@ async function GetBooking() {
 }
 
 async function CreateBooking(data: BookingInterface) {
-    return await axios
-    .post(`${apiUrl}/booking`, data, requestOptions)
-    .then((res) => res)
-    .catch((e) => e.response);
+    try {
+        const response = await axios.post(`${apiUrl}/booking`, data, requestOptions);
+        return response.data; // ส่งกลับข้อมูลที่ต้องการ
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            // ตรวจสอบว่าข้อผิดพลาดเป็น AxiosError หรือไม่
+            return error.response; // ส่งกลับข้อมูลตอบกลับที่มีข้อผิดพลาด
+        }
+        // ถ้าไม่ใช่ AxiosError
+        console.error("An unexpected error occurred:", error);
+        return { error: "An unexpected error occurred" };
+    }
 }
 
-async function GetBookingByID(id: string | undefined) {
+
+async function GetBookingByID(id: string) {
     return await axios
     .get(`${apiUrl}/booking/${id}`, requestOptions)
     .then((res) => res)
@@ -93,12 +103,12 @@ async function DeleteBookingByID(id: string | undefined) {
     .catch((e) => e.response);
 }
 
+// Table functions
 async function GetTables() {
     return await axios
     .get(`${apiUrl}/tables`, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
-    
 }
 
 async function GetTableCapacity() {
@@ -115,6 +125,7 @@ async function GetTableStatus() {
     .catch((e) => e.response);
 }
 
+// Soup functions
 async function GetSoups() {
     return await axios
     .get(`${apiUrl}/soups`, requestOptions)
@@ -122,6 +133,7 @@ async function GetSoups() {
     .catch((e) => e.response);
 }
 
+// Package functions
 async function GetPackages() {
     return await axios
     .get(`${apiUrl}/packages`, requestOptions)
@@ -129,9 +141,9 @@ async function GetPackages() {
     .catch((e) => e.response);
 }
 
-async function TablePage(data: TableInterface) {
+async function CreateBookingSoup(data: BookingSoupInterface) {
     return await axios
-    .post(`${apiUrl}/table`, data, requestOptions)
+    .post(`${apiUrl}/booking_soups`, data, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
 }
@@ -143,7 +155,6 @@ export {
     UpdateUsersById,
     DeleteUsersById,
     CreateUser,
-    TablePage,
     GetTables,
     GetTableStatus,
     CreateBooking,
@@ -154,4 +165,5 @@ export {
     GetBookingByID,
     UpdateBooking,
     DeleteBookingByID,
+    CreateBookingSoup,
 };

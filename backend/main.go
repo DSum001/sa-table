@@ -2,10 +2,10 @@ package main
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/DSum001/sa-table/config"
 	"github.com/DSum001/sa-table/controller/booking"
+	"github.com/DSum001/sa-table/controller/booking_soups"
 	"github.com/DSum001/sa-table/controller/employee"
 	"github.com/DSum001/sa-table/controller/soups"
 	"github.com/DSum001/sa-table/controller/packages"
@@ -18,24 +18,21 @@ import (
 const PORT = "8000"
 
 func main() {
-
-	// เปิดการเชื่อมต่อกับฐานข้อมูล
+	// Initialize database
 	config.ConnectionDB()
-
-	// สร้างฐานข้อมูล
 	config.SetupDatabase()
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	// Public routes
 	r.POST("/signup", employee.SignUp)
 	r.POST("/signin", employee.SignIn)
 
 	// Group protected routes
 	router := r.Group("/")
+	router.Use(middlewares.Authorizes())
 	{
-		router.Use(middlewares.Authorizes())
-
 		// Employee routes
 		router.PATCH("/employee/:id", employee.Update)
 		router.GET("/employee", employee.GetAll)
@@ -43,18 +40,21 @@ func main() {
 		router.DELETE("/employee/:id", employee.Delete)
 
 		// Booking routes
-		r.GET("/booking", booking.GetAll)        // ดึงข้อมูล booking ทั้งหมด
-		r.GET("/booking/:id", booking.Get) // ดึงข้อมูล booking ตาม ID
-		r.POST("/booking", booking.Create)    // สร้าง booking ใหม่
-		r.PATCH("/booking/:id", booking.Update) // อัพเดท booking
-		r.DELETE("/booking/:id", booking.Delete) // ลบ booking ตาม ID
+		router.GET("/booking", booking.GetAll)
+		router.GET("/booking/:id", booking.Get)
+		router.POST("/booking", booking.Create)
+		router.PATCH("/booking/:id", booking.Update)
+		router.DELETE("/booking/:id", booking.Delete)
 
-		// Genders, Tables, and other routes
-		r.GET("/tables", tables.GetAll)
-		r.GET("/table_capacity", table_capacity.GetAll)
-		r.GET("/table_status", table_status.GetAll)
-		r.GET("/soups", soups.GetAll)
-		r.GET("/packages", packages.GetAll)
+		router.POST("/booking_soups", booking_soups.Create)
+		
+		// Other routes
+		router.GET("/tables", tables.GetAll)
+		router.GET("/table_capacity", table_capacity.GetAll)
+		router.GET("/table_status", table_status.GetAll)
+		router.GET("/soups", soups.GetAll)
+		router.GET("/packages", packages.GetAll)
+
 	}
 
 	r.GET("/", func(c *gin.Context) {
@@ -65,7 +65,7 @@ func main() {
 	r.Run("localhost:" + PORT)
 }
 
-// CORSMiddleware เปิดการใช้งาน CORS
+// CORSMiddleware enables CORS
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")

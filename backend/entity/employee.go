@@ -3,20 +3,17 @@ package entity
 import "gorm.io/gorm"
 
 type Employee struct {
+    gorm.Model
+    FirstName    string     `json:"first_name"`  // Fixed typo
+    LastName     string     `json:"last_name"`
+    Username     string     `json:"username"`
+    Email        string     `json:"email"`
+    Phone        string     `json:"phone_number"`
+    Password     string     `json:"password"`
+    GenderID     uint       `json:"gender_id"`
+    PositionID   uint       `json:"position_id"`
 
-	gorm.Model	
-
-	FirstName 		string		`json:"frist_name"`
-	LastName 		string		`json:"last_name"`
-	Username 		string		`json:"username"`
-	Email			string		`json:"email"`
-	Phone			string   	`json:"phone_number"`
-	Password 		string		`json:"password"`
-	Gender_id 		uint		`json:"gender_id"`
-	Position_id 	uint		`json:"position_id"`
-	
-	Booking 		[]Booking 	`gorm:"foreignKey:employee_id"`
-	Order 			[]Order 	`gorm:"foreignKey:employee_id"`
-	Product 		[]Product 	`gorm:"foreignKey:employee_id"`
-	
+    Bookings     []Booking  `gorm:"foreignKey:EmployeeID"`
+    Orders       []Order    `gorm:"foreignKey:EmployeeID"`
+    Products     []Product  `gorm:"foreignKey:EmployeeID"`
 }
