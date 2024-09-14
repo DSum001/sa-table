@@ -1,13 +1,29 @@
-import { Card, Row, Col, Input, Select, Button, Form, message, InputNumber } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Input,
+  Select,
+  Button,
+  Form,
+  message,
+  InputNumber,
+} from "antd";
 import { useEffect, useState } from "react";
-import { GetSoups, GetPackages, CreateBooking, CreateBookingSoup, GetTables } from "../../../services/https";
+import {
+  GetSoups,
+  GetPackages,
+  CreateBooking,
+  CreateBookingSoup,
+  GetTables,
+} from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import { SoupInterface } from "../../../interfaces/Soup";
 import { PackageInterface } from "../../../interfaces/Package";
 import { TableInterface } from "../../../interfaces/Table";
 import { BookingSoupInterface } from "../../../interfaces/BookingSoup";
 import { useNavigate, useLocation } from "react-router-dom";
-import './booking.css';
+import "./booking.css";
 
 function CreateBookingTable() {
   const navigate = useNavigate();
@@ -15,7 +31,7 @@ function CreateBookingTable() {
   const [form] = Form.useForm();
 
   const queryParams = new URLSearchParams(location.search);
-  const tableId = queryParams.get("tableId") || ''; 
+  const tableId = queryParams.get("tableId") || "";
   const tableName = queryParams.get("tableName") || "Unknown Table";
 
   const [soups, setSoups] = useState<SoupInterface[]>([]);
@@ -42,7 +58,7 @@ function CreateBookingTable() {
         const [soupsRes, packagesRes, tablesRes] = await Promise.all([
           GetSoups(),
           GetPackages(),
-          GetTables()
+          GetTables(),
         ]);
 
         if (soupsRes.status === 200) setSoups(soupsRes.data);
@@ -66,7 +82,7 @@ function CreateBookingTable() {
       values.soup2,
       values.soup3,
       values.soup4,
-    ].filter((soup): soup is number => typeof soup === 'number');
+    ].filter((soup): soup is number => typeof soup === "number");
 
     const tableIdNumber = Number(tableId);
 
@@ -92,19 +108,24 @@ function CreateBookingTable() {
       const bookingId = bookingRes.data?.ID; // Ensure `ID` is correctly accessed
 
       if (!bookingId) {
-        message.error("Booking ID is missing from the response. Please contact support.");
+        message.error(
+          "Booking ID is missing from the response. Please contact support."
+        );
         return;
       }
 
-      // Create booking-soups associations
-      const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(soupId => ({
-        booking_id: bookingId,
-        soup_id: soupId,
-      }));
+      const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(
+        (soupId) => ({
+          booking_id: bookingId,
+          soup_id: soupId,
+        })
+      );
 
       try {
         await Promise.all(
-          bookingSoupsPayload.map(bookingSoup => CreateBookingSoup(bookingSoup))
+          bookingSoupsPayload.map((bookingSoup) =>
+            CreateBookingSoup(bookingSoup)
+          )
         );
         message.success("Booking confirmed!");
         navigate("/booking/table_list");
@@ -112,7 +133,6 @@ function CreateBookingTable() {
         console.error("Error creating booking soups:", innerError);
         message.error("Failed to create one or more soups.");
       }
-
     } catch (error) {
       console.error("Error creating booking:", error);
       message.error("Booking failed! Please try again.");
@@ -128,7 +148,7 @@ function CreateBookingTable() {
   };
 
   const renderSoupFields = () => {
-    const table = tables.find(t => t.ID === Number(tableId));
+    const table = tables.find((t) => t.ID === Number(tableId));
     const numberOfSoups = table?.table_capacity_id === 1 ? 2 : 4;
 
     return Array.from({ length: numberOfSoups }, (_, i) => (
@@ -138,10 +158,10 @@ function CreateBookingTable() {
           name={`soup${i + 1}`}
           rules={[{ required: true, message: "Please select a soup!" }]}
         >
-          <Select 
-            placeholder="Select a soup" 
+          <Select
+            placeholder="Select a soup"
             className="select-style"
-            options={soups.map(soup => ({
+            options={soups.map((soup) => ({
               value: soup.ID,
               label: soup.name,
             }))}
@@ -156,9 +176,7 @@ function CreateBookingTable() {
     <>
       <Row gutter={[16, 16]} justify="center" style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-          <h1 className="heading-style">
-            Table Booking for {tableName}
-          </h1>
+          <h1 className="heading-style">Table Booking for {tableName}</h1>
         </Col>
       </Row>
       <Row gutter={[16, 16]} justify="center">
@@ -175,7 +193,9 @@ function CreateBookingTable() {
                   <Form.Item
                     label="Name"
                     name="name"
-                    rules={[{ required: true, message: "Please enter your name!" }]}
+                    rules={[
+                      { required: true, message: "Please enter your name!" },
+                    ]}
                   >
                     <Input placeholder="Name" />
                   </Form.Item>
@@ -184,7 +204,12 @@ function CreateBookingTable() {
                   <Form.Item
                     label="Number of Customers"
                     name="number_of_customer"
-                    rules={[{ required: true, message: "Please enter the number of customers!" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter the number of customers!",
+                      },
+                    ]}
                   >
                     <InputNumber
                       placeholder="Customers"
@@ -195,20 +220,20 @@ function CreateBookingTable() {
                   </Form.Item>
                 </Col>
               </Row>
-              <Row gutter={[16, 16]}>
-                {renderSoupFields()}
-              </Row>
+              <Row gutter={[16, 16]}>{renderSoupFields()}</Row>
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
                     label="Package"
                     name="package_id"
-                    rules={[{ required: true, message: "Please select a package!" }]}
+                    rules={[
+                      { required: true, message: "Please select a package!" },
+                    ]}
                   >
                     <Select
                       placeholder="Select a package"
                       className="select-style"
-                      options={packages.map(pkg => ({
+                      options={packages.map((pkg) => ({
                         value: pkg.ID,
                         label: pkg.name,
                       }))}

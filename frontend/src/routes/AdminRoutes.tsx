@@ -4,19 +4,13 @@ import Loadable from "../components/third-patry/Loadable";
 import FullLayout from "../layout/FullLayout";
 
 const MainPages = Loadable(lazy(() => import("../pages/authentication/Login")));
-
 const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
-
 const Customer = Loadable(lazy(() => import("../pages/customer")));
-
 const CreateCustomer = Loadable(lazy(() => import("../pages/customer/create")));
-
 const EditCustomer = Loadable(lazy(() => import("../pages/customer/edit")));
-
 const Booking = Loadable(lazy(() => import("../pages/booking")));
-
 const CreateBookingTable = Loadable(lazy(() => import("../pages/booking/create")));
-
+const EditBookingTable = Loadable(lazy(() => import("../pages/booking/edit")));
 const TableList = Loadable(lazy(() => import("../pages/booking/table_list")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
@@ -70,6 +64,12 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
             path: "/booking/create",
 
             element: <CreateBookingTable />,
+          },
+
+          {
+            path: "/booking/edit",
+
+            element: <EditBookingTable />,
           },
 
           {

@@ -1,11 +1,25 @@
-import { Col, Row, message, Card, Statistic, Button, Spin, Empty, Badge } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import { GetTableStatus, GetTables, GetTableCapacity } from '../../services/https';
-import { TableInterface } from '../../interfaces/Table';
-import { TableCapacityInterface } from '../../interfaces/TableCapacity';
-import { TableStatusInterface } from '../../interfaces/Status';
-import '../../App.css';
+import {
+  Col,
+  Row,
+  message,
+  Card,
+  Statistic,
+  Button,
+  Spin,
+  Empty,
+  Badge,
+} from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import {
+  GetTableStatus,
+  GetTables,
+  GetTableCapacity,
+} from "../../services/https";
+import { TableInterface } from "../../interfaces/Table";
+import { TableCapacityInterface } from "../../interfaces/TableCapacity";
+import { TableStatusInterface } from "../../interfaces/Status";
+import "../../App.css";
 
 function Booking() {
   const [tables, setTables] = useState<TableInterface[]>([]);
@@ -20,29 +34,33 @@ function Booking() {
         const [tablesRes, statusRes, capsRes] = await Promise.all([
           GetTables(),
           GetTableStatus(),
-          GetTableCapacity()
+          GetTableCapacity(),
         ]);
 
         if (tablesRes.status === 200) {
           setTables(tablesRes.data);
         } else {
-          message.error(tablesRes.data.error || 'Unable to fetch tables');
+          message.error(tablesRes.data.error || "Unable to fetch tables");
         }
 
         if (statusRes.status === 200) {
           setTableStatus(statusRes.data);
         } else {
-          message.error(statusRes.data.error || 'Unable to fetch table statuses');
+          message.error(
+            statusRes.data.error || "Unable to fetch table statuses"
+          );
         }
 
         if (capsRes.status === 200) {
           setTableCaps(capsRes.data);
         } else {
-          message.error(capsRes.data.error || 'Unable to fetch table capacities');
+          message.error(
+            capsRes.data.error || "Unable to fetch table capacities"
+          );
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        message.error('Error fetching data from the server');
+        message.error("Error fetching data from the server");
       } finally {
         setLoading(false);
       }
@@ -52,45 +70,49 @@ function Booking() {
   }, []);
 
   const handleButtonClick = (table: TableInterface) => {
-    if (table.ID === undefined || table.table_capacity_id === undefined) {
-      message.warning('Table ID or Table capacity ID is not defined!');
+    if (!table.ID || !table.table_capacity_id) {
+      message.warning("Table ID or Table capacity ID is not defined!");
       return;
     }
 
-    const status = tableStatus.find((s) => s.ID === table.table_status_id)?.status;
+    const status = tableStatus.find((s) => s.ID === table.table_status_id)
+      ?.status;
 
-    if (status === 'Not Available' || status === 'Reserved') {
-      message.warning('This table is not available for booking!');
+    if (status === "Not Available" || status === "Reserved") {
+      message.warning("This table is not available for booking!");
       return;
     }
 
     if (table.table_name) {
-      // Construct query parameters
       const params = new URLSearchParams({
         tableId: table.ID.toString(),
         tableName: table.table_name,
-        tableCapacityId: table.table_capacity_id.toString()
+        tableCapacityId: table.table_capacity_id.toString(),
       }).toString();
 
-      // Redirect to the create booking page with query parameters
       window.location.href = `/booking/create?${params}`;
     } else {
-      message.warning('This table does not have a defined type!');
+      message.warning("This table does not have a defined type!");
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Available': return 'green';
-      case 'Reserved': return 'orange';
-      case 'Occupied': return 'red';
-      case 'Not Available': return 'gray';
-      default: return 'default';
+      case "Available":
+        return "green";
+      case "Reserved":
+        return "orange";
+      case "Occupied":
+        return "red";
+      case "Not Available":
+        return "gray";
+      default:
+        return "default";
     }
   };
 
   const formatCapacity = (min?: number, max?: number) => {
-    return (min !== undefined && max !== undefined) ? `${min} - ${max}` : 'N/A';
+    return min !== undefined && max !== undefined ? `${min} - ${max}` : "N/A";
   };
 
   return (
@@ -107,8 +129,12 @@ function Booking() {
           ) : (
             <Row gutter={[16, 16]} justify="center" align="middle">
               {tables.map((table) => {
-                const tableCapacity = tableCaps.find((cap) => cap.ID === table.table_capacity_id);
-                const status = tableStatus.find((status) => status.ID === table.table_status_id);
+                const tableCapacity = tableCaps.find(
+                  (cap) => cap.ID === table.table_capacity_id
+                );
+                const status = tableStatus.find(
+                  (status) => status.ID === table.table_status_id
+                );
 
                 return (
                   <Col key={table.ID} xs={24} sm={12} md={8} lg={6}>
@@ -116,21 +142,37 @@ function Booking() {
                       type="default"
                       className="tableButton"
                       onClick={() => handleButtonClick(table)}
-                      disabled={!table.table_name || status?.status === 'Not Available' || status?.status === 'Reserved'}
-                      style={{ width: '100%', textAlign: 'left' }}
+                      disabled={
+                        !table.table_name ||
+                        status?.status === "Not Available" ||
+                        status?.status === "Reserved"
+                      }
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        textAlign: "left",
+                      }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Statistic
-                          title={`Table Type ${table.table_name || 'Unknown'}`}
-                          value={formatCapacity(tableCapacity?.min, tableCapacity?.max)}
-                          valueStyle={{ color: '#FF7F50' }}
-                          prefix={<UserOutlined className="icon" />}
-                        />
-                        <Badge
-                          count={status?.status ?? 'Unknown'}
-                          style={{ backgroundColor: getStatusColor(status?.status ?? 'Unknown'), color: '#fff' }}
-                        />
-                      </div>
+                      <Statistic
+                        title={`Table Type: ${table.table_name || "Unknown"}`}
+                        value={formatCapacity(
+                          tableCapacity?.min,
+                          tableCapacity?.max
+                        )}
+                        valueStyle={{ color: "#FF7F50" }}
+                        prefix={<UserOutlined className="icon" />}
+                      />
+                      <Badge
+                        count={status?.status ?? "Unknown"}
+                        style={{
+                          backgroundColor: getStatusColor(
+                            status?.status ?? "Unknown"
+                          ),
+                          color: "#fff",
+                        }}
+                      />
                     </Button>
                   </Col>
                 );

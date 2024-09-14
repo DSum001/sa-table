@@ -40,20 +40,20 @@ func main() {
 		router.DELETE("/employee/:id", employee.Delete)
 
 		// Booking routes
-		router.GET("/booking", booking.GetAll)
-		router.GET("/booking/:id", booking.Get)
-		router.POST("/booking", booking.Create)
-		router.PATCH("/booking/:id", booking.Update)
-		router.DELETE("/booking/:id", booking.Delete)
+		r.GET("/booking", booking.GetAll)
+		r.GET("/booking/:id", booking.Get)
+		r.POST("/booking", booking.Create)
+		r.PATCH("/booking/:id", booking.Update)
+		r.DELETE("/booking/:id", booking.Delete)
 
-		router.POST("/booking_soups", booking_soups.Create)
+		r.POST("/booking_soups", booking_soups.Create)
 		
 		// Other routes
-		router.GET("/tables", tables.GetAll)
-		router.GET("/table_capacity", table_capacity.GetAll)
-		router.GET("/table_status", table_status.GetAll)
-		router.GET("/soups", soups.GetAll)
-		router.GET("/packages", packages.GetAll)
+		r.GET("/tables", tables.GetAll)
+		r.GET("/table_capacity", table_capacity.GetAll)
+		r.GET("/table_status", table_status.GetAll)
+		r.GET("/soups", soups.GetAll)
+		r.GET("/packages", packages.GetAll)
 
 	}
 

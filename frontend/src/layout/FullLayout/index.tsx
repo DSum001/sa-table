@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import "../../App.css"; // Import the CSS file here
+import "../../App.css"; 
 
 import {
   UserOutlined,
@@ -20,6 +20,7 @@ import CustomerCreate from "../../pages/customer/create";
 import CustomerEdit from "../../pages/customer/edit";
 import Table from "../../pages/booking";
 import TableBooking from "../../pages/booking/create";
+import EditBookingTable from "../../pages/booking/edit";
 import TableList from "../../pages/booking/table_list";
 
 const { Content, Footer, Sider } = Layout;
@@ -169,6 +170,7 @@ const FullLayout: React.FC = () => {
               <Route path="/customer/edit/:id" element={<CustomerEdit />} />
               <Route path="/booking" element={<Table />} />
               <Route path="/booking/create" element={<TableBooking />} />
+              <Route path="/booking/edit" element={<EditBookingTable />} />
               <Route path="/booking/table_list" element={<TableList />} />
             </Routes>
           </div>
