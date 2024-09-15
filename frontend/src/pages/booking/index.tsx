@@ -156,7 +156,7 @@ function Booking() {
                       }}
                     >
                       <Statistic
-                        title={`Table Type: ${table.table_name || "Unknown"}`}
+                        title={`Table NO: ${table.table_name || "Unknown"}`}
                         value={formatCapacity(
                           tableCapacity?.min,
                           tableCapacity?.max

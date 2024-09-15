@@ -3,6 +3,7 @@ import { SignInInterface } from "../../interfaces/SignIn";
 import { BookingInterface } from "../../interfaces/Booking";
 import { BookingSoupInterface } from "../../interfaces/BookingSoup";
 import axios from "axios";
+import { TableInterface } from "../../interfaces/Table";
 
 const apiUrl = "http://localhost:8000";
 const Authorization = localStorage.getItem("token");
@@ -81,7 +82,6 @@ async function CreateBooking(data: BookingInterface) {
     }
 }
 
-
 async function GetBookingByID(id: string) {
     return await axios
     .get(`${apiUrl}/booking/${id}`, requestOptions)
@@ -107,6 +107,13 @@ async function DeleteBookingByID(id: string | undefined) {
 async function GetTables() {
     return await axios
     .get(`${apiUrl}/tables`, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
+async function UpdateStatus(id: number | undefined, data: TableInterface) {
+    return await axios
+    .patch(`${apiUrl}/tables/${id}`, data, requestOptions)
     .then((res) => res)
     .catch((e) => e.response);
 }
@@ -156,6 +163,7 @@ export {
     DeleteUsersById,
     CreateUser,
     GetTables,
+    UpdateStatus,
     GetTableStatus,
     CreateBooking,
     GetBooking,
