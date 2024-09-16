@@ -86,62 +86,67 @@ function CreateBookingTable() {
 
   const onFinish = async (values: any) => {
     const selectedSoupIds: number[] = [
-      values.soup1,
-      values.soup2,
-      values.soup3,
-      values.soup4,
+        values.soup1,
+        values.soup2,
+        values.soup3,
+        values.soup4,
     ].filter((soup): soup is number => typeof soup === "number");
 
     const tableIdNumber = Number(tableId);
 
     if (isNaN(tableIdNumber) || tableIdNumber <= 0) {
-      message.error("Invalid table ID.");
-      return;
+        message.error("Invalid table ID.");
+        return;
     }
 
     if (!accountid) {
-      message.error("User ID is missing. Please log in.");
-      return;
+        message.error("User ID is missing. Please log in.");
+        return;
     }
 
+    // Create booking payload
     const bookingPayload: BookingInterface = {
-      number_of_customer: values.number_of_customer,
-      package_id: values.package_id,
-      table_id: tableIdNumber,
-      employee_id: Number(accountid),
+        number_of_customer: values.number_of_customer,
+        package_id: values.package_id,
+        table_id: tableIdNumber,
+        employee_id: Number(accountid),
     };
 
     try {
-      const bookingRes = await CreateBooking(bookingPayload);
-      if (!bookingRes || !bookingRes.booking_id) {
-        throw new Error("Booking ID is missing from the response");
-      }
+        // Step 1: Create Booking
+        const bookingRes = await CreateBooking(bookingPayload);
+        if (!bookingRes || !bookingRes.booking_id) {
+            throw new Error("Booking ID is missing from the response");
+        }
 
-      const bookingId = bookingRes.booking_id;
-      const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(
-        (soupId) => ({
-          booking_id: bookingId,
-          soup_id: soupId,
-        })
-      );
+        const bookingId = bookingRes.booking_id;
 
-      try {
-        await Promise.all(
-          bookingSoupsPayload.map((bookingSoup) =>
-            CreateBookingSoup(bookingSoup)
-          )
+        // Step 2: Create BookingSoups
+        const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(
+            (soupId) => ({
+                booking_id: bookingId,
+                soup_id: soupId,
+            })
         );
-        message.success("Booking confirmed!");
-        navigate("/booking/table_list");
-      } catch (innerError) {
-        console.error("Error creating booking soups:", innerError);
-        message.error("Failed to create one or more soups.");
-      }
+
+        try {
+            await Promise.all(
+                bookingSoupsPayload.map((bookingSoup) =>
+                    CreateBookingSoup(bookingSoup)
+                )
+            );
+            message.success("Booking confirmed!");
+            navigate("/booking/table_list");
+        } catch (innerError) {
+            console.error("Error creating booking soups:", innerError);
+            message.error("Failed to create one or more soups.");
+        }
     } catch (error) {
-      console.error("Error creating booking:", error);
-      message.error("Booking failed! Please try again.");
+        console.error("Error creating booking:", error);
+        message.error("Booking failed! Please try again.");
     }
-  };
+};
+
 
   const onFinishFailed = (errorInfo: any) => {
     message.error("Please correct the errors in the form.");

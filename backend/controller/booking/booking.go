@@ -46,19 +46,6 @@ func CreateBooking(c *gin.Context) {
         return
     }
 
-    // Create booking-soup associations
-    for _, soupID := range booking.Soups {
-        bookingSoup := entity.BookingSoup{
-            BookingID: booking.ID,
-            SoupID:    soupID.ID,
-        }
-        if err := tx.Create(&bookingSoup).Error; err != nil {
-            tx.Rollback()
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking-soup association: " + err.Error()})
-            return
-        }
-    }
-
     if err := tx.Commit().Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed: " + err.Error()})
@@ -82,7 +69,7 @@ func GetAll(c *gin.Context) {
     }
 
     // Preload related data
-    if err := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Employee").Find(&bookings).Error; err != nil {
+    if err := db.Preload("Package").Preload("Table").Preload("Employee").Find(&bookings).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
@@ -101,7 +88,7 @@ func GetByID(c *gin.Context) {
         return
     }
 
-    if err := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Employee").First(&booking, ID).Error; err != nil {
+    if err := db.Preload("Package").Preload("Table").Preload("Employee").First(&booking, ID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
         return
     }
@@ -137,16 +124,6 @@ func UpdateBooking(c *gin.Context) {
     if err := c.ShouldBindJSON(&booking); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
         return
-    }
-
-    var soupEntities []entity.Soup
-    for _, soupID := range booking.Soups {
-        var existingSoup entity.Soup
-        if err := db.First(&existingSoup, soupID.ID).Error; err != nil || existingSoup.ID == 0 {
-            c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Soup with ID %d not found", soupID.ID)})
-            return
-        }
-        soupEntities = append(soupEntities, existingSoup)
     }
 
     var pkg entity.Package
@@ -190,26 +167,6 @@ func UpdateBooking(c *gin.Context) {
         tx.Rollback()
         c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to update booking"})
         return
-    }
-
-    // Delete old soups
-    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to clear soups"})
-        return
-    }
-
-    // Add new soups
-    for _, soupID := range booking.Soups {
-        bookingSoup := entity.BookingSoup{
-            BookingID: booking.ID,
-            SoupID:    soupID.ID,
-        }
-        if err := tx.Create(&bookingSoup).Error; err != nil {
-            tx.Rollback()
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking-soup association"})
-            return
-        }
     }
 
     // Commit Transaction
@@ -258,13 +215,7 @@ func DeleteBooking(c *gin.Context) {
         return
     }
 
-    // Soft delete booking-soup associations
-    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soup associations"})
-        return
-    }
-
+    // Commit Transaction
     if err := tx.Commit().Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed"})
