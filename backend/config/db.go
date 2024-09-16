@@ -27,19 +27,16 @@ func ConnectionDB() {
 }
 
 func SetupDatabase() {
-
     db.AutoMigrate(
-        
         &entity.Booking{},
         &entity.Soup{},
+        &entity.BookingSoup{},
         &entity.Table{},
         &entity.TableCapacity{},
         &entity.TableStatus{},
         &entity.Package{},
         &entity.Employee{},
         &entity.Member{},
-        &entity.BookingSoup{},
-        
     )
 
     TableFourSeat1 := entity.Table{TableName: "F1", TableStatusID: 1, TableCapacityID: 1}

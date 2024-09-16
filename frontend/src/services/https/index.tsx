@@ -70,17 +70,18 @@ async function GetBooking() {
 async function CreateBooking(data: BookingInterface) {
     try {
         const response = await axios.post(`${apiUrl}/booking`, data, requestOptions);
-        return response.data; // ส่งกลับข้อมูลที่ต้องการ
+        console.log("CreateBooking Response:", response.data);
+        return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            // ตรวจสอบว่าข้อผิดพลาดเป็น AxiosError หรือไม่
-            return error.response; // ส่งกลับข้อมูลตอบกลับที่มีข้อผิดพลาด
+            console.error("Axios Error Response:", error.response?.data);
+            return error.response?.data; // Return error response data for further handling
         }
-        // ถ้าไม่ใช่ AxiosError
         console.error("An unexpected error occurred:", error);
         return { error: "An unexpected error occurred" };
     }
 }
+
 
 async function GetBookingByID(id: string) {
     return await axios

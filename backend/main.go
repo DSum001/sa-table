@@ -41,13 +41,13 @@ func main() {
 
 		// Booking routes
 		r.GET("/booking", booking.GetAll)
-		r.GET("/booking/:id", booking.Get)
-		r.POST("/booking", booking.Create)
-		r.PATCH("/booking/:id", booking.Update)
-		r.DELETE("/booking/:id", booking.Delete)
+		r.GET("/booking/:id", booking.GetByID)
+		r.POST("/booking", booking.CreateBooking)
+		r.PATCH("/booking/:id", booking.UpdateBooking)
+		r.DELETE("/booking/:id", booking.DeleteBooking)
 
 		// Booking Soups route
-		r.POST("/booking_soups", booking_soups.Create)
+		r.POST("/booking_soups", booking_soups.CreateBookingSoup)
 
 		// Other routes
 		r.GET("/tables", tables.GetAll)

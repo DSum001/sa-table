@@ -8,31 +8,34 @@ import (
     "github.com/DSum001/sa-table/config"
     "github.com/DSum001/sa-table/entity"
     "github.com/gin-gonic/gin"
-
 )
 
-// CreateBooking handles the creation of a booking
-func Create(c *gin.Context) {
+// Create handles the creation of a booking
+func CreateBooking(c *gin.Context) {
     var booking entity.Booking
 
-    // Bind the JSON payload to the Booking struct
+    // Bind JSON to the Booking struct
     if err := c.ShouldBindJSON(&booking); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
         return
     }
 
     db := config.DB()
+    if db == nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection failed"})
+        return
+    }
+
     tx := db.Begin()
     if tx.Error != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start transaction"})
         return
     }
 
-    // Ensure transaction rollback in case of any errors
     defer func() {
         if r := recover(); r != nil {
             tx.Rollback()
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction failed"})
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction failed: " + fmt.Sprintf("%v", r)})
         }
     }()
 
@@ -43,20 +46,40 @@ func Create(c *gin.Context) {
         return
     }
 
-    // Commit the transaction
+    // Create booking-soup associations
+    for _, soupID := range booking.Soups {
+        bookingSoup := entity.BookingSoup{
+            BookingID: booking.ID,
+            SoupID:    soupID.ID,
+        }
+        if err := tx.Create(&bookingSoup).Error; err != nil {
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking-soup association: " + err.Error()})
+            return
+        }
+    }
+
     if err := tx.Commit().Error; err != nil {
+        tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed: " + err.Error()})
         return
     }
 
-    // Return success response
-    c.JSON(http.StatusCreated, gin.H{"message": "Booking created successfully"})
+    c.JSON(http.StatusCreated, gin.H{
+        "message":    "Booking created successfully",
+        "booking_id": booking.ID,
+    })
 }
 
 // GetAll retrieves all booking entries
 func GetAll(c *gin.Context) {
     var bookings []entity.Booking
     db := config.DB()
+
+    if db == nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection failed"})
+        return
+    }
 
     // Preload related data
     if err := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Employee").Find(&bookings).Error; err != nil {
@@ -68,11 +91,16 @@ func GetAll(c *gin.Context) {
 }
 
 // Get retrieves a booking entry by ID
-func Get(c *gin.Context) {
+func GetByID(c *gin.Context) {
     ID := c.Param("id")
     var booking entity.Booking
 
     db := config.DB()
+    if db == nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection failed"})
+        return
+    }
+
     if err := db.Preload("Soups").Preload("Package").Preload("Table").Preload("Employee").First(&booking, ID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
         return
@@ -85,7 +113,7 @@ func Get(c *gin.Context) {
 }
 
 // Update updates a booking entry by ID
-func Update(c *gin.Context) {
+func UpdateBooking(c *gin.Context) {
     var booking entity.Booking
     bookingIDStr := c.Param("id")
 
@@ -96,6 +124,11 @@ func Update(c *gin.Context) {
     }
 
     db := config.DB()
+    if db == nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection failed"})
+        return
+    }
+
     if err := db.First(&booking, bookingID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "ID not found"})
         return
@@ -140,6 +173,13 @@ func Update(c *gin.Context) {
         return
     }
 
+    defer func() {
+        if r := recover(); r != nil {
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction failed: " + fmt.Sprintf("%v", r)})
+        }
+    }()
+
     // Update booking
     if err := tx.Model(&booking).Updates(entity.Booking{
         NumberOfCustomer: booking.NumberOfCustomer,
@@ -182,10 +222,15 @@ func Update(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully"})
 }
 
-// Delete deletes a booking entry by ID
-func Delete(c *gin.Context) {
+// Delete performs a soft delete of a booking entry by ID
+func DeleteBooking(c *gin.Context) {
     ID := c.Param("id")
     db := config.DB()
+
+    if db == nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection failed"})
+        return
+    }
 
     var booking entity.Booking
     if err := db.First(&booking, ID).Error; err != nil {
@@ -199,15 +244,24 @@ func Delete(c *gin.Context) {
         return
     }
 
-    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soup associations"})
-        return
-    }
+    defer func() {
+        if r := recover(); r != nil {
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction failed: " + fmt.Sprintf("%v", r)})
+        }
+    }()
 
+    // Soft delete booking
     if err := tx.Delete(&booking).Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Soft delete booking-soup associations
+    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soup associations"})
         return
     }
 
@@ -217,5 +271,5 @@ func Delete(c *gin.Context) {
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "Booking deleted successfully"})
+    c.JSON(http.StatusOK, gin.H{"message": "Booking marked as deleted successfully"})
 }

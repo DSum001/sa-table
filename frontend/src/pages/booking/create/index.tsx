@@ -41,7 +41,9 @@ function CreateBookingTable() {
   const [loadingPackages, setLoadingPackages] = useState<boolean>(false);
   const [loadingTables, setLoadingTables] = useState<boolean>(false);
 
-  const [accountid, setAccountID] = useState<any>(localStorage.getItem("id"));
+  const [accountid, setAccountID] = useState<string | null>(
+    localStorage.getItem("id")
+  );
 
   useEffect(() => {
     if (!tableId) {
@@ -62,10 +64,16 @@ function CreateBookingTable() {
         ]);
 
         if (soupsRes.status === 200) setSoups(soupsRes.data);
+        else throw new Error("Failed to fetch soups");
+
         if (packagesRes.status === 200) setPackages(packagesRes.data);
+        else throw new Error("Failed to fetch packages");
+
         if (tablesRes.status === 200) setTables(tablesRes.data);
+        else throw new Error("Failed to fetch tables");
       } catch (error) {
-        message.error("Error fetching data.");
+        message.error("Error fetching data. Please try again.");
+        console.error("Data fetching error:", error);
       } finally {
         setLoadingSoups(false);
         setLoadingPackages(false);
@@ -105,15 +113,11 @@ function CreateBookingTable() {
 
     try {
       const bookingRes = await CreateBooking(bookingPayload);
-      const bookingId = bookingRes.data?.ID; // Ensure `ID` is correctly accessed
-
-      if (!bookingId) {
-        message.error(
-          "Booking ID is missing from the response. Please contact support."
-        );
-        return;
+      if (!bookingRes || !bookingRes.booking_id) {
+        throw new Error("Booking ID is missing from the response");
       }
 
+      const bookingId = bookingRes.booking_id;
       const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(
         (soupId) => ({
           booking_id: bookingId,
@@ -140,7 +144,8 @@ function CreateBookingTable() {
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    message.error("Please correct the errors in the form!");
+    message.error("Please correct the errors in the form.");
+    console.error("Form submission error:", errorInfo);
   };
 
   const handleBackButtonClick = () => {
@@ -191,13 +196,31 @@ function CreateBookingTable() {
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
-                    label="Name"
-                    name="name"
+                    label="Phone Number"
+                    name="phone_number"
                     rules={[
-                      { required: true, message: "Please enter your name!" },
+                      {
+                        required: true,
+                        message: "Please enter your phone number!",
+                      },
+                      {
+                        pattern: /^[0-9]{10}$/,
+                        message: "Phone number must be 10 digits!",
+                      },
                     ]}
                   >
-                    <Input placeholder="Name" />
+                    <Input
+                      placeholder="Phone Number"
+                      maxLength={10} // Limit input length to 10
+                      type="tel"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Only allow digits
+                        if (/^[0-9]*$/.test(value)) {
+                          form.setFieldsValue({ phone_number: value });
+                        }
+                      }}
+                    />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={12}>
@@ -209,6 +232,11 @@ function CreateBookingTable() {
                         required: true,
                         message: "Please enter the number of customers!",
                       },
+                      {
+                        type: 'number',
+                        min: 1,
+                        message: "Number of customers must be at least 1!",
+                      }
                     ]}
                   >
                     <InputNumber

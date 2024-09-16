@@ -2,7 +2,7 @@ import { Col, Row, Card, Button, Table, message, Input, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom"; // Ensure correct import
 import { useEffect, useState } from "react";
-import { GetBooking } from "../../../services/https"; // Adjust import according to your services file
+import { GetBooking, DeleteBookingByID } from "../../../services/https"; // Adjust import according to your services file
 import { BookingInterface } from "../../../interfaces/Booking";
 import {
   SearchOutlined,
@@ -45,13 +45,18 @@ const TableList = () => {
   // Define the handleEdit function
   const handleEdit = (id: number) => {
     // Navigate to the edit page with the booking ID as a query parameter
-    navigate(`/booking/edit?bookingId=${id}`);
+    navigate(`/booking/edit?bookingId=${id.toString()}`); // Convert id to string
   };
 
   // Define the handleDelete function
-  const handleDelete = (id: number) => {
-    // Implement the delete functionality here
-    console.log("Delete booking with ID:", id);
+  const handleDelete = async (id: number) => {
+    try {
+      await DeleteBookingByID(id.toString()); // Convert id to string if required
+      message.success('Booking deleted successfully');
+      fetchBookingData(); // Refresh the list after deletion
+    } catch (error) {
+      message.error('Failed to delete booking');
+    }
   };
 
   // Define columns after the functions
