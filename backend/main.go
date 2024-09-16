@@ -46,15 +46,15 @@ func main() {
 		r.PATCH("/booking/:id", booking.Update)
 		r.DELETE("/booking/:id", booking.Delete)
 
+		// Booking Soups route
 		r.POST("/booking_soups", booking_soups.Create)
-		
+
 		// Other routes
 		r.GET("/tables", tables.GetAll)
 		r.GET("/table_capacity", table_capacity.GetAll)
 		r.GET("/table_status", table_status.GetAll)
 		r.GET("/soups", soups.GetAll)
 		r.GET("/packages", packages.GetAll)
-
 	}
 
 	r.GET("/", func(c *gin.Context) {
@@ -71,7 +71,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, PATCH, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)

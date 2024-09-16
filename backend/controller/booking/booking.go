@@ -4,17 +4,20 @@ import (
     "fmt"
     "net/http"
     "strconv"
+
     "github.com/DSum001/sa-table/config"
     "github.com/DSum001/sa-table/entity"
     "github.com/gin-gonic/gin"
+
 )
 
-// Create creates a new booking entry
+// CreateBooking handles the creation of a booking
 func Create(c *gin.Context) {
     var booking entity.Booking
 
+    // Bind the JSON payload to the Booking struct
     if err := c.ShouldBindJSON(&booking); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
         return
     }
 
@@ -25,71 +28,30 @@ func Create(c *gin.Context) {
         return
     }
 
-    // Check if related entities exist
-    var pkg entity.Package
-    if err := tx.First(&pkg, booking.PackageID).Error; err != nil || pkg.ID == 0 {
-        tx.Rollback()
-        c.JSON(http.StatusNotFound, gin.H{"error": "Package not found"})
-        return
-    }
-    
-    var table entity.Table
-    if err := tx.First(&table, booking.TableID).Error; err != nil || table.ID == 0 {
-        tx.Rollback()
-        c.JSON(http.StatusNotFound, gin.H{"error": "Table not found"})
-        return
-    }
-    
-    var employee entity.Employee
-    if err := tx.First(&employee, booking.EmployeeID).Error; err != nil || employee.ID == 0 {
-        tx.Rollback()
-        c.JSON(http.StatusNotFound, gin.H{"error": "Employee not found"})
-        return
-    }
-    
-    for _, soupID := range booking.Soups {
-        var soup entity.Soup
-        if err := tx.First(&soup, soupID.ID).Error; err != nil {
+    // Ensure transaction rollback in case of any errors
+    defer func() {
+        if r := recover(); r != nil {
             tx.Rollback()
-            c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Soup with ID %d not found", soupID.ID)})
-            return
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction failed"})
         }
-    }
-    
-    // Create the booking entry
-    bk := entity.Booking{
-        NumberOfCustomer: booking.NumberOfCustomer,
-        PackageID:        booking.PackageID,
-        Package:          pkg,
-        TableID:          booking.TableID,
-        Table:            table,
-        EmployeeID:       booking.EmployeeID,
-        Employee:         employee,
-    }
-    
-    if err := tx.Create(&bk).Error; err != nil {
+    }()
+
+    // Create the booking
+    if err := tx.Create(&booking).Error; err != nil {
         tx.Rollback()
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking: " + err.Error()})
         return
     }
 
-    // Create the booking-soup associations
-    for _, soupID := range booking.Soups {
-        bookingSoup := entity.BookingSoup{
-            BookingID: bk.ID,
-            SoupID:    soupID.ID,
-        }
-        if err := tx.Create(&bookingSoup).Error; err != nil {
-            tx.Rollback()
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-            return
-        }
+    // Commit the transaction
+    if err := tx.Commit().Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed: " + err.Error()})
+        return
     }
 
-    tx.Commit()
-    c.JSON(http.StatusCreated, gin.H{"message": "Created successfully", "data": bk})
+    // Return success response
+    c.JSON(http.StatusCreated, gin.H{"message": "Booking created successfully"})
 }
-
 
 // GetAll retrieves all booking entries
 func GetAll(c *gin.Context) {
@@ -172,42 +134,64 @@ func Update(c *gin.Context) {
         return
     }
 
-    booking.ID = uint(bookingID)
-    booking.Soups = soupEntities
-    booking.Package = pkg
-    booking.Table = table
-    booking.Employee = employee
-
-    if err := db.Save(&booking).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update booking"})
+    tx := db.Begin()
+    if tx.Error != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start transaction"})
         return
     }
 
-    // Delete old booking-soups associations
-    if err := db.Exec("DELETE FROM booking_soups WHERE booking_id = ?", booking.ID).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old booking-soups associations"})
+    // Update booking
+    if err := tx.Model(&booking).Updates(entity.Booking{
+        NumberOfCustomer: booking.NumberOfCustomer,
+        PackageID:        booking.PackageID,
+        TableID:          booking.TableID,
+        EmployeeID:       booking.EmployeeID,
+    }).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to update booking"})
         return
     }
 
-    // Create new booking-soup associations
-    for _, soup := range soupEntities {
+    // Delete old soups
+    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to clear soups"})
+        return
+    }
+
+    // Add new soups
+    for _, soupID := range booking.Soups {
         bookingSoup := entity.BookingSoup{
             BookingID: booking.ID,
-            SoupID:    soup.ID,
+            SoupID:    soupID.ID,
         }
-        if err := db.Create(&bookingSoup).Error; err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        if err := tx.Create(&bookingSoup).Error; err != nil {
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking-soup association"})
             return
         }
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "Update successful", "data": booking})
+    // Commit Transaction
+    if err := tx.Commit().Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed"})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully"})
 }
 
 // Delete deletes a booking entry by ID
 func Delete(c *gin.Context) {
-    id := c.Param("id")
+    ID := c.Param("id")
     db := config.DB()
+
+    var booking entity.Booking
+    if err := db.First(&booking, ID).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+        return
+    }
 
     tx := db.Begin()
     if tx.Error != nil {
@@ -215,20 +199,23 @@ func Delete(c *gin.Context) {
         return
     }
 
-    // Delete booking-soups associations
-    if err := tx.Exec("DELETE FROM booking_soups WHERE booking_id = ?", id).Error; err != nil {
+    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
         tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soups associations"})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soup associations"})
         return
     }
 
-    // Delete booking entry
-    if err := tx.Exec("DELETE FROM bookings WHERE id = ?", id).Error; err != nil {
+    if err := tx.Delete(&booking).Error; err != nil {
         tx.Rollback()
-        c.JSON(http.StatusNotFound, gin.H{"error": "ID not found in bookings"})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
 
-    tx.Commit()
-    c.JSON(http.StatusOK, gin.H{"message": "Delete complete"})
+    if err := tx.Commit().Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed"})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "Booking deleted successfully"})
 }

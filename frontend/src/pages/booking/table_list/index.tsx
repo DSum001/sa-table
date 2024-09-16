@@ -45,7 +45,7 @@ const TableList = () => {
   // Define the handleEdit function
   const handleEdit = (id: number) => {
     // Navigate to the edit page with the booking ID as a query parameter
-    navigate(`/booking/table_list/edit?bookingId=${id}`);
+    navigate(`/booking/edit?bookingId=${id}`);
   };
 
   // Define the handleDelete function

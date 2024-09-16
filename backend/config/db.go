@@ -56,8 +56,8 @@ func SetupDatabase() {
     TableEightSeat2 := entity.Table{TableName: "E2", TableStatusID: 1, TableCapacityID: 3}
     
     StatusAvailable := entity.TableStatus{Status: "Available"}
-    StatusNotAvailable := entity.TableStatus{Status: "Not Available"}
     StatusReserved := entity.TableStatus{Status: "Reserved"}
+    StatusNotAvailable := entity.TableStatus{Status: "Cleaning"}
     
     CapacityFour := entity.TableCapacity{MinCustomer: 1, MaxCustomer: 4}
     CapacitySix := entity.TableCapacity{MinCustomer: 5, MaxCustomer: 6}
@@ -88,8 +88,8 @@ func SetupDatabase() {
     
     
     db.FirstOrCreate(&StatusAvailable, &entity.TableStatus{Status: "Available"})
-    db.FirstOrCreate(&StatusNotAvailable, &entity.TableStatus{Status: "Not Available"})
     db.FirstOrCreate(&StatusReserved, &entity.TableStatus{Status: "Reserved"})
+    db.FirstOrCreate(&StatusNotAvailable, &entity.TableStatus{Status: "Cleaning"})
     
     db.FirstOrCreate(&CapacityFour, &entity.TableCapacity{MinCustomer: 1, MaxCustomer: 4})
     db.FirstOrCreate(&CapacitySix, &entity.TableCapacity{MinCustomer: 5, MaxCustomer: 6})
