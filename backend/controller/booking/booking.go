@@ -187,7 +187,6 @@ func UpdateBooking(c *gin.Context) {
 
     c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully"})
 }
-
 // DeleteBooking performs a soft delete of a booking entry by ID
 func DeleteBooking(c *gin.Context) {
     ID := c.Param("id")
@@ -216,6 +215,13 @@ func DeleteBooking(c *gin.Context) {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction failed: " + fmt.Sprintf("%v", r)})
         }
     }()
+
+    // Delete BookingSoup associations
+    if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soup associations: " + err.Error()})
+        return
+    }
 
     // Soft delete booking
     if err := tx.Model(&booking).Update("deleted_at", time.Now()).Error; err != nil {
