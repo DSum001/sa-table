@@ -10,7 +10,7 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-// Create handles the creation of a booking
+// CreateBooking handles the creation of a booking
 func CreateBooking(c *gin.Context) {
     var booking entity.Booking
 
@@ -58,7 +58,7 @@ func CreateBooking(c *gin.Context) {
     })
 }
 
-// GetAll retrieves all booking entries
+// GetAll retrieves all non-deleted booking entries
 func GetAll(c *gin.Context) {
     var bookings []entity.Booking
     db := config.DB()
@@ -68,8 +68,8 @@ func GetAll(c *gin.Context) {
         return
     }
 
-    // Preload related data
-    if err := db.Preload("Package").Preload("Table").Preload("Employee").Find(&bookings).Error; err != nil {
+    // Preload related data and exclude soft-deleted records
+    if err := db.Preload("Package").Preload("Table").Preload("Employee").Preload("Soups").Find(&bookings).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
@@ -88,10 +88,16 @@ func GetByID(c *gin.Context) {
         return
     }
 
-    if err := db.Preload("Package").Preload("Table").Preload("Employee").First(&booking, ID).Error; err != nil {
+    // Preload related data including Soups
+    if err := db.Preload("Package").
+                    Preload("Table").
+                    Preload("Employee").
+                    Preload("Soups"). // Ensure this line is included
+                    First(&booking, ID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
         return
     }
+
     if booking.ID == 0 {
         c.JSON(http.StatusNoContent, gin.H{})
         return
@@ -99,7 +105,7 @@ func GetByID(c *gin.Context) {
     c.JSON(http.StatusOK, booking)
 }
 
-// Update updates a booking entry by ID
+// UpdateBooking updates a booking entry by ID
 func UpdateBooking(c *gin.Context) {
     var booking entity.Booking
     bookingIDStr := c.Param("id")
@@ -116,16 +122,19 @@ func UpdateBooking(c *gin.Context) {
         return
     }
 
+    // Fetch the existing booking
     if err := db.First(&booking, bookingID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "ID not found"})
         return
     }
 
+    // Bind JSON to the Booking struct
     if err := c.ShouldBindJSON(&booking); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
         return
     }
 
+    // Validate PackageID, TableID, and EmployeeID
     var pkg entity.Package
     if err := db.First(&pkg, booking.PackageID).Error; err != nil || pkg.ID == 0 {
         c.JSON(http.StatusNotFound, gin.H{"error": "Package not found"})
@@ -179,7 +188,7 @@ func UpdateBooking(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully"})
 }
 
-// Delete performs a soft delete of a booking entry by ID
+// DeleteBooking performs a soft delete of a booking entry by ID
 func DeleteBooking(c *gin.Context) {
     ID := c.Param("id")
     db := config.DB()
