@@ -187,7 +187,8 @@ func UpdateBooking(c *gin.Context) {
 
     c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully"})
 }
-// DeleteBooking performs a soft delete of a booking entry by ID
+
+// DeleteBooking performs a soft delete of a booking entry by ID and updates table status
 func DeleteBooking(c *gin.Context) {
     ID := c.Param("id")
     db := config.DB()
@@ -199,7 +200,7 @@ func DeleteBooking(c *gin.Context) {
 
     var booking entity.Booking
     if err := db.First(&booking, ID).Error; err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+        c.JSON(http.StatusNotFound, gin.H{"error": "Booking not found"})
         return
     }
 
@@ -230,6 +231,22 @@ func DeleteBooking(c *gin.Context) {
         return
     }
 
+    // Find the related table and update its status to available
+    var table entity.Table
+    if err := tx.First(&table, booking.TableID).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find table associated with booking"})
+        return
+    }
+
+    // Update the table status to available
+    table.TableStatusID = 1 // Assume 1 is the status for "Available"
+    if err := tx.Save(&table).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update table status"})
+        return
+    }
+
     // Commit Transaction
     if err := tx.Commit().Error; err != nil {
         tx.Rollback()
@@ -237,5 +254,5 @@ func DeleteBooking(c *gin.Context) {
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "Booking marked as deleted successfully"})
+    c.JSON(http.StatusOK, gin.H{"message": "Booking deleted and table status updated to available successfully"})
 }

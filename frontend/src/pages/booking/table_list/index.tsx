@@ -1,11 +1,10 @@
-import { Col, Row, Card, Button, Table, message, Input, Space } from "antd";
+import { Col, Row, Card, Button, Table, message, } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GetBooking, DeleteBookingByID } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import {
-  SearchOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
@@ -70,49 +69,18 @@ const TableList = () => {
       title: "Number of Customer",
       dataIndex: "number_of_customer",
       key: "number_of_customer",
-      sorter: (a, b) =>
-        (a.number_of_customer ?? 0) - (b.number_of_customer ?? 0),
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search number of customers"
-            value={selectedKeys[0] as string}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm?.()}
-            className="table-list-input"
-          />
-          <Space>
-            <Button
-              type="primary"
-              onClick={() => confirm?.()}
-              icon={<SearchOutlined />}
-              size="small"
-              className="table-list-search-button"
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => clearFilters?.()}
-              size="small"
-              className="table-list-reset-button"
-            >
-              Reset
-            </Button>
-          </Space>
-        </div>
-      ),
-      filterIcon: (filtered: boolean) => (
-        <SearchOutlined style={{ color: filtered ? "#F57C00" : undefined }} />
-      ),
-      onFilter: (value, record) =>
-        (record.number_of_customer ?? 0).toString().includes(value as string),
+      // ลบ sorter, filterDropdown, filterIcon ออกไป
+    },
+    {
+      title: "Soups",
+      dataIndex: "soups",
+      key: "soups",
+      render: (soups) => {
+        if (Array.isArray(soups)) {
+          return soups.map((soup) => soup.name).join(", ");
+        }
+        return "N/A";
+      },
     },
     {
       title: "Package",
@@ -123,17 +91,6 @@ const TableList = () => {
       title: "Employee",
       key: "employee_name",
       render: (record) => <>{record.employee?.first_name ?? "N/A"}</>,
-    },
-    {
-      title: "Soup Selection",
-      dataIndex: "soups",
-      key: "soups",
-      render: (soups) => {
-        if (Array.isArray(soups)) {
-          return soups.map((soup) => soup.name).join(", ");
-        }
-        return "N/A";
-      },
     },
     {
       title: "Actions",

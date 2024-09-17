@@ -78,10 +78,15 @@ function Booking() {
     const status = tableStatus.find((s) => s.ID === table.table_status_id)
       ?.status;
 
-    if (status === "Not Available" || status === "Reserved") {
+    if (status === "Occupied") {
       message.warning("This table is not available for booking!");
       return;
     }
+    if (status === "Cleaning") {
+      message.warning("This table is not already for booking!");
+      return;
+    }
+
 
     if (table.table_name) {
       const params = new URLSearchParams({
@@ -100,12 +105,10 @@ function Booking() {
     switch (status) {
       case "Available":
         return "green";
-      case "Reserved":
-        return "orange";
       case "Occupied":
-        return "red";
-      case "Not Available":
-        return "gray";
+        return "Orange";
+      case "Cleaning":
+        return "blue";
       default:
         return "default";
     }
