@@ -23,6 +23,19 @@ func CreateBookingSoup(c *gin.Context) {
         return
     }
 
+    // Verify that Booking and Soup exist
+    var booking entity.Booking
+    if err := db.First(&booking, bookingSoup.BookingID).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Booking not found"})
+        return
+    }
+
+    var soup entity.Soup
+    if err := db.First(&soup, bookingSoup.SoupID).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Soup not found"})
+        return
+    }
+
     // Create the booking-soup association
     if err := db.Create(&bookingSoup).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking-soup association: " + err.Error()})

@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/http"
     "strconv"
-
+    "time"
     "github.com/DSum001/sa-table/config"
     "github.com/DSum001/sa-table/entity"
     "github.com/gin-gonic/gin"
@@ -218,7 +218,7 @@ func DeleteBooking(c *gin.Context) {
     }()
 
     // Soft delete booking
-    if err := tx.Delete(&booking).Error; err != nil {
+    if err := tx.Model(&booking).Update("deleted_at", time.Now()).Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return

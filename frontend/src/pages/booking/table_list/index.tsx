@@ -45,17 +45,16 @@ const TableList = () => {
   // Define the handleEdit function
   const handleEdit = (id: number) => {
     // Navigate to the edit page with the booking ID as a query parameter
-    navigate(`/booking/edit?bookingId=${id.toString()}`); // Convert id to string
+    navigate(`/booking/edit?bookingId=${id}`);
   };
 
-  // Define the handleDelete function
   const handleDelete = async (id: number) => {
     try {
-      await DeleteBookingByID(id.toString()); // Convert id to string if required
-      message.success('Booking deleted successfully');
+      await DeleteBookingByID(id.toString()); // แปลง id เป็น string
+      message.success("Booking deleted successfully");
       fetchBookingData(); // Refresh the list after deletion
     } catch (error) {
-      message.error('Failed to delete booking');
+      message.error("Failed to delete booking");
     }
   };
 
