@@ -90,10 +90,10 @@ func GetByID(c *gin.Context) {
 
     // Preload related data including Soups
     if err := db.Preload("Package").
-                    Preload("Table").
-                    Preload("Employee").
-                    Preload("Soups"). // Ensure this line is included
-                    First(&booking, ID).Error; err != nil {
+        Preload("Table").
+        Preload("Employee").
+        Preload("Soups"). // Ensure this line is included
+        First(&booking, ID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
         return
     }

@@ -9,10 +9,6 @@ type Member struct {
 	PhoneNumber string     `json:"phone_number"`
 	Email       string     `json:"email"`
 
-	// FK from Rank
-	RankID      uint       `json:"rank_id"`
-	Rank        Rank       `gorm:"foreignKey:RankID"`
-
 	// FK from Employee
 	EmployeeID  uint       `json:"employee_id"`
 	Employee    Employee   `gorm:"foreignKey:EmployeeID"`
