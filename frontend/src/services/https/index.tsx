@@ -111,7 +111,7 @@ async function GetTables() {
     .catch((e) => e.response);
 }
 
-async function UpdateStatus(id: number | undefined, data: TableInterface) {
+async function UpdateTableStatus(id: number | undefined, data: TableInterface) {
     return await axios
     .patch(`${apiUrl}/tables/${id}`, data, requestOptions)
     .then((res) => res)
@@ -163,7 +163,6 @@ export {
     DeleteUsersById,
     CreateUser,
     GetTables,
-    UpdateStatus,
     GetTableStatus,
     CreateBooking,
     GetBooking,
@@ -174,4 +173,5 @@ export {
     UpdateBooking,
     DeleteBookingByID,
     CreateBookingSoup,
+    UpdateTableStatus,
 };

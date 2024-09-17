@@ -1,45 +1,71 @@
 /* Select style */
 .select-style {
-    width: 100%;
-    border-radius: 8px;
-    border-color: #dcdcdc;
-    color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Card style */
-  .card-style {
-    background-color: #F5F5F5;
-    padding: 24px;
-    border-radius: 12px;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Button style */
-  .button-style {
-    margin-top: 20px;
-    background-color: #FF7F50; /* Coral color */
-    border-color: #FF7F50;
-    color: #ffffff;
-    border-radius: 8px;
-    font-weight: bold;
-  }
-  
-  /* Back button style */
-  .back-button-style {
-    margin-top: 20px;
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: #ffffff;
-    border-radius: 8px;
-    font-weight: bold;
-  }
-  
-  /* Heading style */
-  .heading-style {
-    text-align: center;
-    color: #FF7F50; /* Coral color */
-    font-weight: bold;
-  }
-  
+  width: 100%;
+  border-radius: 8px;
+  border-color: #dcdcdc;
+  color: #ff6262;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.select-style:focus {
+  border-color: #E75B4E; /* Rich tomato color on focus */
+  box-shadow: 0 2px 8px rgba(255, 138, 101, 0.4); /* Warmer peach shadow on focus */
+  outline: none; /* Ensure outline is removed on focus */
+}
+
+/* Card style */
+.card-style {
+  background-color: #FEF6E4; /* Light cream with warmth */
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #F0E0D0; /* Subtle, warm border */
+  box-shadow: 0 4px 12px rgba(228, 170, 112, 0.3); /* Soft, warm peach shadow */
+}
+
+/* Button style */
+.button-style {
+  margin-top: 20px;
+  background-color: #E75B4E; /* Rich tomato color */
+  border: 1px solid #E75B4E; /* Matching border color */
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 12px 24px; /* Generous padding for comfort */
+  text-align: center;
+  font-size: 1rem; /* Consistent font size */
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.button-style:hover {
+  background-color: #D64D3D; /* Slightly darker shade on hover */
+  box-shadow: 0 4px 12px rgba(255, 108, 85, 0.3); /* Warm peach shadow on hover */
+}
+
+/* Back button style */
+.back-button-style {
+  margin-top: 20px;
+  background-color: #6C757D; /* Neutral gray color */
+  border: 1px solid #6C757D; /* Matching border color */
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 12px 24px; /* Generous padding for comfort */
+  text-align: center;
+  font-size: 1rem; /* Consistent font size */
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.back-button-style:hover {
+  background-color: #5A6268; /* Slightly darker gray on hover */
+  box-shadow: 0 4px 12px rgba(108, 115, 125, 0.3); /* Subtle gray shadow on hover */
+}
+
+/* Heading style */
+.heading-style {
+  text-align: center;
+  color: #D9773D; /* Warm orange for consistency */
+  font-weight: bold;
+  font-size: 2rem; /* Slightly larger font size for emphasis */
+  margin: 20px 0; /* Balanced margin for spacing */
+  line-height: 1.2; /* Improved readability with line height */
+}

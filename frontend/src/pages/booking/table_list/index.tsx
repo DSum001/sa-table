@@ -1,28 +1,27 @@
 import { Col, Row, Card, Button, Table, message, Input, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useNavigate } from "react-router-dom"; // Ensure correct import
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { GetBooking, DeleteBookingByID } from "../../../services/https"; // Adjust import according to your services file
+import { GetBooking, DeleteBookingByID } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import '../../../App.css'; // Import the CSS file
 
-// Define the columns for the table
 const TableList = () => {
-  const navigate = useNavigate(); // Initialize navigate here
+  const navigate = useNavigate();
   const [bookingData, setBookingData] = useState<BookingInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Fetch booking data from the API
   const fetchBookingData = async () => {
     setLoading(true);
     try {
-      const res = await GetBooking(); // Fetch data from the API
+      const res = await GetBooking();
       if (res.status === 200) {
-        setBookingData(res.data); // Set the data from the API response
+        setBookingData(res.data);
       } else {
         message.error(res.data.error || "Unable to fetch data");
       }
@@ -37,48 +36,42 @@ const TableList = () => {
     fetchBookingData();
   }, []);
 
-  // Navigate back to the booking page
   const handleButtonClick = () => {
     navigate("/booking");
   };
 
-  // Define the handleEdit function
   const handleEdit = (id: number) => {
-    // Navigate to the edit page with the booking ID as a query parameter
     navigate(`/booking/edit?bookingId=${id}`);
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await DeleteBookingByID(id.toString()); // แปลง id เป็น string
+      await DeleteBookingByID(id.toString());
       message.success("Booking deleted successfully");
-      fetchBookingData(); // Refresh the list after deletion
+      fetchBookingData();
     } catch (error) {
       message.error("Failed to delete booking");
     }
   };
 
-  // Define columns after the functions
   const columns: ColumnsType<BookingInterface> = [
     {
       title: "ID",
       dataIndex: "ID",
       key: "ID",
-      sorter: (a, b) => (a.ID ?? 0) - (b.ID ?? 0), // Handle undefined values
+      sorter: (a, b) => (a.ID ?? 0) - (b.ID ?? 0),
     },
-
     {
       title: "Table",
       key: "table_id",
-      render: (record) => <>{record.table?.table_name ?? "N/A"}</>, // Handle undefined values
+      render: (record) => <>{record.table?.table_name ?? "N/A"}</>,
     },
-
     {
       title: "Number of Customer",
       dataIndex: "number_of_customer",
       key: "number_of_customer",
       sorter: (a, b) =>
-        (a.number_of_customer ?? 0) - (b.number_of_customer ?? 0), // Handle undefined values
+        (a.number_of_customer ?? 0) - (b.number_of_customer ?? 0),
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -92,23 +85,23 @@ const TableList = () => {
             onChange={(e) =>
               setSelectedKeys(e.target.value ? [e.target.value] : [])
             }
-            onPressEnter={() => confirm?.()} // Check if confirm is defined before calling it
-            style={{ width: 188, marginBottom: 8, display: "block" }}
+            onPressEnter={() => confirm?.()}
+            className="table-list-input"
           />
           <Space>
             <Button
               type="primary"
-              onClick={() => confirm?.()} // Check if confirm is defined before calling it
+              onClick={() => confirm?.()}
               icon={<SearchOutlined />}
               size="small"
-              style={{ width: 90 }}
+              className="table-list-search-button"
             >
               Search
             </Button>
             <Button
-              onClick={() => clearFilters?.()} // Check if clearFilters is defined before calling it
+              onClick={() => clearFilters?.()}
               size="small"
-              style={{ width: 90 }}
+              className="table-list-reset-button"
             >
               Reset
             </Button>
@@ -116,36 +109,32 @@ const TableList = () => {
         </div>
       ),
       filterIcon: (filtered: boolean) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+        <SearchOutlined style={{ color: filtered ? "#F57C00" : undefined }} />
       ),
       onFilter: (value, record) =>
         (record.number_of_customer ?? 0).toString().includes(value as string),
     },
-
     {
       title: "Package",
       key: "package_name",
-      render: (record) => <>{record.package?.name ?? "N/A"}</>, // Handle undefined values
+      render: (record) => <>{record.package?.name ?? "N/A"}</>,
     },
-
     {
       title: "Employee",
       key: "employee_name",
-      render: (record) => <>{record.employee?.first_name ?? "N/A"}</>, // Handle undefined values
+      render: (record) => <>{record.employee?.first_name ?? "N/A"}</>,
     },
-
     {
       title: "Soup Selection",
       dataIndex: "soups",
       key: "soups",
       render: (soups) => {
         if (Array.isArray(soups)) {
-          return soups.map((soup) => soup.name).join(", "); // Assuming each soup has a 'name' property
+          return soups.map((soup) => soup.name).join(", ");
         }
         return "N/A";
       },
     },
-
     {
       title: "Actions",
       key: "actions",
@@ -155,7 +144,7 @@ const TableList = () => {
             type="link"
             icon={<EditOutlined />}
             onClick={() => handleEdit(record.ID ?? 0)}
-            style={{ marginRight: 8 }}
+            className="table-list-edit-button"
           >
             Edit
           </Button>
@@ -164,6 +153,7 @@ const TableList = () => {
             icon={<DeleteOutlined />}
             danger
             onClick={() => handleDelete(record.ID ?? 0)}
+            className="table-list-delete-button"
           >
             Delete
           </Button>
@@ -173,14 +163,14 @@ const TableList = () => {
   ];
 
   return (
-    <>
+    <div className="table-list-container">
       <Row gutter={[16, 16]}>
         <Col xs={24}>
-          <h1 style={{ textAlign: "center" }}>Booking List</h1>
+          <h1 className="table-list-header">Booking List</h1>
         </Col>
 
         <Col xs={24}>
-          <Card style={{ backgroundColor: "#F5F5F5" }}>
+          <Card className="table-list-card">
             <Table
               dataSource={bookingData}
               columns={columns}
@@ -188,8 +178,9 @@ const TableList = () => {
               bordered
               title={() => "Booking List"}
               loading={loading}
-              style={{ marginTop: "20px" }}
+              className="table-list"
               rowKey="ID"
+              rowClassName="custom-row"
             />
           </Card>
         </Col>
@@ -200,7 +191,7 @@ const TableList = () => {
               <Button
                 type="primary"
                 onClick={handleButtonClick}
-                style={{ marginTop: "20px" }}
+                className="table-list-back-button"
               >
                 Back to Table Page
               </Button>
@@ -208,7 +199,7 @@ const TableList = () => {
           </Row>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

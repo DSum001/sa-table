@@ -51,6 +51,7 @@ func main() {
 
 		// Other routes
 		r.GET("/tables", tables.GetAll)
+		r.PATCH("/tables/:id", tables.UpdateStatus)
 		r.GET("/table_capacity", table_capacity.GetAll)
 		r.GET("/table_status", table_status.GetAll)
 		r.GET("/soups", soups.GetAll)

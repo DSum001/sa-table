@@ -1,9 +1,9 @@
-/*Table page CSS*/
+/* Table page CSS */
 /* Global Styles */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #FFF8E7; /* Light peach background */
-  color: #333;
+  background-color: #FFF6F1; /* Light beige background for a warm, food-like feel */
+  color: #4A4A4A; /* Dark gray for better readability */
   margin: 0;
   padding: 0;
 }
@@ -11,18 +11,18 @@ body {
 /* Heading styling */
 .heading {
   text-align: center;
-  color: #FF7F50; /* Coral */
+  color: #D9773D; /* Warm, food-inspired orange */
   font-weight: bold;
-  font-size: 2rem;
-  margin: 20px 0;
+  font-size: 2rem; /* Slightly smaller font size */
+  margin: 20px 0; /* Reduced margin for closer spacing */
 }
 
 /* Card styling */
 .card {
-  background-color: #FFF8E7; /* Light peach */
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0px 10px 30px rgba(255, 160, 122, 0.2); /* Soft shadow */
+  background-color: #FEF6E4; /* Light cream with a hint of warmth */
+  border-radius: 12px; /* Slightly less rounded corners */
+  padding: 15px; /* Reduced padding for a more compact look */
+  box-shadow: 0px 8px 20px rgba(220, 150, 90, 0.2); /* Softer shadow */
 }
 
 /* Spin container styling */
@@ -30,37 +30,37 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
+  height: 180px; /* Slightly smaller height */
 }
 
 /* Empty state styling */
 .emptyState {
   text-align: center;
-  color: #FF7F50; /* Coral */
-  font-size: 1.2rem;
+  color: #D9773D; /* Matching warm orange for consistency */
+  font-size: 1.1rem; /* Slightly smaller font size */
 }
 
 /* Button styling */
 .tableButton {
-  width: 100%;
-  height: 150px;
-  border: 1px solid #FFB347; /* Light orange border */
-  box-shadow: rgba(255, 160, 122, 0.3) 0px 8px 24px 0px; /* Softer peach shadow */
-  border-radius: 16px;
+  width: 150px; /* Fixed width to make the button square */
+  height: 150px; /* Fixed height to make the button square */
+  border: 1px solid #FBBF77; /* Light, warm orange border */
+  box-shadow: rgba(220, 150, 90, 0.3) 0px 6px 18px 0px; /* Softer shadow for buttons */
+  border-radius: 12px; /* Rounded corners for a soft look */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-color: #FFFAF3; /* Very light cream background */
+  background-color: #FEF9F3; /* Very light, warm cream background */
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
-  padding: 20px;
-  font-size: 1rem;
+  padding: 15px; /* Reduced padding */
+  font-size: 0.9rem; /* Slightly smaller font size */
 }
 
 .tableButton:hover {
-  background-color: #FFEDDB; /* Slightly warmer tone on hover */
-  box-shadow: rgba(255, 160, 122, 0.4) 0px 14px 28px 0px; /* More subtle hover shadow */
+  background-color: #FCE8D1; /* Slightly warmer tone on hover */
+  box-shadow: rgba(220, 150, 90, 0.4) 0px 10px 20px 0px; /* Enhanced hover shadow */
   transform: scale(1.05);
 }
 
@@ -70,34 +70,136 @@ body {
 
 /* Statistic value styling */
 .statisticValue {
-  color: #FF7F50; /* Coral */
+  color: #D9773D; /* Warm orange to match theme */
+  font-size: 1rem; /* Slightly smaller font size */
 }
 
 /* Icon styling */
 .icon {
-  color: #FF7F50; /* Coral */
+  color: #D9773D; /* Consistent warm orange */
 }
 
 /* Tag styling */
 .ant-tag {
   font-size: 0.875rem;
   font-weight: 500;
+  background-color: #FEF6E4; /* Light cream background for tags */
+  color: #D9773D; /* Warm orange text for tags */
+  border-radius: 10px; /* Slightly smaller rounded corners */
+  padding: 4px 8px; /* Reduced padding for tags */
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .heading {
-    font-size: 1.5rem;
+    font-size: 1.6rem; /* Adjusted size for smaller screens */
+    margin: 15px 0; /* Reduced margin */
   }
 
   .tableButton {
-    height: auto;
-    padding: 10px;
+    width: 120px; /* Smaller width for mobile */
+    height: 120px; /* Smaller height for mobile */
+    padding: 10px; /* Adjusted padding for mobile */
+    font-size: 0.8rem; /* Smaller font size for mobile */
   }
 }
+
+
 /*----------------------------------------------------------------------------------------------*/
 /*Booking style*/
 
+/*----------------------------------------------------------------------------------------------*/
+/*Booking list style*/
+/* App.css */
+
+/* Container for the entire table list */
+.table-list-container {
+  padding: 20px;
+  background-color: #F5F5F5; /* Light cream background for a warm feel */
+  border-radius: 10px;
+}
+
+/* Header style */
+.table-list-header {
+  text-align: center;
+  color: #D95D39; /* Warm, soft orange */
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Card style */
+.table-list-card {
+  background-color: #FFF8E1; /* Soft light yellow for the card background */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Button style */
+.table-list-button {
+  background-color: #F57C00; /* Warm orange for primary button */
+  border-color: #F57C00;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+}
+
+.table-list-back-button {
+  background-color: #F57C00;
+  border-color: #F57C00;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+}
+
+/* Search and Reset button styles */
+.table-list-search-button {
+  width: 100px;
+  background-color: #FFB74D; /* Soft orange for search button */
+  border-color: #FFB74D;
+}
+
+.table-list-reset-button {
+  width: 100px;
+  background-color: #FF8A65; /* Soft coral for reset button */
+  border-color: #FF8A65;
+}
+
+/* Edit and Delete button styles */
+.table-list-edit-button {
+  margin-right: 8px;
+  color: #4CAF50; /* Green color for edit button */
+}
+
+.table-list-delete-button {
+  color: #F44336; /* Red color for delete button */
+}
+
+/* Table style */
+.table-list {
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Table row custom style if needed */
+.custom-row {
+  background-color: #FFFFFF; /* White background for table rows */
+}
+
+/* Input field styling */
+.ant-input {
+  border-radius: 5px;
+  border-color: #FFB74D; /* Light orange border for input fields */
+}
+
+/* Ant Design Select dropdown */
+.ant-select-selector {
+  border-radius: 5px;
+  border-color: #FFB74D; /* Light orange border for dropdown */
+}
 
 /*----------------------------------------------------------------------------------------------*/
 /*full layout 
