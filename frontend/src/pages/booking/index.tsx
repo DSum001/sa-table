@@ -101,16 +101,16 @@ function Booking() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case "Available":
-        return "green";
+        return "#8BC34A"; // Soft green
       case "Occupied":
-        return "Orange";
+        return "#FFB74D"; // Warm orange
       case "Cleaning":
-        return "blue";
+        return "#64B5F6"; // Soft blue
       default:
-        return "default";
+        return "#B0BEC5"; // Light grey
     }
   };
 
@@ -159,7 +159,7 @@ function Booking() {
                       }}
                     >
                       <Statistic
-                        title={`Table NO: ${table.table_name || "Unknown"}`}
+                        title={`Table : ${table.table_name || "Unknown"}`}
                         value={formatCapacity(
                           tableCapacity?.min,
                           tableCapacity?.max
