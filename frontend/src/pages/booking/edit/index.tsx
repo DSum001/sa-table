@@ -1,74 +1,156 @@
-import { Card, Row, Col, Input, Select, Button, Form, InputNumber } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { BookingInterface } from "../../../interfaces/Booking";
+import { PackageInterface } from "../../../interfaces/Package";
+import { SoupInterface } from "../../../interfaces/Soup";
+import {
+  Card,
+  Row,
+  Col,
+  Input,
+  Select,
+  Button,
+  Form,
+  message,
+  InputNumber,
+} from "antd";
+import {
+  GetSoups,
+  GetPackages,
+  GetBookingByID,
+  UpdateBooking,
+} from "../../../services/https";
+import { useNavigate, useParams } from "react-router-dom";
 
 function EditBookingTable() {
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const [booking, setBooking] = useState<BookingInterface | null>(null);
+  const [soup, setSoup] = useState<SoupInterface[]>([]); // Initialize as an array
+  const [packages, setPackages] = useState<PackageInterface[]>([]);
+  const [loadingPackages, setLoadingPackages] = useState<boolean>(true);
+  const [tableName, setTableName] = useState<string>("");
+
+  const { id } = useParams(); // Destructure directly
   const [form] = Form.useForm();
 
-  // Static data
-  const soups = [
-    { ID: 1, name: "Tomato Soup" },
-    { ID: 2, name: "Chicken Soup" },
-    { ID: 3, name: "Mushroom Soup" },
-    { ID: 4, name: "Beef Soup" },
-  ];
+  // Handles form submission
+  const onFinish = async (values: BookingInterface) => {
+    if (!id) {
+      messageApi.error("Invalid booking ID!");
+      return;
+    }
 
-  const packages = [
-    { ID: 1, name: "Standard Package" },
-    { ID: 2, name: "Deluxe Package" },
-    { ID: 3, name: "Premium Package" },
-  ];
+    try {
+      const res = await UpdateBooking(id, values);
+      if (res) {
+        messageApi.success("Booking updated successfully.");
+        setTimeout(() => navigate("/booking/booking_list"), 2000);
+      } else {
+        throw new Error("Update failed.");
+      }
+    } catch (error) {
+      messageApi.error("An error occurred while updating the booking.");
+    }
+  };
 
-  const tables = [
-    { ID: 1, table_capacity_id: 1 },
-    { ID: 2, table_capacity_id: 2 },
-    { ID: 3, table_capacity_id: 4 },
-  ];
+  // Fetches soups data
+  const fetchSoups = async () => {
+    try {
+      const res = await GetSoups();
+      if (Array.isArray(res)) {
+        setSoup(res);
+      } else {
+        throw new Error("Invalid response format.");
+      }
+    } catch (error) {
+      messageApi.error("Failed to fetch soups.");
+    }
+  };
 
-  const tableId = 1; // Static table ID
-  const tableName = "Table 1";
+  // Fetches packages data
+  const fetchPackages = async () => {
+    try {
+      const res = await GetPackages();
+      if (Array.isArray(res)) {
+        setPackages(res);
+        setLoadingPackages(false);
+      } else {
+        throw new Error("Invalid response format.");
+      }
+    } catch (error) {
+      messageApi.error("Failed to fetch packages.");
+    }
+  };
 
+  // Fetches booking data by ID
+  const fetchBookingById = async () => {
+    if (!id) {
+      messageApi.error("Invalid booking ID!");
+      return;
+    }
+
+    try {
+      const res = await GetBookingByID(id);
+      if (res) {
+        setBooking(res);
+        setTableName(res.table_name);
+        form.setFieldsValue({
+          phone_number: res.phone_number,
+          number_of_customer: res.number_of_customer,
+          SoupID: res.SoupID,
+          PackageID: res.PackageID,
+        });
+      } else {
+        throw new Error("Failed to fetch booking data.");
+      }
+    } catch (error) {
+      messageApi.error("Failed to fetch booking data.");
+    }
+  };
+
+  // Renders soup selection fields
   const renderSoupFields = () => {
-    const table = tables.find((t) => t.ID === tableId);
-    const numberOfSoups = table?.table_capacity_id === 1 ? 2 : 4;
+    if (soup.length === 0) {
+      return <Col xs={24}><p>No soups available.</p></Col>;
+    }
 
-    return Array.from({ length: numberOfSoups }, (_, i) => (
-      <Col xs={24} sm={24} md={12} key={`soup${i + 1}`}>
+    return (
+      <Col xs={24} sm={24} md={12}>
         <Form.Item
-          label={`Soup ${i + 1}`}
-          name={`soup${i + 1}`}
+          label="Soup Selection"
+          name="SoupID"
           rules={[{ required: true, message: "Please select a soup!" }]}
         >
-          <Select placeholder="Select a soup" className="select-style">
-            {soups.map((soup) => (
-              <Select.Option key={soup.ID} value={soup.ID}>
-                {soup.name}
+          <Select placeholder="Select a soup">
+            {soup.map((soupOption) => (
+              <Select.Option key={soupOption.ID} value={soupOption.ID}>
+                {soupOption.name}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
       </Col>
-    ));
+    );
   };
 
-  const onFinish = (values: any) => {
-    console.log("Form values:", values);
-    // Here you would handle form submission
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
-
+  // Handles back button click
   const handleBackButtonClick = () => {
-    // Navigate to the previous page or desired location
-    console.log("Back button clicked");
+    navigate("/booking/booking_list");
   };
+
+  useEffect(() => {
+    fetchSoups();
+    fetchPackages();
+    fetchBookingById();
+  }, []);
 
   return (
     <>
+      {contextHolder}
       <Row gutter={[16, 16]} justify="center" style={{ marginBottom: "20px" }}>
-        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-          <h1 className="heading-style">Edit Booking for {tableName}</h1>
+        <Col xs={24}>
+          <h1 className="heading-style">Edit Table Booking for {tableName}</h1>
         </Col>
       </Row>
       <Row gutter={[16, 16]} justify="center">
@@ -78,19 +160,18 @@ function EditBookingTable() {
               form={form}
               layout="vertical"
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              initialValues={{ table_id: tableId }}
             >
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
-                    label="Name"
-                    name="name"
+                    label="Phone Number"
+                    name="phone_number"
                     rules={[
-                      { required: true, message: "Please enter your name!" },
+                      { required: true, message: "Please enter your phone number!" },
+                      { pattern: /^[0-9]{10}$/, message: "Phone number must be 10 digits!" },
                     ]}
                   >
-                    <Input placeholder="Name" />
+                    <Input maxLength={10} placeholder="Phone Number" />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={12}>
@@ -98,53 +179,45 @@ function EditBookingTable() {
                     label="Number of Customers"
                     name="number_of_customer"
                     rules={[
-                      {
-                        required: true,
-                        message: "Please enter number of customers!",
-                      },
+                      { required: true, message: "Please enter the number of customers!" },
+                      { type: "number", min: 1, message: "Number of customers must be at least 1!" },
                     ]}
                   >
-                    <InputNumber
-                      min={1}
-                      placeholder="Number of customers"
-                      style={{ width: "100%" }}
-                    />
+                    <InputNumber min={1} placeholder="Customers" style={{ width: "100%" }} />
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={[16, 16]}>
+                {renderSoupFields()}
+              </Row>
+              <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
                     label="Package"
-                    name="package_id"
-                    rules={[
-                      { required: true, message: "Please select a package!" },
-                    ]}
+                    name="PackageID"
+                    rules={[{ required: true, message: "Please select a package!" }]}
                   >
                     <Select
                       placeholder="Select a package"
-                      className="select-style"
-                    >
-                      {packages.map((pkg) => (
-                        <Select.Option key={pkg.ID} value={pkg.ID}>
-                          {pkg.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
+                      loading={loadingPackages}
+                      options={packages.map((pkg) => ({
+                        value: pkg.ID,
+                        label: pkg.name,
+                      }))}
+                    />
                   </Form.Item>
                 </Col>
-                {renderSoupFields()}
-                <Col xs={24} sm={24} md={24}>
-                  <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                      Submit
-                    </Button>
-                    <Button
-                      type="default"
-                      onClick={handleBackButtonClick}
-                      style={{ marginLeft: "8px" }}
-                    >
-                      Back
-                    </Button>
-                  </Form.Item>
+              </Row>
+              <Row justify="space-between">
+                <Col>
+                  <Button type="default" onClick={handleBackButtonClick}>
+                    Back
+                  </Button>
+                </Col>
+                <Col>
+                  <Button type="primary" htmlType="submit">
+                    Confirm
+                  </Button>
                 </Col>
               </Row>
             </Form>

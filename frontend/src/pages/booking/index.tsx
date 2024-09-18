@@ -158,7 +158,7 @@ function Booking() {
                         textAlign: "left",
                       }}
                     >
-                      <Statistic
+                      <Statistic className="statistic-container"
                         title={`Table : ${table.table_name || "Unknown"}`}
                         value={formatCapacity(
                           tableCapacity?.min,

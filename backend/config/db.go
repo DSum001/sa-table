@@ -39,7 +39,7 @@ func SetupDatabase() {
         &entity.Member{},
     )
 
-    guest := entity.Member{PhoneNumber: "0000000000"}
+    member1 := entity.Member{PhoneNumber: "0000000000"}
 
     TableFourSeat1 := entity.Table{TableName: "F1", TableStatusID: 1, TableCapacityID: 1}
     TableFourSeat2 := entity.Table{TableName: "F2", TableStatusID: 1, TableCapacityID: 1}
@@ -71,7 +71,7 @@ func SetupDatabase() {
     Package_seafood := entity.Package{Name: "ทะเล", Price: 249, Point: 100}
     Package_beef := entity.Package{Name: "เนื้อ", Price: 279, Point: 150}
 
-    db.FirstOrCreate(&guest, &entity.Member{PhoneNumber: "0000000000"})
+    db.FirstOrCreate(&member1, &entity.Member{PhoneNumber: "0000000000"})
 
     db.FirstOrCreate(&TableFourSeat1, &entity.Table{TableName: "F1"})
     db.FirstOrCreate(&TableFourSeat2, &entity.Table{TableName: "F2"})

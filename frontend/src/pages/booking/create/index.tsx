@@ -46,6 +46,19 @@ function CreateBookingTable() {
     localStorage.getItem("id")
   );
 
+  const fetchData = async () => {
+    try {
+      const [soupsRes, packagesRes, tablesRes] = await Promise.all([
+        GetSoups(),
+        GetPackages(),
+        GetTables(),
+      ]);
+      return { soupsRes, packagesRes, tablesRes };
+    } catch (error) {
+      throw new Error("Error fetching data");
+    }
+  };
+
   useEffect(() => {
     if (!tableId) {
       message.error("Table ID is missing. Please try again.");
@@ -53,28 +66,19 @@ function CreateBookingTable() {
       return;
     }
 
-    const fetchData = async () => {
+    const loadData = async () => {
       setLoadingSoups(true);
       setLoadingPackages(true);
       setLoadingTables(true);
+
       try {
-        const [soupsRes, packagesRes, tablesRes] = await Promise.all([
-          GetSoups(),
-          GetPackages(),
-          GetTables(),
-        ]);
+        const { soupsRes, packagesRes, tablesRes } = await fetchData();
 
         if (soupsRes.status === 200) setSoups(soupsRes.data);
-        else throw new Error("Failed to fetch soups");
-
         if (packagesRes.status === 200) setPackages(packagesRes.data);
-        else throw new Error("Failed to fetch packages");
-
         if (tablesRes.status === 200) setTables(tablesRes.data);
-        else throw new Error("Failed to fetch tables");
       } catch (error) {
         message.error("Error fetching data. Please try again.");
-        console.error("Data fetching error:", error);
       } finally {
         setLoadingSoups(false);
         setLoadingPackages(false);
@@ -82,7 +86,7 @@ function CreateBookingTable() {
       }
     };
 
-    fetchData();
+    loadData();
   }, [tableId, navigate]);
 
   const updateTableStatus = async (tableId: number, statusId: number) => {
@@ -103,13 +107,8 @@ function CreateBookingTable() {
   const onFinish = async (values: any) => {
     const tableIdNumber = Number(tableId);
 
-    if (isNaN(tableIdNumber) || tableIdNumber <= 0) {
-      message.error("Invalid table ID.");
-      return;
-    }
-
-    if (!tableId) {
-      message.error("Table ID is missing. Please try again.");
+    if (!tableId || isNaN(tableIdNumber) || tableIdNumber <= 0) {
+      message.error("Invalid or missing table ID.");
       return;
     }
 
@@ -125,17 +124,14 @@ function CreateBookingTable() {
       employee_id: Number(accountid),
     };
 
-    console.log("Booking Payload:", bookingPayload);
-
     try {
       const bookingRes = await CreateBooking(bookingPayload);
-      if (!bookingRes || !bookingRes.booking_id) {
+      const bookingId = bookingRes?.booking_id;
+
+      if (!bookingId)
         throw new Error("Booking ID is missing from the response");
-      }
 
-      const bookingId = bookingRes.booking_id;
-
-      const selectedSoupIds: number[] = [
+      const selectedSoupIds = [
         values.soup1,
         values.soup2,
         values.soup3,
@@ -149,24 +145,14 @@ function CreateBookingTable() {
         })
       );
 
-      try {
-        await Promise.all(
-          bookingSoupsPayload.map((bookingSoup) =>
-            CreateBookingSoup(bookingSoup)
-          )
-        );
+      await Promise.all(bookingSoupsPayload.map(CreateBookingSoup));
 
-        await updateTableStatus(tableIdNumber, 2); // Assuming 2 is the ID for "Booked"
-
-        message.success("Booking confirmed!");
-        navigate("/booking/table_list");
-      } catch (innerError) {
-        console.error("Error creating booking soups:", innerError);
-        message.error("Failed to create one or more soups.");
-      }
+      await updateTableStatus(tableIdNumber, 2); // Assuming 2 is "Booked"
+      message.success("Booking confirmed!");
+      navigate("/booking/booking_list");
     } catch (error) {
-      console.error("Error creating booking:", error);
       message.error("Booking failed! Please try again.");
+      console.error("Booking error:", error);
     }
   };
 
@@ -231,18 +217,18 @@ function CreateBookingTable() {
                         message: "Please enter your phone number!",
                       },
                       {
-                        pattern: /^[0-9]{10}$/,
-                        message: "Phone number must be 10 digits!",
+                        pattern: /^[0][0-9]{9}$/, // หมายเลขโทรศัพท์ไทยต้องมี 10 หลักและเริ่มต้นด้วย 0
+                        message:
+                          "Phone number must be 10 digits and start with 0!",
                       },
                     ]}
                   >
                     <Input
                       placeholder="Phone Number"
-                      maxLength={10} // Limit input length to 10
+                      maxLength={10}
                       type="tel"
                       onChange={(e) => {
                         const value = e.target.value;
-                        // Only allow digits
                         if (/^[0-9]*$/.test(value)) {
                           form.setFieldsValue({ phone_number: value });
                         }

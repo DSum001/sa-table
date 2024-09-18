@@ -1,13 +1,10 @@
-import { Col, Row, Card, Button, Table, message, } from "antd";
+import { Col, Row, Card, Button, Table, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GetBooking, DeleteBookingByID } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
-import {
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import '../../../App.css'; // Import the CSS file
 
 const TableList = () => {
@@ -40,7 +37,7 @@ const TableList = () => {
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/booking/edit?bookingId=${id}`);
+    navigate(`/booking/edit/${id}`);
   };
 
   const handleDelete = async (id: number) => {
@@ -66,21 +63,15 @@ const TableList = () => {
       render: (record) => <>{record.table?.table_name ?? "N/A"}</>,
     },
     {
-      title: "Number of Customer",
+      title: "Number of Customers",
       dataIndex: "number_of_customer",
       key: "number_of_customer",
-      // ลบ sorter, filterDropdown, filterIcon ออกไป
     },
     {
       title: "Soups",
       dataIndex: "soups",
       key: "soups",
-      render: (soups) => {
-        if (Array.isArray(soups)) {
-          return soups.map((soup) => soup.name).join(", ");
-        }
-        return "N/A";
-      },
+      render: (soups) => (Array.isArray(soups) ? soups.map(soup => soup.name).join(", ") : "N/A"),
     },
     {
       title: "Package",
@@ -103,7 +94,7 @@ const TableList = () => {
             onClick={() => handleEdit(record.ID ?? 0)}
             className="table-list-edit-button"
           >
-            Edit
+            {/* Edit */}
           </Button>
           <Button
             type="link"
@@ -112,7 +103,7 @@ const TableList = () => {
             onClick={() => handleDelete(record.ID ?? 0)}
             className="table-list-delete-button"
           >
-            Delete
+            {/* Delete */}
           </Button>
         </div>
       ),
@@ -150,7 +141,7 @@ const TableList = () => {
                 onClick={handleButtonClick}
                 className="table-list-back-button"
               >
-                Back to Table Page
+                Back
               </Button>
             </Col>
           </Row>

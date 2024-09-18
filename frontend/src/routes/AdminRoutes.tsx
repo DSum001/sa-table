@@ -10,8 +10,8 @@ const CreateCustomer = Loadable(lazy(() => import("../pages/customer/create")));
 const EditCustomer = Loadable(lazy(() => import("../pages/customer/edit")));
 const Booking = Loadable(lazy(() => import("../pages/booking")));
 const CreateBookingTable = Loadable(lazy(() => import("../pages/booking/create")));
+const TableList = Loadable(lazy(() => import("../pages/booking/booking_list")));
 const EditBookingTable = Loadable(lazy(() => import("../pages/booking/edit")));
-const TableList = Loadable(lazy(() => import("../pages/booking/table_list")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
   return {
@@ -67,13 +67,13 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
           },
 
           {
-            path: "/booking/edit",
+            path: "/booking/edit/:id",
 
             element: <EditBookingTable />,
           },
 
           {
-            path: "/booking/table_list",
+            path: "/booking/booking_list",
 
             element: <TableList />,
           },
