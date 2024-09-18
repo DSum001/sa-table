@@ -1,5 +1,4 @@
-// interfaces/Booking.ts
-import { SoupInterface } from './Soup'; // ปรับเส้นทางให้ตรงกับที่อยู่จริงของไฟล์ Soup.ts
+import { SoupInterface } from './Soup';
 
 export interface BookingInterface {
     ID?: number; 

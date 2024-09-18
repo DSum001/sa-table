@@ -8,6 +8,7 @@ import {
   Spin,
   Empty,
   Badge,
+  Divider,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -104,13 +105,13 @@ function Booking() {
   const getStatusColor = (status: string): string => {
     switch (status) {
       case "Available":
-        return "#8BC34A"; // Soft green
+        return "#8BC34A"; 
       case "Occupied":
-        return "#FFB74D"; // Warm orange
+        return "#FFB74D"; 
       case "Cleaning":
-        return "#64B5F6"; // Soft blue
+        return "#64B5F6"; 
       default:
-        return "#B0BEC5"; // Light grey
+        return "#B0BEC5";
     }
   };
 
@@ -122,6 +123,7 @@ function Booking() {
     <Row gutter={[16, 16]}>
       <Col xs={24}>
         <h1 className="heading">Table Selection</h1>
+        <Divider/>
       </Col>
       <Col xs={24}>
         <Card className="card">
