@@ -115,6 +115,7 @@ func UpdateBooking(c *gin.Context) {
     var booking entity.Booking
     bookingIDStr := c.Param("id")
 
+    // Parse the booking ID
     bookingID, err := strconv.ParseUint(bookingIDStr, 10, 32)
     if err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
@@ -141,19 +142,19 @@ func UpdateBooking(c *gin.Context) {
 
     // Validate PackageID, TableID, and EmployeeID
     var pkg entity.Package
-    if err := db.First(&pkg, booking.PackageID).Error; err != nil || pkg.ID == 0 {
+    if err := db.First(&pkg, booking.PackageID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Package not found"})
         return
     }
 
     var table entity.Table
-    if err := db.First(&table, booking.TableID).Error; err != nil || table.ID == 0 {
+    if err := db.First(&table, booking.TableID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Table not found"})
         return
     }
 
     var employee entity.Employee
-    if err := db.First(&employee, booking.EmployeeID).Error; err != nil || employee.ID == 0 {
+    if err := db.First(&employee, booking.EmployeeID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Employee not found"})
         return
     }
@@ -185,7 +186,6 @@ func UpdateBooking(c *gin.Context) {
 
     // Commit Transaction
     if err := tx.Commit().Error; err != nil {
-        tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction commit failed"})
         return
     }
