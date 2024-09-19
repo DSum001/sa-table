@@ -77,7 +77,6 @@ func GetAll(c *gin.Context) {
     c.JSON(http.StatusOK, bookings)
 }
 
-// Get retrieves a booking entry by ID
 func GetByID(c *gin.Context) {
     ID := c.Param("id")
     var booking entity.Booking
@@ -88,11 +87,17 @@ func GetByID(c *gin.Context) {
         return
     }
 
+    // ตรวจสอบให้แน่ใจว่า ID เป็นตัวเลข
+    if _, err := strconv.Atoi(ID); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid booking ID"})
+        return
+    }
+
     // Preload related data including Soups
     if err := db.Preload("Package").
         Preload("Table").
         Preload("Employee").
-        Preload("Soups"). // Ensure this line is included
+        Preload("Soups"). 
         First(&booking, ID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
         return

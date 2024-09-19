@@ -82,7 +82,6 @@ async function CreateBooking(data: BookingInterface) {
     }
 }
 
-
 async function GetBookingByID(id: string) {
     return await axios
     .get(`${apiUrl}/booking/${id}`, requestOptions)
