@@ -16,12 +16,14 @@ import {
   CreateBookingSoup,
   UpdateTableStatus,
   GetTables,
+  GetTableCapacity,
 } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import { SoupInterface } from "../../../interfaces/Soup";
+import { BookingSoupInterface } from "../../../interfaces/BookingSoup";
 import { PackageInterface } from "../../../interfaces/Package";
 import { TableInterface } from "../../../interfaces/Table";
-import { BookingSoupInterface } from "../../../interfaces/BookingSoup";
+import { TableCapacityInterface } from "../../../interfaces/TableCapacity";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./booking.css";
 
@@ -37,6 +39,7 @@ function CreateBookingTable() {
   const [soups, setSoups] = useState<SoupInterface[]>([]);
   const [packages, setPackages] = useState<PackageInterface[]>([]);
   const [tables, setTables] = useState<TableInterface[]>([]);
+  const [tableCaps, setTableCaps] = useState<TableCapacityInterface[]>([]);
   const [loadingSoups, setLoadingSoups] = useState<boolean>(false);
   const [loadingPackages, setLoadingPackages] = useState<boolean>(false);
   const [loadingTables, setLoadingTables] = useState<boolean>(false);
@@ -47,12 +50,13 @@ function CreateBookingTable() {
 
   const fetchData = async () => {
     try {
-      const [soupsRes, packagesRes, tablesRes] = await Promise.all([
+      const [soupsRes, packagesRes, tablesRes, capsRes] = await Promise.all([
         GetSoups(),
         GetPackages(),
         GetTables(),
+        GetTableCapacity(),
       ]);
-      return { soupsRes, packagesRes, tablesRes };
+      return { soupsRes, packagesRes, tablesRes, capsRes };
     } catch (error) {
       throw new Error("Error fetching data");
     }
@@ -71,11 +75,12 @@ function CreateBookingTable() {
       setLoadingTables(true);
 
       try {
-        const { soupsRes, packagesRes, tablesRes } = await fetchData();
+        const { soupsRes, packagesRes, tablesRes, capsRes } = await fetchData();
 
         if (soupsRes.status === 200) setSoups(soupsRes.data);
         if (packagesRes.status === 200) setPackages(packagesRes.data);
         if (tablesRes.status === 200) setTables(tablesRes.data);
+        if (capsRes.status === 200) setTableCaps(capsRes.data);
       } catch (error) {
         message.error("Error fetching data. Please try again.");
       } finally {
@@ -103,8 +108,26 @@ function CreateBookingTable() {
     }
   };
 
+  const fetchTableCapacityLimits = () => {
+    const table = tables.find((t) => t.ID === Number(tableId));
+    if (!table) return { min: 1, max: 10 }; // Default values
+
+    const capacity = tableCaps.find(
+      (cap) => cap.ID === table.table_capacity_id
+    );
+    if (!capacity) return { min: 1, max: 10 }; // Default if not found
+
+    return { min: capacity.min || 1, max: capacity.max || 10 }; // Ensure min/max are defined
+  };
+
   const onFinish = async (values: any) => {
     const tableIdNumber = Number(tableId);
+
+    const { min, max } = fetchTableCapacityLimits();
+    if (values.number_of_customer < min || values.number_of_customer > max) {
+      message.error(`Number of customers must be between ${min} and ${max}!`);
+      return;
+    }
 
     if (!tableId || isNaN(tableIdNumber) || tableIdNumber <= 0) {
       message.error("Invalid or missing table ID.");
@@ -146,7 +169,7 @@ function CreateBookingTable() {
 
       await Promise.all(bookingSoupsPayload.map(CreateBookingSoup));
 
-      await updateTableStatus(tableIdNumber, 2); // Assuming 2 is "Booked"
+      await updateTableStatus(tableIdNumber, 2);
       message.success("Booking confirmed!");
       navigate("/booking/booking_list");
     } catch (error) {
@@ -217,14 +240,18 @@ function CreateBookingTable() {
                       },
                       {
                         type: "number",
-                        min: 1,
-                        message: "Number of customers must be at least 1!",
+                        min: fetchTableCapacityLimits().min || 1, // Add default value
+                        max: fetchTableCapacityLimits().max || 10, // Add default value
+                        message: `Number of customers must be between ${
+                          fetchTableCapacityLimits().min || 1
+                        } and ${fetchTableCapacityLimits().max || 10}!`,
                       },
                     ]}
                   >
                     <InputNumber
                       placeholder="Customers"
-                      min={1}
+                      min={fetchTableCapacityLimits().min || 1} // Ensure valid min
+                      max={fetchTableCapacityLimits().max || 10} // Ensure valid max
                       step={1}
                       style={{ width: "100%" }}
                     />
@@ -251,8 +278,7 @@ function CreateBookingTable() {
                 </Col>
               </Row>
               <Row gutter={[16, 16]}>{renderSoupFields()}</Row>
-              <Row gutter={[16, 16]}>
-              </Row>
+              <Row gutter={[16, 16]}></Row>
               <Row justify="space-between">
                 <Col>
                   <Button
