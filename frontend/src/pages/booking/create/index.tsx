@@ -2,12 +2,11 @@ import {
   Card,
   Row,
   Col,
-  Input,
+  InputNumber,
   Select,
   Button,
   Form,
   message,
-  InputNumber,
 } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -209,35 +208,6 @@ function CreateBookingTable() {
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
-                    label="Phone Number"
-                    name="phone_number"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter your phone number!",
-                      },
-                      {
-                        pattern: /^[0][0-9]{9}$/, // หมายเลขโทรศัพท์ไทยต้องมี 10 หลักและเริ่มต้นด้วย 0
-                        message:
-                          "Phone number must be 10 digits and start with 0!",
-                      },
-                    ]}
-                  >
-                    <Input
-                      placeholder="Phone Number"
-                      maxLength={10}
-                      type="tel"
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^[0-9]*$/.test(value)) {
-                          form.setFieldsValue({ phone_number: value });
-                        }
-                      }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={12}>
-                  <Form.Item
                     label="Number of Customers"
                     name="number_of_customer"
                     rules={[
@@ -260,9 +230,6 @@ function CreateBookingTable() {
                     />
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={[16, 16]}>{renderSoupFields()}</Row>
-              <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={12}>
                   <Form.Item
                     label="Package"
@@ -282,6 +249,9 @@ function CreateBookingTable() {
                     />
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={[16, 16]}>{renderSoupFields()}</Row>
+              <Row gutter={[16, 16]}>
               </Row>
               <Row justify="space-between">
                 <Col>
