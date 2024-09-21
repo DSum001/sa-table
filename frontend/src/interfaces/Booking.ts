@@ -6,4 +6,5 @@ export interface BookingInterface {
     member_id?: number; 
     employee_id?: number;
     soups?: number[]; 
+    created_at?: string;
 }

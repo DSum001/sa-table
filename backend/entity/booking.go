@@ -10,8 +10,8 @@ type Booking struct {
     Package           Package     `json:"package" gorm:"foreignKey:PackageID"`
     TableID           uint        `json:"table_id"`
     Table             Table       `json:"table" gorm:"foreignKey:TableID"`
-    MemberID          uint        `json:"member_id"`
-    Member            Member      `json:"member" gorm:"foreignKey:MemberID"`
+    // MemberID          uint        `json:"member_id"`
+    // Member            Member      `json:"member" gorm:"foreignKey:MemberID"`
     EmployeeID        uint        `json:"employee_id"`
     Employee          Employee    `json:"employee" gorm:"foreignKey:EmployeeID"`
 }

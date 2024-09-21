@@ -1,5 +1,5 @@
 export interface BookingSoupInterface {
     ID?: number;
-    BookingID?: number;
-    SoupID?: number;
+    booking_id?: number;
+    soup_id?: number;
 }

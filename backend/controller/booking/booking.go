@@ -74,6 +74,7 @@ func GetAll(c *gin.Context) {
         return
     }
 
+    // ส่งข้อมูลรวมถึง CreatedAt
     c.JSON(http.StatusOK, bookings)
 }
 

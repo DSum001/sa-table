@@ -1,11 +1,11 @@
-import { Col, Row, Card, Button, Table, message } from "antd";
+import { Col, Row, Card, Button, Table, message, Modal } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GetBooking, DeleteBookingByID } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import '../../../App.css'; // Import the CSS file
+import "../../../App.css"; // Import the CSS file
 
 const TableList = () => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const TableList = () => {
     setLoading(true);
     try {
       const res = await GetBooking();
+      console.log(res); // ตรวจสอบข้อมูลที่ได้รับ
       if (res.status === 200) {
         setBookingData(res.data);
       } else {
@@ -40,14 +41,20 @@ const TableList = () => {
     navigate(`/booking/edit/${id}`);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await DeleteBookingByID(id.toString());
-      message.success("Booking deleted successfully");
-      fetchBookingData();
-    } catch (error) {
-      message.error("Failed to delete booking");
-    }
+  const handleDelete = (id: number) => {
+    Modal.confirm({
+      title: "Confirm Deletion",
+      content: "จะลบหาพ่อมึงหรอ อุตสาช่าห์สร้างมาอย่างยาก",
+      onOk: async () => {
+        try {
+          await DeleteBookingByID(id.toString());
+          message.success("Booking deleted successfully");
+          fetchBookingData();
+        } catch (error) {
+          message.error("Failed to delete booking");
+        }
+      },
+    });
   };
 
   const columns: ColumnsType<BookingInterface> = [
@@ -71,7 +78,10 @@ const TableList = () => {
       title: "Soups",
       dataIndex: "soups",
       key: "soups",
-      render: (soups) => (Array.isArray(soups) ? soups.map(soup => soup.name).join(", ") : "N/A"),
+      render: (soups) =>
+        Array.isArray(soups)
+          ? soups.map((soup) => soup.name).join(", ")
+          : "N/A",
     },
     {
       title: "Package",
@@ -93,18 +103,14 @@ const TableList = () => {
             icon={<EditOutlined />}
             onClick={() => handleEdit(record.ID ?? 0)}
             className="table-list-edit-button"
-          >
-            {/* Edit */}
-          </Button>
+          />
           <Button
             type="link"
             icon={<DeleteOutlined />}
             danger
             onClick={() => handleDelete(record.ID ?? 0)}
             className="table-list-delete-button"
-          >
-            {/* Delete */}
-          </Button>
+          />
         </div>
       ),
     },

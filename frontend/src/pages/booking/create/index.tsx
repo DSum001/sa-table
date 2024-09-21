@@ -7,6 +7,7 @@ import {
   Button,
   Form,
   message,
+  Modal,
 } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -120,62 +121,68 @@ function CreateBookingTable() {
     return { min: capacity.min || 1, max: capacity.max || 10 }; // Ensure min/max are defined
   };
 
-  const onFinish = async (values: any) => {
-    const tableIdNumber = Number(tableId);
-
+  const onFinish = (values: any) => {
     const { min, max } = fetchTableCapacityLimits();
+
     if (values.number_of_customer < min || values.number_of_customer > max) {
       message.error(`Number of customers must be between ${min} and ${max}!`);
       return;
     }
 
-    if (!tableId || isNaN(tableIdNumber) || tableIdNumber <= 0) {
-      message.error("Invalid or missing table ID.");
-      return;
-    }
+    Modal.confirm({
+      title: "Confirm Booking",
+      content: "Are you sure you want to confirm this booking?",
+      onOk: async () => {
+        const tableIdNumber = Number(tableId);
 
-    if (!accountid) {
-      message.error("User ID is missing. Please log in.");
-      return;
-    }
+        if (!tableId || isNaN(tableIdNumber) || tableIdNumber <= 0) {
+          message.error("Invalid or missing table ID.");
+          return;
+        }
 
-    const bookingPayload: BookingInterface = {
-      number_of_customer: values.number_of_customer,
-      package_id: values.package_id,
-      table_id: tableIdNumber,
-      employee_id: Number(accountid),
-    };
+        if (!accountid) {
+          message.error("User ID is missing. Please log in.");
+          return;
+        }
 
-    try {
-      const bookingRes = await CreateBooking(bookingPayload);
-      const bookingId = bookingRes?.booking_id;
+        const bookingPayload: BookingInterface = {
+          number_of_customer: values.number_of_customer,
+          package_id: values.package_id,
+          table_id: tableIdNumber,
+          employee_id: Number(accountid),
+        };
 
-      if (!bookingId)
-        throw new Error("Booking ID is missing from the response");
+        try {
+          const bookingRes = await CreateBooking(bookingPayload);
+          const bookingId = bookingRes?.booking_id;
 
-      const selectedSoupIds = [
-        values.soup1,
-        values.soup2,
-        values.soup3,
-        values.soup4,
-      ].filter((soup): soup is number => typeof soup === "number");
+          if (!bookingId)
+            throw new Error("Booking ID is missing from the response");
 
-      const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(
-        (soupId) => ({
-          BookingID: bookingId,
-          SoupID: soupId,
-        })
-      );
+          const selectedSoupIds = [
+            values.soup1,
+            values.soup2,
+            values.soup3,
+            values.soup4,
+          ].filter((soup): soup is number => typeof soup === "number");
 
-      await Promise.all(bookingSoupsPayload.map(CreateBookingSoup));
+          const bookingSoupsPayload: BookingSoupInterface[] =
+            selectedSoupIds.map((soupId) => ({
+              booking_id: bookingId,
+              soup_id: soupId,
+            }));
 
-      await updateTableStatus(tableIdNumber, 2);
-      message.success("Booking confirmed!");
-      navigate("/booking/booking_list");
-    } catch (error) {
-      message.error("Booking failed! Please try again.");
-      console.error("Booking error:", error);
-    }
+          await Promise.all(bookingSoupsPayload.map(CreateBookingSoup));
+
+          await updateTableStatus(tableIdNumber, 2);
+          message.success("Booking confirmed!");
+          navigate("/booking/booking_list");
+        } catch (error) {
+          message.error("Booking failed! Please try again.");1
+          console.error("Booking error:", error);
+        }
+      },
+    });
   };
 
   const onFinishFailed = (errorInfo: any) => {

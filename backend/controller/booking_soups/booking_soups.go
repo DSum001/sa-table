@@ -9,7 +9,6 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-// CreateBookingSoup handles the creation of a booking-soup association
 func CreateBookingSoup(c *gin.Context) {
     var bookingSoup entity.BookingSoup
 
@@ -49,6 +48,7 @@ func CreateBookingSoup(c *gin.Context) {
         "id":      bookingSoup.ID,
     })
 }
+
 
 func UpdateBookingSoups(c *gin.Context) {
     var bookingSoupData []struct {
