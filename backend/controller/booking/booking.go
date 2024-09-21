@@ -10,7 +10,7 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-// CreateBooking handles the creation of a booking
+// CreateBooking
 func CreateBooking(c *gin.Context) {
     var booking entity.Booking
 
@@ -58,7 +58,7 @@ func CreateBooking(c *gin.Context) {
     })
 }
 
-// GetAll retrieves all non-deleted booking entries
+// GetAll Booking
 func GetAll(c *gin.Context) {
     var bookings []entity.Booking
     db := config.DB()
@@ -68,13 +68,11 @@ func GetAll(c *gin.Context) {
         return
     }
 
-    // Preload related data and exclude soft-deleted records
     if err := db.Preload("Package").Preload("Table").Preload("Employee").Preload("Soups").Find(&bookings).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
 
-    // ส่งข้อมูลรวมถึง CreatedAt
     c.JSON(http.StatusOK, bookings)
 }
 
@@ -115,7 +113,6 @@ func UpdateBooking(c *gin.Context) {
     var booking entity.Booking
     bookingIDStr := c.Param("id")
 
-    // Parse the booking ID
     bookingID, err := strconv.ParseUint(bookingIDStr, 10, 32)
     if err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
@@ -128,7 +125,6 @@ func UpdateBooking(c *gin.Context) {
         return
     }
 
-    // Fetch the existing booking
     if err := db.First(&booking, bookingID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "ID not found"})
         return
@@ -140,7 +136,6 @@ func UpdateBooking(c *gin.Context) {
         return
     }
 
-    // Validate PackageID, TableID, and EmployeeID
     var pkg entity.Package
     if err := db.First(&pkg, booking.PackageID).Error; err != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": "Package not found"})
@@ -193,7 +188,7 @@ func UpdateBooking(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully"})
 }
 
-// DeleteBooking performs a soft delete of a booking entry by ID and updates table status
+// DeleteBooking
 func DeleteBooking(c *gin.Context) {
     ID := c.Param("id")
     db := config.DB()
@@ -222,7 +217,7 @@ func DeleteBooking(c *gin.Context) {
         }
     }()
 
-    // Delete BookingSoup associations
+    // Delete BookingSoup
     if err := tx.Where("booking_id = ?", booking.ID).Delete(&entity.BookingSoup{}).Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete booking-soup associations: " + err.Error()})
@@ -236,7 +231,6 @@ func DeleteBooking(c *gin.Context) {
         return
     }
 
-    // Find the related table and update its status to available
     var table entity.Table
     if err := tx.First(&table, booking.TableID).Error; err != nil {
         tx.Rollback()
@@ -245,7 +239,7 @@ func DeleteBooking(c *gin.Context) {
     }
 
     // Update the table status to available
-    table.TableStatusID = 1 // Assume 1 is the status for "Available"
+    table.TableStatusID = 1
     if err := tx.Save(&table).Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update table status"})

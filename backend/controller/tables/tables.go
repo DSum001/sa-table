@@ -5,10 +5,10 @@ import (
     "github.com/DSum001/sa-table/config"
     "github.com/DSum001/sa-table/entity"
     "github.com/gin-gonic/gin"
-    "gorm.io/gorm"
+    // "gorm.io/gorm"
 )
 
-// GetAll function to fetch all tables with their status and capacity
+// GetAll Tables
 func GetAll(c *gin.Context) {
     var tables []entity.Table
     db := config.DB()
@@ -63,10 +63,10 @@ func UpdateStatus(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Table status updated successfully"})
 }
 
-func getStatusIDByStatus(status string, db *gorm.DB) (uint, error) {
-    var tableStatus entity.TableStatus
-    if err := db.Where("status = ?", status).First(&tableStatus).Error; err != nil {
-        return 0, err
-    }
-    return tableStatus.ID, nil
-}
+// func getStatusIDByStatus(status string, db *gorm.DB) (uint, error) {
+//     var tableStatus entity.TableStatus
+//     if err := db.Where("status = ?", status).First(&tableStatus).Error; err != nil {
+//         return 0, err
+//     }
+//     return tableStatus.ID, nil
+// }

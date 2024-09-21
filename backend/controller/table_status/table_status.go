@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 )
-
+//GetAll Table status
 func GetAll(c *gin.Context) {
 
 	db := config.DB()

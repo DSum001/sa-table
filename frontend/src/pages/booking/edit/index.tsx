@@ -14,10 +14,12 @@ import {
   GetSoups,
   GetPackages,
   UpdateBookingSoups,
+  GetTableCapacity,
 } from "../../../services/https";
 import { useState, useEffect } from "react";
 import { BookingInterface } from "../../../interfaces/Booking";
 import { BookingSoupInterface } from "../../../interfaces/BookingSoup";
+import { TableCapacityInterface } from "../../../interfaces/TableCapacity";
 import { SoupInterface } from "../../../interfaces/Soup";
 import { PackageInterface } from "../../../interfaces/Package";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,6 +30,8 @@ function EditBookingTable() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [booking, setBooking] = useState<BookingInterface | null>(null);
+  const [tableCapacity, setTableCapacity] =
+    useState<TableCapacityInterface | null>(null);
   const [soups, setSoups] = useState<SoupInterface[]>([]);
   const [packages, setPackages] = useState<PackageInterface[]>([]);
   const [tableName, setTableName] = useState<string>("");
@@ -57,18 +61,13 @@ function EditBookingTable() {
       if (res && res.status === 200) {
         messageApi.success("Booking updated successfully.");
 
-        // Prepare soup data as an array
         const soupData: BookingSoupInterface[] = selectedSoups.map(
           (soupId: number) => ({
-            BookingID: Number(id), // BookingID is required
-            SoupID: soupId, // SoupID is required
+            BookingID: Number(id),
+            SoupID: soupId,
           })
         );
 
-        // Log the soup data to console
-        console.log("Sending soup data:", soupData);
-
-        // Send the soup data to the backend
         const soupRes = await UpdateBookingSoups(String(id), soupData);
         if (soupRes && soupRes.status === 200) {
           messageApi.success("Soups updated successfully.");
@@ -104,6 +103,8 @@ function EditBookingTable() {
           package_id: res.data.package_id,
           soups: res.data.soups.map((soup: SoupInterface) => soup.ID) || [],
         });
+
+        await fetchTableCapacity(res.data.table?.table_capacity_id);
       } else {
         throw new Error("Failed to fetch booking data.");
       }
@@ -112,6 +113,23 @@ function EditBookingTable() {
         (error as Error).message || "An unknown error occurred.";
       console.error("Error fetching booking data:", error);
       messageApi.error("Failed to fetch booking data: " + errorMessage);
+    }
+  };
+
+  const fetchTableCapacity = async (tableCapacityId: number) => {
+    try {
+      const res = await GetTableCapacity();
+      if (res && res.data) {
+        const capacity = res.data.find(
+          (cap: TableCapacityInterface) => cap.ID === tableCapacityId
+        );
+        setTableCapacity(capacity);
+      } else {
+        throw new Error("Failed to fetch table capacity.");
+      }
+    } catch (error) {
+      console.error("Error fetching table capacity:", error);
+      messageApi.error("Failed to fetch table capacity.");
     }
   };
 
@@ -161,9 +179,14 @@ function EditBookingTable() {
         {bookingSoupIDs.map((soupID, index) => (
           <Col xs={24} sm={24} md={12} key={index}>
             <Form.Item
-              label={`Soup ${index + 1}`} // แก้ไขให้เป็น backticks
+              label={`Soup ${index + 1}`}
               name={["soups", index]}
-              rules={[{ required: index < 2, message: "Please select at least 2 soups!" }]}
+              rules={[
+                {
+                  required: index < 2,
+                  message: "Please select at least 2 soups!",
+                },
+              ]}
             >
               <Select
                 placeholder="Select a soup"
@@ -171,7 +194,7 @@ function EditBookingTable() {
                   value: soupOption.ID,
                   label: soupOption.name,
                 }))}
-                defaultValue={soupID} // ใช้ soupID ตรง ๆ
+                defaultValue={soupID}
               />
             </Form.Item>
           </Col>
@@ -214,20 +237,20 @@ function EditBookingTable() {
                       },
                       {
                         type: "number",
-                        min: 1,
-                        max: 10,
-                        message:
-                          "Number of customers must be between 1 and 10!",
+                        min: tableCapacity?.min || 1,
+                        max: tableCapacity?.max || 10,
+                        message: `Number of customers must be between ${
+                          tableCapacity?.min || 1
+                        } and ${tableCapacity?.max || 10}!`,
                       },
                     ]}
                   >
                     <InputNumber
                       placeholder="Customers"
-                      min={1}
-                      max={10}
+                      min={tableCapacity?.min || 1}
+                      max={tableCapacity?.max || 10}
                       step={1}
                       style={{ width: "100%" }}
-                      className="input-number-style" // เพิ่มคลาสสำหรับสไตล์ input
                     />
                   </Form.Item>
                 </Col>

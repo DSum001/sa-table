@@ -9,7 +9,7 @@ import (
 
 )
 
-// GET /soups
+// GET soups
 func GetAll(c *gin.Context) {
 
 	var soups []entity.Soup

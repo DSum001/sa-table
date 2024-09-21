@@ -111,14 +111,13 @@ function CreateBookingTable() {
 
   const fetchTableCapacityLimits = () => {
     const table = tables.find((t) => t.ID === Number(tableId));
-    if (!table) return { min: 1, max: 10 }; // Default values
-
+    if (!table) return { min: 1, max: 10 };
     const capacity = tableCaps.find(
       (cap) => cap.ID === table.table_capacity_id
     );
-    if (!capacity) return { min: 1, max: 10 }; // Default if not found
+    if (!capacity) return { min: 1, max: 10 };
 
-    return { min: capacity.min || 1, max: capacity.max || 10 }; // Ensure min/max are defined
+    return { min: capacity.min || 1, max: capacity.max || 10 };
   };
 
   const onFinish = (values: any) => {
@@ -178,7 +177,8 @@ function CreateBookingTable() {
           message.success("Booking confirmed!");
           navigate("/booking/booking_list");
         } catch (error) {
-          message.error("Booking failed! Please try again.");1
+          message.error("Booking failed! Please try again.");
+          1;
           console.error("Booking error:", error);
         }
       },
@@ -247,8 +247,8 @@ function CreateBookingTable() {
                       },
                       {
                         type: "number",
-                        min: fetchTableCapacityLimits().min || 1, // Add default value
-                        max: fetchTableCapacityLimits().max || 10, // Add default value
+                        min: fetchTableCapacityLimits().min || 1,
+                        max: fetchTableCapacityLimits().max || 10,
                         message: `Number of customers must be between ${
                           fetchTableCapacityLimits().min || 1
                         } and ${fetchTableCapacityLimits().max || 10}!`,
@@ -257,8 +257,8 @@ function CreateBookingTable() {
                   >
                     <InputNumber
                       placeholder="Customers"
-                      min={fetchTableCapacityLimits().min || 1} // Ensure valid min
-                      max={fetchTableCapacityLimits().max || 10} // Ensure valid max
+                      min={fetchTableCapacityLimits().min || 1}
+                      max={fetchTableCapacityLimits().max || 10}
                       step={1}
                       style={{ width: "100%" }}
                     />

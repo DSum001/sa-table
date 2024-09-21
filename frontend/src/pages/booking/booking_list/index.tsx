@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 import { GetBooking, DeleteBookingByID } from "../../../services/https";
 import { BookingInterface } from "../../../interfaces/Booking";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import "../../../App.css"; // Import the CSS file
 
-const TableList = () => {
+function TableList() {
   const navigate = useNavigate();
   const [bookingData, setBookingData] = useState<BookingInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -16,7 +15,7 @@ const TableList = () => {
     setLoading(true);
     try {
       const res = await GetBooking();
-      console.log(res); // ตรวจสอบข้อมูลที่ได้รับ
+      console.log(res);
       if (res.status === 200) {
         setBookingData(res.data);
       } else {
@@ -155,6 +154,6 @@ const TableList = () => {
       </Row>
     </div>
   );
-};
+}
 
 export default TableList;

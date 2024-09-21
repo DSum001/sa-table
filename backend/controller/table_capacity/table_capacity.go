@@ -9,6 +9,7 @@ import (
 
 )
 
+//GetAll Table Capacity
 func GetAll(c *gin.Context) {
 
 	db := config.DB()

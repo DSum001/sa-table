@@ -31,22 +31,22 @@ func main() {
 
 	// Group protected routes
 	router := r.Group("/")
-	router.Use(middlewares.Authorizes())
 	{
-		// Employee routes
+		router.Use(middlewares.Authorizes())
+		// Employee
 		router.PATCH("/employee/:id", employee.Update)
 		router.GET("/employee", employee.GetAll)
 		router.GET("/employee/:id", employee.Get)
 		router.DELETE("/employee/:id", employee.Delete)
 
-		// Booking routes
+		// Booking
 		r.GET("/booking", booking.GetAll)
 		r.GET("/booking/:id", booking.GetByID)
 		r.POST("/booking", booking.CreateBooking)
 		r.PATCH("/booking/:id", booking.UpdateBooking)
 		r.DELETE("/booking/:id", booking.DeleteBooking)
 
-		// Booking Soups route
+		// Booking Soups
 		r.POST("/booking_soups", booking_soups.CreateBookingSoup)
 		r.PUT("/booking_soups/:id", booking_soups.UpdateBookingSoups)
 
