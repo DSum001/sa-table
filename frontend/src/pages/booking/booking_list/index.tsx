@@ -10,6 +10,7 @@ function TableList() {
   const navigate = useNavigate();
   const [bookingData, setBookingData] = useState<BookingInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentTime, setCurrentTime] = useState<string>("");
 
   const fetchBookingData = async () => {
     setLoading(true);
@@ -30,6 +31,14 @@ function TableList() {
 
   useEffect(() => {
     fetchBookingData();
+    
+    // Update the current time every second
+    const interval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString());
+    }, 1000);
+
+    // Clear the interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   const handleButtonClick = () => {
@@ -43,7 +52,7 @@ function TableList() {
   const handleDelete = (id: number) => {
     Modal.confirm({
       title: "Confirm Deletion",
-      content: "จะลบหาพ่อมึงหรอ อุตสาช่าห์สร้างมาอย่างยาก",
+      content: "Are you sure you want to delete this booking?",
       onOk: async () => {
         try {
           await DeleteBookingByID(id.toString());
@@ -123,6 +132,10 @@ function TableList() {
         </Col>
 
         <Col xs={24}>
+          {/* Display the current time */}
+          <div style={{ fontSize: "20px", textAlign: "center", marginBottom: "16px" }}>
+            Current Time: {currentTime}
+          </div>
           <Card className="table-list-card">
             <Table
               dataSource={bookingData}
