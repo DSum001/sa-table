@@ -162,8 +162,8 @@ function CreateBookingTable() {
 
       const bookingSoupsPayload: BookingSoupInterface[] = selectedSoupIds.map(
         (soupId) => ({
-          booking_id: bookingId,
-          soup_id: soupId,
+          BookingID: bookingId,
+          SoupID: soupId,
         })
       );
 
@@ -219,7 +219,7 @@ function CreateBookingTable() {
           <h1 className="heading-style">Table Booking for {tableName}</h1>
         </Col>
       </Row>
-      <Row gutter={[16, 16]} justify="center">
+      <Row gutter={[16, 16]} justify="center" style={{ marginTop: "0px" }}>
         <Col xs={24} sm={24} md={16} lg={14} xl={12}>
           <Card className="card-style">
             <Form

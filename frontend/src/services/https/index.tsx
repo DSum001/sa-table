@@ -155,6 +155,20 @@ async function CreateBookingSoup(data: BookingSoupInterface) {
     .catch((e) => e.response);
 }
 
+async function GetBookingSoupByID(id: string) {
+    return await axios
+    .get(`${apiUrl}/booking_soups/${id}`, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
+async function UpdateBookingSoups(id: string | undefined, data: BookingSoupInterface[]) {
+    return await axios
+        .put(`${apiUrl}/booking_soups/${id}`, data, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
 export {
     SignIn,
     GetUsers,
@@ -174,4 +188,6 @@ export {
     DeleteBookingByID,
     CreateBookingSoup,
     UpdateTableStatus,
+    UpdateBookingSoups,
+    GetBookingSoupByID,
 };

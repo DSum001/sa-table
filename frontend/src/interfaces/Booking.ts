@@ -1,5 +1,3 @@
-import { SoupInterface } from './Soup';
-
 export interface BookingInterface {
     ID?: number; 
     number_of_customer?: number; 
@@ -7,5 +5,5 @@ export interface BookingInterface {
     table_id?: number; 
     member_id?: number; 
     employee_id?: number;
-    soups?: SoupInterface[];
+    soups?: number[]; 
 }

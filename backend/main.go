@@ -48,6 +48,7 @@ func main() {
 
 		// Booking Soups route
 		r.POST("/booking_soups", booking_soups.CreateBookingSoup)
+		r.PUT("/booking_soups/:id", booking_soups.UpdateBookingSoups)
 
 		// Other routes
 		r.GET("/tables", tables.GetAll)

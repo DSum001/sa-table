@@ -13,46 +13,80 @@ import {
   UpdateBooking,
   GetSoups,
   GetPackages,
+  UpdateBookingSoups,
 } from "../../../services/https";
 import { useState, useEffect } from "react";
 import { BookingInterface } from "../../../interfaces/Booking";
-import { PackageInterface } from "../../../interfaces/Package";
+import { BookingSoupInterface } from "../../../interfaces/BookingSoup";
 import { SoupInterface } from "../../../interfaces/Soup";
+import { PackageInterface } from "../../../interfaces/Package";
 import { useNavigate, useParams } from "react-router-dom";
+import "../create/booking.css";
 
 function EditBookingTable() {
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
 
   const [booking, setBooking] = useState<BookingInterface | null>(null);
-  const [soup, setSoup] = useState<SoupInterface[]>([]);
+  const [soups, setSoups] = useState<SoupInterface[]>([]);
   const [packages, setPackages] = useState<PackageInterface[]>([]);
-
   const [tableName, setTableName] = useState<string>("");
-
   const { id } = useParams();
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onFinish = async (values: BookingInterface) => {
+  const onFinish = async (values: any) => {
     if (!id) {
       messageApi.error("Invalid booking ID!");
       return;
     }
-  
+
+    const selectedSoups = values.soups || [];
+    if (selectedSoups.length < 2 || selectedSoups.length > 4) {
+      messageApi.error("Please select between 2 and 4 soups!");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const res = await UpdateBooking(id, values);
-      console.log("Update response:", res); // Log the response for debugging
-      if (res && res.status === 200) { // Check for the correct success status
+      const res = await UpdateBooking(id, {
+        number_of_customer: values.number_of_customer,
+        package_id: values.package_id,
+      });
+
+      if (res && res.status === 200) {
         messageApi.success("Booking updated successfully.");
+
+        // Prepare soup data as an array
+        const soupData: BookingSoupInterface[] = selectedSoups.map(
+          (soupId: number) => ({
+            BookingID: Number(id), // BookingID is required
+            SoupID: soupId, // SoupID is required
+          })
+        );
+
+        // Log the soup data to console
+        console.log("Sending soup data:", soupData);
+
+        // Send the soup data to the backend
+        const soupRes = await UpdateBookingSoups(String(id), soupData);
+        if (soupRes && soupRes.status === 200) {
+          messageApi.success("Soups updated successfully.");
+        } else {
+          messageApi.error("Failed to update soups.");
+        }
+
         setTimeout(() => navigate("/booking/booking_list"), 2000);
       } else {
         throw new Error("Update failed.");
       }
     } catch (error) {
-      console.error("Error updating booking:", error); // Log the error
+      console.error("Error updating booking:", error);
       messageApi.error("An error occurred while updating the booking.");
+    } finally {
+      setLoading(false);
     }
-  };  
+  };
 
   const fetchBookingById = async () => {
     if (!id) {
@@ -74,87 +108,75 @@ function EditBookingTable() {
         throw new Error("Failed to fetch booking data.");
       }
     } catch (error) {
+      const errorMessage =
+        (error as Error).message || "An unknown error occurred.";
       console.error("Error fetching booking data:", error);
-      if (error instanceof Error) {
-        messageApi.error("Failed to fetch booking data: " + error.message);
-      } else {
-        messageApi.error(
-          "Failed to fetch booking data: An unknown error occurred."
-        );
-      }
+      messageApi.error("Failed to fetch booking data: " + errorMessage);
     }
   };
 
   const fetchSoups = async () => {
     try {
-      const res = await GetSoups(); // Fetch data from the API
-
+      const res = await GetSoups();
       if (res.status === 200) {
-        setSoup(res.data); // Set the data from the API response
+        setSoups(res.data);
       } else {
-        setSoup([]);
-        messageApi.error(res.data.error || "ไม่สามารถดึงข้อมูลได้");
+        setSoups([]);
+        messageApi.error(res.data.error || "Cannot fetch soups.");
       }
     } catch (error) {
-      setSoup([]);
-      messageApi.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
+      setSoups([]);
+      messageApi.error("Error fetching soups.");
     }
   };
 
   const fetchPackages = async () => {
     try {
-      const res = await GetPackages(); // Fetch data from the API
-
+      const res = await GetPackages();
       if (res.status === 200) {
-        setPackages(res.data); // Set the data from the API response
+        setPackages(res.data);
       } else {
         setPackages([]);
-        messageApi.error(res.data.error || "ไม่สามารถดึงข้อมูลได้");
+        messageApi.error(res.data.error || "Cannot fetch packages.");
       }
     } catch (error) {
       setPackages([]);
-      messageApi.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
+      messageApi.error("Error fetching packages.");
     }
   };
 
   const renderSoupFields = () => {
-    if (soup.length === 0) {
+    const bookingSoupIDs = booking?.soups || [];
+
+    if (bookingSoupIDs.length === 0) {
       return (
         <Col xs={24}>
-          <p>No soups available.</p>
+          <p>No soups available for this booking.</p>
         </Col>
       );
     }
 
-    // Check if booking is not null and has soups
-    if (booking?.soups && booking.soups.length > 0) {
-      return (
-        <>
-          {booking.soups.map((soupItem: SoupInterface, index: number) => (
-            <Col xs={24} sm={24} md={12} key={index}>
-              <Form.Item
-                label={`Soup ${index + 1}`}
-                name={`soups[${index}]`}
-                rules={[{ required: true, message: "Please select a soup!" }]}
-              >
-                <Select placeholder="Select a soup" defaultValue={soupItem.ID}>
-                  {soup.map((soupOption) => (
-                    <Select.Option key={soupOption.ID} value={soupOption.ID}>
-                      {soupOption.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          ))}
-        </>
-      );
-    }
-
     return (
-      <Col xs={24}>
-        <p>No soups selected in this booking.</p>
-      </Col>
+      <>
+        {bookingSoupIDs.map((soupID, index) => (
+          <Col xs={24} sm={24} md={12} key={index}>
+            <Form.Item
+              label={`Soup ${index + 1}`} // แก้ไขให้เป็น backticks
+              name={["soups", index]}
+              rules={[{ required: index < 2, message: "Please select at least 2 soups!" }]}
+            >
+              <Select
+                placeholder="Select a soup"
+                options={soups.map((soupOption) => ({
+                  value: soupOption.ID,
+                  label: soupOption.name,
+                }))}
+                defaultValue={soupID} // ใช้ soupID ตรง ๆ
+              />
+            </Form.Item>
+          </Col>
+        ))}
+      </>
     );
   };
 
@@ -205,6 +227,7 @@ function EditBookingTable() {
                       max={10}
                       step={1}
                       style={{ width: "100%" }}
+                      className="input-number-style" // เพิ่มคลาสสำหรับสไตล์ input
                     />
                   </Form.Item>
                 </Col>
@@ -243,6 +266,7 @@ function EditBookingTable() {
                     type="primary"
                     htmlType="submit"
                     className="button-style"
+                    loading={loading}
                   >
                     Confirm
                   </Button>

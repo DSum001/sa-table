@@ -110,7 +110,6 @@ func GetByID(c *gin.Context) {
     c.JSON(http.StatusOK, booking)
 }
 
-// UpdateBooking updates a booking entry by ID
 func UpdateBooking(c *gin.Context) {
     var booking entity.Booking
     bookingIDStr := c.Param("id")
